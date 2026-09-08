@@ -3,87 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeraGaov - Coming Soon</title>
+    <title>MeraGaov - मेरी पहचान | Coming Soon</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;600;700&display=swap');
-        
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Hind', sans-serif;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         body {
-            background: linear-gradient(135deg, #064e3b, #022c22);
-            color: #ffffff;
+            background-color: #0b3824;
+            color: #333;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
-
-        .card {
+        .container {
             background: #ffffff;
-            color: #0f172a;
-            max-width: 480px;
             width: 100%;
-            border-radius: 20px;
+            max-width: 500px;
             padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            border-top: 5px solid #10b981;
         }
-
-        .logo {
-            font-size: 50px;
+        .icon {
+            font-size: 40px;
             margin-bottom: 10px;
         }
-
         h1 {
             font-size: 24px;
-            color: #064e3b;
+            color: #0b3824;
             margin-bottom: 10px;
-            font-weight: 700;
         }
-
+        .badge {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
         p {
             font-size: 14px;
-            color: #475569;
+            color: #555;
             line-height: 1.6;
             margin-bottom: 20px;
         }
-
-        .badge {
-            display: inline-block;
-            background: #ecfdf5;
-            color: #047857;
-            border: 1px solid #a7f3d0;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             margin-bottom: 20px;
         }
-
-        .footer-text {
+        .btn {
+            background-color: #2e7d32;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: background 0.3s;
+            display: inline-block;
+        }
+        .btn:hover {
+            background-color: #1b5e20;
+        }
+        .btn-wa {
+            background-color: #25d366;
+        }
+        .btn-wa:hover {
+            background-color: #1ebe5d;
+        }
+        .form-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-box h3 {
+            font-size: 15px;
+            color: #0b3824;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .submit-btn {
+            width: 100%;
+            background: #0b3824;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background: #145a32;
+        }
+        .footer {
             font-size: 12px;
-            color: #94a3b8;
-            border-top: 1px solid #f1f5f9;
+            color: #888;
+            border-top: 1px solid #eee;
             padding-top: 15px;
-            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="logo">🌾</div>
+    <div class="container">
+        <div class="icon">🌾</div>
         <h1>MeraGaov - मेरी पहचान</h1>
-        <div class="badge">🚀 Coming Soon (जल्द आ रहा है)</div>
-        <p>हमारा नया डिजिटल गाँव प्लेटफ़ॉर्म वर्तमान में Google Play पर क्लोज्ड टेस्टिंग में है। बहुत जल्द यह आपके बीच लाइव होगा!</p>
-        <div class="footer-text">
+        <div class="badge">🚀 Closed Testing Live (क्लोज्ड टेस्टिंग)</div>
+        
+        <p>हमारा नया डिजिटल गाँव प्लेटफ़ॉर्म वर्तमान में Google Play पर क्लोज्ड टेस्टिंग में है। नीचे दिए गए बटन से सीधे ऐप पेज पर पहुँचकर टेस्टर बन सकते हैं!</p>
+
+        <div class="btn-group">
+            <!-- आपका Play Store लिंक यहाँ जोड़ दिया गया है -->
+            <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Join Closed Testing (Play Store)</a>
+            
+            <!-- यहाँ अपना WhatsApp Group लिंक डाल सकते हैं -->
+            <a href="APKA_WHATSAPP_GROUP_LINK_HERE" class="btn btn-wa" target="_blank">💬 Join WhatsApp Community</a>
+        </div>
+
+        <div class="form-box">
+            <h3>या अर्ली एक्सेस के लिए अपना नंबर दर्ज करें</h3>
+            <form action="#" method="POST" onsubmit="alert('धन्यवाद! आपका विवरण दर्ज कर लिया गया है।'); return false;">
+                <div class="form-group">
+                    <input type="text" placeholder="आपका नाम" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="गाँव / शहर का नाम" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" placeholder="मोबाइल नंबर (WhatsApp)" required>
+                </div>
+                <button type="submit" class="submit-btn">जुड़ें (Submit)</button>
+            </form>
+        </div>
+
+        <div class="footer">
             &copy; 2026 dakshyadav.co.in | All Rights Reserved
         </div>
     </div>
