@@ -23,21 +23,44 @@
         .container {
             background: #ffffff;
             width: 100%;
-            max-width: 540px; /* स्क्रीन थोड़ी चौड़ी की गई है */
+            max-width: 540px;
             padding: 22px 18px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             text-align: center;
         }
-        .icon {
-            font-size: 32px;
-            margin-bottom: 5px;
+        
+        /* प्रोफाइल और नाम का ऊपर वाला सेक्शन */
+        .profile-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            background: #f1f8f5;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #c8e6c9;
         }
-        h1 {
-            font-size: 22px;
+        .profile-pic {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #2e7d32;
+        }
+        .profile-info h2 {
+            font-size: 18px;
             color: #0b3824;
-            margin-bottom: 5px;
+            text-align: left;
         }
+        .profile-info p {
+            font-size: 11px;
+            color: #555;
+            margin: 0;
+            text-align: left;
+        }
+
         .badge {
             display: inline-block;
             background: #e8f5e9;
@@ -46,9 +69,9 @@
             border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
-        p {
+        .desc-text {
             font-size: 13px;
             color: #555;
             line-height: 1.5;
@@ -78,7 +101,7 @@
             font-weight: bold;
         }
         
-        /* GitHub फाइल लिस्ट जैसी स्टाइल */
+        /* फाइल लिस्ट स्टाइल */
         .file-list {
             display: flex;
             flex-direction: column;
@@ -96,7 +119,6 @@
             color: #333;
             font-size: 13px;
             font-weight: 500;
-            transition: background 0.2s;
             cursor: pointer;
         }
         .file-item:hover {
@@ -146,11 +168,28 @@
 <body>
 
     <div class="container">
-        <div class="icon">🌾</div>
-        <h1>MeraGaov - मेरी पहचान</h1>
+        
+        <!-- ========================================== -->
+        <!-- ⚙️ आसान सेटिंग: यहाँ से आप नाम और फोटो बदल सकते हैं -->
+        <!-- ========================================== -->
+        <script>
+            const myName = "MeraGaov - मेरी पहचान";
+            const mySubTitle = "डिजिटल गाँव प्लेटफ़ॉर्म";
+            const myProfilePic = "images/photo1.jpg"; // अपनी प्रोफाइल फोटो का नाम यहाँ बदल सकते हैं
+        </script>
+
+        <!-- ऊपर प्रोफाइल और नाम का कॉलम -->
+        <div class="profile-section">
+            <img src="" alt="Profile" class="profile-pic" id="profileImg" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=100'">
+            <div class="profile-info">
+                <h2 id="profileTitle"></h2>
+                <p id="profileSub"></p>
+            </div>
+        </div>
+
         <div class="badge">🚀 Closed Testing Live</div>
         
-        <p>हमारा नया डिजिटल प्लेटफ़ॉर्म गूगल प्ले पर लाइव है। ऐप डाउनलोड करने और टेस्टर बनने के लिए नीचे क्लिक करें!</p>
+        <p class="desc-text">हमारा नया डिजिटल प्लेटफ़ॉर्म गूगल प्ले पर लाइव है। ऐप डाउनलोड करने और टेस्टर बनने के लिए नीचे क्लिक करें!</p>
 
         <div class="btn-group">
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Join Closed Testing (Play Store)</a>
@@ -158,15 +197,11 @@
 
         <!-- फोटो लिस्ट सेक्शन -->
         <div class="section-title">📸 Photos</div>
-        <div class="file-list" id="photoList">
-            <!-- यहाँ फोटो लाइन से आएंगी -->
-        </div>
+        <div class="file-list" id="photoList"></div>
 
         <!-- वीडियो लिस्ट सेक्शन -->
         <div class="section-title">🎥 Videos</div>
-        <div class="file-list" id="videoList">
-            <!-- यहाँ वीडियो लाइन से आएंगे -->
-        </div>
+        <div class="file-list" id="videoList"></div>
 
         <div class="footer">
             &copy; 2026 dakshyadav.co.in | All Rights Reserved
@@ -180,7 +215,12 @@
     </div>
 
     <script>
-        // अपनी फोटो और वीडियो के नाम यहाँ लिस्ट में जोड़ते जाएं:
+        // प्रोफाइल डेटा सेट करना
+        document.getElementById("profileTitle").innerText = myName;
+        document.getElementById("profileSub").innerText = mySubTitle;
+        document.getElementById("profileImg").src = myProfilePic;
+
+        // 🖼️ अपनी गैलरी की फोटो और वीडियो के नाम यहाँ जोड़ें:
         const myPhotos = [
             "Screenshot_20260912_231949.jpg",
             "Screenshot_20260912_234617_Chrome.jpg"
@@ -190,7 +230,7 @@
             "VID-20260911-WA0056 (1) (1).mp4"
         ];
 
-        // फोटो लिस्ट जनरेट करने का कोड
+        // फोटो लिस्ट दिखाने का कोड
         const photoContainer = document.getElementById("photoList");
         if(myPhotos.length > 0) {
             photoContainer.innerHTML = "";
@@ -205,7 +245,7 @@
             photoContainer.innerHTML = "<p style='font-size:12px; color:#777;'>No Photos</p>";
         }
 
-        // वीडियो लिस्ट जनरेट करने का कोड
+        // वीडियो लिस्ट दिखाने का कोड
         const videoContainer = document.getElementById("videoList");
         if(myVideos.length > 0) {
             videoContainer.innerHTML = "";
@@ -220,7 +260,7 @@
             videoContainer.innerHTML = "<p style='font-size:12px; color:#777;'>No Videos</p>";
         }
 
-        // लाइटबॉक्स फंक्शन (क्लिक करने पर बड़ी फोटो/वीडियो दिखाना)
+        // फुल स्क्रीन खोलने का फंक्शन
         function openLightbox(src, type) {
             const content = document.getElementById('lightboxContent');
             if(type === 'image') {
@@ -232,7 +272,7 @@
         }
         function closeLightbox() {
             document.getElementById('lightbox').style.display = 'none';
-            document.getElementById('lightboxContent').innerHTML = ''; // वीडियो बंद करने के लिए
+            document.getElementById('lightboxContent').innerHTML = '';
         }
     </script>
 
