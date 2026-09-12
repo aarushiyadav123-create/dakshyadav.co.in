@@ -68,34 +68,65 @@
             display: block;
             width: 100%;
         }
-        .btn:hover {
-            background-color: #1b5e20;
+        .section-title {
+            font-size: 15px;
+            color: #0b3824;
+            margin: 15px 0 8px 0;
+            text-align: left;
+            border-bottom: 2px solid #c8e6c9;
+            padding-bottom: 3px;
         }
-        /* गैलरी ग्रिड */
+        /* ग्रिड स्टाइल */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 8px;
-            margin-bottom: 15px;
-            text-align: left;
+            margin-bottom: 10px;
         }
         .media-card {
             background: #fff;
             border-radius: 6px;
             overflow: hidden;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: pointer;
+            height: 110px;
         }
         .media-card img, .media-card video {
             width: 100%;
-            height: 120px;
+            height: 100%;
             object-fit: cover;
             display: block;
         }
+        
+        /* फुल स्क्रीन पॉप-अप व्यूअर */
+        #lightbox {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        #lightbox img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+        }
+        #lightbox span {
+            position: absolute;
+            top: 20px; right: 25px;
+            color: white; font-size: 30px;
+            cursor: pointer;
+        }
+
         .footer {
             font-size: 11px;
             color: #888;
             border-top: 1px solid #eee;
             padding-top: 10px;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -106,17 +137,22 @@
         <h1>MeraGaov - मेरी पहचान</h1>
         <div class="badge">🚀 Closed Testing Live</div>
         
-        <p>हमारा नया डिजिटल गाँव प्लेटफ़ॉर्म गूगल प्ले पर लाइव है। ऐप डाउनलोड करने और टेस्टर बनने के लिए नीचे क्लिक करें!</p>
+        <p>हमारा नया डिजिटल प्लेटफ़ॉर्म गूगल प्ले पर लाइव है। ऐप डाउनलोड करने और टेस्टर बनने के लिए नीचे क्लिक करें!</p>
 
         <div class="btn-group">
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Join Closed Testing (Play Store)</a>
         </div>
 
-        <!-- यहाँ आपकी फोटो और वीडियो अपने-आप लोड होंगी -->
-        <div class="gallery-grid" id="autoGallery">
-            <!-- शुरुआत के लिए डेमो फोटो (जैसे ही आप अपनी फोटो डालेंगे, ये हट जाएंगी) -->
-            <div class="media-card"><img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300" alt="Demo"></div>
-            <div class="media-card"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300" alt="Demo"></div>
+        <!-- फोटो सेक्शन -->
+        <div class="section-title">📸 Photos</div>
+        <div class="gallery-grid" id="photoGrid">
+            <!-- यहाँ फोटो अपने-आप आएंगी -->
+        </div>
+
+        <!-- वीडियो सेक्शन -->
+        <div class="section-title">🎥 Videos</div>
+        <div class="gallery-grid" id="videoGrid">
+            <!-- यहाँ वीडियो अपने-आप आएंगे -->
         </div>
 
         <div class="footer">
@@ -124,32 +160,58 @@
         </div>
     </div>
 
+    <!-- फुल साइज़ फोटो देखने का बॉक्स -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <span onclick="closeLightbox()">&times;</span>
+        <img id="lightboxImg" src="" alt="Full View">
+    </div>
+
     <script>
-        // यहाँ आप अपने images फोल्डर की फाइलों के नाम लिख सकते हैं, 
-        // या अगर आप चाहते हैं कि बिना नाम बदले खुद आएं, तो बस नीचे filenames की लिस्ट में नाम जोड़ते जाएं:
-        const myMediaFiles = [
+        // अपनी फोटो और वीडियो के नाम यहाँ लिस्ट में जोड़ते जाएं:
+        const myPhotos = [
             "Screenshot_20260912_231949.jpg",
-            "Screenshot_20260912_234617_Chrome.jpg",
-            "VID-20260911-WA0056 (1) (1).mp4"
-            // भविष्य में जो भी फोटो/वीडियो डालें, उसका नाम बस यहाँ एक बार कॉमा लगाकर जोड़ दें:
-            // "photo_naya.jpg",
+            "Screenshot_20260912_234617_Chrome.jpg"
         ];
 
-        const galleryContainer = document.getElementById("autoGallery");
-        if(myMediaFiles.length > 0) {
-            galleryContainer.innerHTML = ""; // डेमो फोटो हटाएँ
-            myMediaFiles.forEach(file => {
-                const ext = file.split('.').pop().toLowerCase();
+        const myVideos = [
+            "VID-20260911-WA0056 (1) (1).mp4"
+        ];
+
+        // फोटो लोड करने का कोड
+        const photoContainer = document.getElementById("photoGrid");
+        if(myPhotos.length > 0) {
+            photoContainer.innerHTML = "";
+            myPhotos.forEach(file => {
                 const card = document.createElement('div');
                 card.className = 'media-card';
-                
-                if(['mp4', 'webm', 'mov'].includes(ext)) {
-                    card.innerHTML = `<video src="images/${file}" controls></video>`;
-                } else {
-                    card.innerHTML = `<img src="images/${file}" alt="Gallery Item" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300'">`;
-                }
-                galleryContainer.appendChild(card);
+                card.innerHTML = `<img src="images/${file}" alt="Photo" onclick="openLightbox('images/${file}')">`;
+                photoContainer.appendChild(card);
             });
+        } else {
+            photoContainer.innerHTML = "<p style='font-size:12px; color:#777;'>No Photos</p>";
+        }
+
+        // वीडियो लोड करने का कोड
+        const videoContainer = document.getElementById("videoGrid");
+        if(myVideos.length > 0) {
+            videoContainer.innerHTML = "";
+            myVideos.forEach(file => {
+                const card = document.createElement('div');
+                card.className = 'media-card';
+                card.innerHTML = `<video src="images/${file}" controls></video>`;
+                videoContainer.appendChild(card);
+            });
+        } else {
+            videoContainer.innerHTML = "<p style='font-size:12px; color:#777;'>No Videos</p>";
+        }
+
+        // लाइटबॉक्स फंक्शन (क्लिक करने पर बड़ी फोटो दिखाना)
+        function openLightbox(src) {
+            document.getElementById('lightboxImg').src = src;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
         }
     </script>
 
