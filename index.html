@@ -13,7 +13,7 @@
         }
         body {
             background-color: #0b3824;
-            color: #333;
+            color: #fff;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -21,12 +21,12 @@
             padding: 10px;
         }
         .container {
-            background: #ffffff;
+            background: #114b32;
             width: 100%;
             max-width: 540px;
             padding: 22px 18px;
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
             text-align: center;
         }
         
@@ -35,45 +35,46 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            background: #f1f8f5;
-            padding: 10px;
+            gap: 15px;
+            margin-bottom: 15px;
+            background: #195e3f;
+            padding: 12px;
             border-radius: 12px;
-            border: 1px solid #c8e6c9;
+            border: 1px solid #2e7d32;
         }
         .profile-pic {
-            width: 55px;
-            height: 55px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #2e7d32;
+            border: 2px solid #81c784;
         }
         .profile-info h2 {
-            font-size: 18px;
-            color: #0b3824;
+            font-size: 20px;
+            color: #ffffff;
             text-align: left;
         }
         .profile-info p {
-            font-size: 11px;
-            color: #555;
+            font-size: 12px;
+            color: #c8e6c9;
             margin: 0;
             text-align: left;
         }
 
         .badge {
             display: inline-block;
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 4px 10px;
+            background: #1b5e20;
+            color: #81c784;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #2e7d32;
         }
         .desc-text {
             font-size: 13px;
-            color: #555;
+            color: #e0e0e0;
             line-height: 1.5;
             margin-bottom: 15px;
         }
@@ -83,20 +84,24 @@
         .btn {
             background-color: #2e7d32;
             color: white;
-            padding: 10px 15px;
+            padding: 11px 15px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
             display: block;
             width: 100%;
+            border: 1px solid #81c784;
+        }
+        .btn:hover {
+            background-color: #1b5e20;
         }
         .section-title {
             font-size: 15px;
-            color: #0b3824;
+            color: #a5d6a7;
             margin: 18px 0 8px 0;
             text-align: left;
-            border-bottom: 2px solid #c8e6c9;
+            border-bottom: 2px solid #195e3f;
             padding-bottom: 4px;
             font-weight: bold;
         }
@@ -105,28 +110,28 @@
         .file-list {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             text-align: left;
         }
         .file-item {
             display: flex;
             align-items: center;
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            padding: 10px 12px;
+            background: #165237;
+            border: 1px solid #2e7d32;
+            padding: 12px 14px;
             border-radius: 8px;
             text-decoration: none;
-            color: #333;
-            font-size: 13px;
+            color: #fff;
+            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
         }
         .file-item:hover {
-            background: #e2e8f0;
+            background: #1c6645;
         }
         .file-icon {
-            margin-right: 10px;
-            font-size: 16px;
+            margin-right: 12px;
+            font-size: 18px;
         }
         .file-name {
             word-break: break-all;
@@ -158,8 +163,8 @@
 
         .footer {
             font-size: 11px;
-            color: #888;
-            border-top: 1px solid #eee;
+            color: #a5d6a7;
+            border-top: 1px solid #195e3f;
             padding-top: 10px;
             margin-top: 20px;
         }
@@ -170,17 +175,17 @@
     <div class="container">
         
         <!-- ========================================== -->
-        <!-- ⚙️ आसान सेटिंग: यहाँ से आप नाम और फोटो बदल सकते हैं -->
+        <!-- ⚙️ आसान सेटिंग: नाम हिंदी में सेट है, फोटो "profile.jpg" आएगी -->
         <!-- ========================================== -->
         <script>
-            const myName = "MeraGaov - मेरी पहचान";
+            const myName = "राजेश यादव मालकोषिया";
             const mySubTitle = "डिजिटल गाँव प्लेटफ़ॉर्म";
-            const myProfilePic = "images/photo1.jpg"; // अपनी प्रोफाइल फोटो का नाम यहाँ बदल सकते हैं
+            const myProfilePic = "images/profile.jpg";
         </script>
 
         <!-- ऊपर प्रोफाइल और नाम का कॉलम -->
         <div class="profile-section">
-            <img src="" alt="Profile" class="profile-pic" id="profileImg" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=100'">
+            <img src="" alt="Profile" class="profile-pic" id="profileImg" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=150'">
             <div class="profile-info">
                 <h2 id="profileTitle"></h2>
                 <p id="profileSub"></p>
@@ -220,7 +225,7 @@
         document.getElementById("profileSub").innerText = mySubTitle;
         document.getElementById("profileImg").src = myProfilePic;
 
-        // 🖼️ अपनी गैलरी की फोटो और वीडियो के नाम यहाँ जोड़ें:
+        // 🖼️ गैलरी की फोटो और वीडियो लिस्ट
         const myPhotos = [
             "Screenshot_20260912_231949.jpg",
             "Screenshot_20260912_234617_Chrome.jpg"
@@ -230,7 +235,7 @@
             "VID-20260911-WA0056 (1) (1).mp4"
         ];
 
-        // फोटो लिस्ट दिखाने का कोड
+        // फोटो लिस्ट जनरेट करना
         const photoContainer = document.getElementById("photoList");
         if(myPhotos.length > 0) {
             photoContainer.innerHTML = "";
@@ -242,10 +247,10 @@
                 photoContainer.appendChild(item);
             });
         } else {
-            photoContainer.innerHTML = "<p style='font-size:12px; color:#777;'>No Photos</p>";
+            photoContainer.innerHTML = "<p style='font-size:12px; color:#a5d6a7;'>No Photos</p>";
         }
 
-        // वीडियो लिस्ट दिखाने का कोड
+        // वीडियो लिस्ट जनरेट करना
         const videoContainer = document.getElementById("videoList");
         if(myVideos.length > 0) {
             videoContainer.innerHTML = "";
@@ -257,10 +262,10 @@
                 videoContainer.appendChild(item);
             });
         } else {
-            videoContainer.innerHTML = "<p style='font-size:12px; color:#777;'>No Videos</p>";
+            videoContainer.innerHTML = "<p style='font-size:12px; color:#a5d6a7;'>No Videos</p>";
         }
 
-        // फुल स्क्रीन खोलने का फंक्शन
+        // फुल स्क्रीन ओपन करने का फंक्शन
         function openLightbox(src, type) {
             const content = document.getElementById('lightboxContent');
             if(type === 'image') {
