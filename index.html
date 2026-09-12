@@ -28,6 +28,8 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         .icon {
             font-size: 40px;
@@ -116,6 +118,46 @@
         .submit-btn:hover {
             background: #145a32;
         }
+        /* गैलरी सेक्शन स्टाइल (Facebook/Instagram जैसा लुक) */
+        .gallery-box {
+            background: #f1f8f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .gallery-box h3 {
+            font-size: 16px;
+            color: #0b3824;
+            margin-bottom: 12px;
+            text-align: center;
+            border-bottom: 2px solid #c8e6c9;
+            padding-bottom: 6px;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .media-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .media-card img, .media-card video {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            display: block;
+        }
+        .media-caption {
+            font-size: 11px;
+            color: #444;
+            padding: 6px;
+            font-weight: 600;
+        }
         .footer {
             font-size: 12px;
             color: #888;
@@ -137,7 +179,7 @@
             <!-- Play Store लिंक -->
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Join Closed Testing (Play Store)</a>
             
-            <!-- WhatsApp ग्रुप लिंक जोड़ दिया गया है -->
+            <!-- WhatsApp ग्रुप लिंक -->
             <a href="https://chat.whatsapp.com/GyCr4ne5oacIU1UDLiJ2RE?s=cl&p=a&mlu=4&ilr=4" class="btn btn-wa" target="_blank">💬 Join WhatsApp Community</a>
         </div>
 
@@ -155,6 +197,38 @@
                 </div>
                 <button type="submit" class="submit-btn">जुड़ें (Submit)</button>
             </form>
+        </div>
+
+        <!-- नई जोड़ी गई एडमिन गैलरी (फीड स्टाइल) -->
+        <div class="gallery-box">
+            <h3>📸 गाँव की झलकियाँ & गैलरी</h3>
+            <div class="gallery-grid">
+                
+                <!-- फोटो 1 -->
+                <div class="media-card">
+                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300" alt="Village View">
+                    <div class="media-caption">गाँव की सुबह 🌅</div>
+                </div>
+
+                <!-- फोटो 2 -->
+                <div class="media-card">
+                    <img src="https://images.unsplash.com/photo-1595974482597-4f6c4f78557e?w=300" alt="Hrayana Culture">
+                    <div class="media-caption">हरियाणा संस्कृति 🌾</div>
+                </div>
+
+                <!-- वीडियो या फोटो कार्ड (आप यहाँ अपनी फाइल का लिंक डाल सकते हैं) -->
+                <div class="media-card">
+                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=300" alt="Local Market">
+                    <div class="media-caption">ओपन बाज़ार झलक 🛒</div>
+                </div>
+
+                <!-- चौथा कार्ड -->
+                <div class="media-card">
+                    <img src="https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?w=300" alt="Event">
+                    <div class="media-caption">विशेष मुनादी कार्यक्रम 📢</div>
+                </div>
+
+            </div>
         </div>
 
         <div class="footer">
