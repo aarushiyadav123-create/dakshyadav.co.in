@@ -71,7 +71,7 @@
         .btn:hover {
             background-color: #1b5e20;
         }
-        /* फोटो और वीडियो ग्रिड */
+        /* गैलरी ग्रिड */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -112,31 +112,46 @@
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Join Closed Testing (Play Store)</a>
         </div>
 
-        <!-- गैलरी सेक्शन (जो तस्वीरें आप images/ फोल्डर में डालेंगे वो यहाँ दिखेंगी) -->
-        <div class="gallery-grid">
-            
-            <div class="media-card">
-                <img src="images/photo1.jpg" alt="Photo 1" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300'">
-            </div>
-
-            <div class="media-card">
-                <img src="images/photo2.jpg" alt="Photo 2" onerror="this.src='https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300'">
-            </div>
-
-            <div class="media-card">
-                <img src="images/photo3.jpg" alt="Photo 3" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=300'">
-            </div>
-
-            <div class="media-card">
-                <img src="images/photo4.jpg" alt="Photo 4" onerror="this.src='https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?w=300'">
-            </div>
-
+        <!-- यहाँ आपकी फोटो और वीडियो अपने-आप लोड होंगी -->
+        <div class="gallery-grid" id="autoGallery">
+            <!-- शुरुआत के लिए डेमो फोटो (जैसे ही आप अपनी फोटो डालेंगे, ये हट जाएंगी) -->
+            <div class="media-card"><img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300" alt="Demo"></div>
+            <div class="media-card"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300" alt="Demo"></div>
         </div>
 
         <div class="footer">
             &copy; 2026 dakshyadav.co.in | All Rights Reserved
         </div>
     </div>
+
+    <script>
+        // यहाँ आप अपने images फोल्डर की फाइलों के नाम लिख सकते हैं, 
+        // या अगर आप चाहते हैं कि बिना नाम बदले खुद आएं, तो बस नीचे filenames की लिस्ट में नाम जोड़ते जाएं:
+        const myMediaFiles = [
+            "Screenshot_20260912_231949.jpg",
+            "Screenshot_20260912_234617_Chrome.jpg",
+            "VID-20260911-WA0056 (1) (1).mp4"
+            // भविष्य में जो भी फोटो/वीडियो डालें, उसका नाम बस यहाँ एक बार कॉमा लगाकर जोड़ दें:
+            // "photo_naya.jpg",
+        ];
+
+        const galleryContainer = document.getElementById("autoGallery");
+        if(myMediaFiles.length > 0) {
+            galleryContainer.innerHTML = ""; // डेमो फोटो हटाएँ
+            myMediaFiles.forEach(file => {
+                const ext = file.split('.').pop().toLowerCase();
+                const card = document.createElement('div');
+                card.className = 'media-card';
+                
+                if(['mp4', 'webm', 'mov'].includes(ext)) {
+                    card.innerHTML = `<video src="images/${file}" controls></video>`;
+                } else {
+                    card.innerHTML = `<img src="images/${file}" alt="Gallery Item" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300'">`;
+                }
+                galleryContainer.appendChild(card);
+            });
+        }
+    </script>
 
 </body>
 </html>
