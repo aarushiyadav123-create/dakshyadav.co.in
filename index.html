@@ -18,151 +18,140 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
         }
         .container {
             background: #ffffff;
             width: 100%;
-            max-width: 500px;
-            padding: 30px 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 480px;
+            padding: 20px 15px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             text-align: center;
-            max-height: 90vh;
-            overflow-y: auto;
         }
         .icon {
-            font-size: 40px;
-            margin-bottom: 10px;
+            font-size: 32px;
+            margin-bottom: 5px;
         }
         h1 {
-            font-size: 24px;
+            font-size: 22px;
             color: #0b3824;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         .badge {
             display: inline-block;
             background: #e8f5e9;
             color: #2e7d32;
-            padding: 6px 14px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
         p {
-            font-size: 14px;
+            font-size: 13px;
             color: #555;
-            line-height: 1.6;
-            margin-bottom: 20px;
+            line-height: 1.5;
+            margin-bottom: 15px;
         }
         .btn-group {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
         .btn {
             background-color: #2e7d32;
             color: white;
-            padding: 12px 20px;
+            padding: 10px 15px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 15px;
-            transition: background 0.3s;
+            font-size: 14px;
             display: inline-block;
-        }
-        .btn:hover {
-            background-color: #1b5e20;
         }
         .btn-wa {
             background-color: #25d366;
         }
-        .btn-wa:hover {
-            background-color: #1ebe5d;
-        }
         .form-box {
             background: #f9f9f9;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
             text-align: left;
         }
         .form-box h3 {
-            font-size: 15px;
+            font-size: 14px;
             color: #0b3824;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-align: center;
         }
         .form-group {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .form-group input {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #ccc;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 13px;
         }
         .submit-btn {
             width: 100%;
             background: #0b3824;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 8px;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
+            font-size: 13px;
         }
-        .submit-btn:hover {
-            background: #145a32;
-        }
-        /* गैलरी सेक्शन स्टाइल (Facebook/Instagram जैसा लुक) */
+        /* गैलरी सेक्शन स्टाइल */
         .gallery-box {
             background: #f1f8f5;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
             text-align: left;
         }
         .gallery-box h3 {
-            font-size: 16px;
+            font-size: 14px;
             color: #0b3824;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             text-align: center;
             border-bottom: 2px solid #c8e6c9;
-            padding-bottom: 6px;
+            padding-bottom: 4px;
         }
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
         .media-card {
             background: #fff;
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             text-align: center;
         }
-        .media-card img, .media-card video {
+        .media-card img {
             width: 100%;
-            height: 110px;
+            height: 95px;
             object-fit: cover;
             display: block;
         }
         .media-caption {
             font-size: 11px;
             color: #444;
-            padding: 6px;
+            padding: 4px;
             font-weight: 600;
         }
         .footer {
-            font-size: 12px;
+            font-size: 11px;
             color: #888;
             border-top: 1px solid #eee;
-            padding-top: 15px;
+            padding-top: 10px;
         }
     </style>
 </head>
@@ -171,21 +160,18 @@
     <div class="container">
         <div class="icon">🌾</div>
         <h1>MeraGaov - मेरी पहचान</h1>
-        <div class="badge">🚀 Closed Testing Live (क्लोज्ड टेस्टिंग)</div>
+        <div class="badge">🚀 Closed Testing Live</div>
         
-        <p>हमारा नया डिजिटल गाँव प्लेटफ़ॉर्म वर्तमान में Google Play पर क्लोज्ड टेस्टिंग में है। नीचे दिए गए बटन से सीधे ऐप पेज पर पहुँचकर टेस्टर बन सकते हैं और WhatsApp ग्रुप से जुड़ सकते हैं!</p>
+        <p>हमारा नया डिजिटल गाँव प्लेटफ़ॉर्म गूगल प्ले पर लाइव है। ऐप टेस्टर बनें या व्हाट्सएप ग्रुप से जुड़ें!</p>
 
         <div class="btn-group">
-            <!-- Play Store लिंक -->
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Join Closed Testing (Play Store)</a>
-            
-            <!-- WhatsApp ग्रुप लिंक -->
             <a href="https://chat.whatsapp.com/GyCr4ne5oacIU1UDLiJ2RE?s=cl&p=a&mlu=4&ilr=4" class="btn btn-wa" target="_blank">💬 Join WhatsApp Community</a>
         </div>
 
         <div class="form-box">
-            <h3>या अर्ली एक्सेस के लिए अपना नंबर दर्ज करें</h3>
-            <form action="#" method="POST" onsubmit="alert('धन्यवाद! आपका विवरण दर्ज कर लिया गया है।'); return false;">
+            <h3>या अर्ली एक्सेस के लिए नंबर दर्ज करें</h3>
+            <form action="#" method="POST" onsubmit="alert('धन्यवाद! विवरण दर्ज हो गया है।'); return false;">
                 <div class="form-group">
                     <input type="text" placeholder="आपका नाम" required>
                 </div>
@@ -199,33 +185,29 @@
             </form>
         </div>
 
-        <!-- नई जोड़ी गई एडमिन गैलरी (फीड स्टाइल) -->
+        <!-- गैलरी सेक्शन -->
         <div class="gallery-box">
             <h3>📸 गाँव की झलकियाँ & गैलरी</h3>
             <div class="gallery-grid">
                 
-                <!-- फोटो 1 -->
                 <div class="media-card">
                     <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300" alt="Village View">
                     <div class="media-caption">गाँव की सुबह 🌅</div>
                 </div>
 
-                <!-- फोटो 2 -->
                 <div class="media-card">
-                    <img src="https://images.unsplash.com/photo-1595974482597-4f6c4f78557e?w=300" alt="Hrayana Culture">
+                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300" alt="Haryana Culture">
                     <div class="media-caption">हरियाणा संस्कृति 🌾</div>
                 </div>
 
-                <!-- वीडियो या फोटो कार्ड (आप यहाँ अपनी फाइल का लिंक डाल सकते हैं) -->
                 <div class="media-card">
                     <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=300" alt="Local Market">
                     <div class="media-caption">ओपन बाज़ार झलक 🛒</div>
                 </div>
 
-                <!-- चौथा कार्ड -->
                 <div class="media-card">
                     <img src="https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?w=300" alt="Event">
-                    <div class="media-caption">विशेष मुनादी कार्यक्रम 📢</div>
+                    <div class="media-caption">विशेष कार्यक्रम 📢</div>
                 </div>
 
             </div>
