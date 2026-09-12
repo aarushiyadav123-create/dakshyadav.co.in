@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeraGaov - मेरी पहचान | Coming Soon</title>
+    <title>MeraGaov - मेरी पहचान</title>
     <style>
         * {
             margin: 0;
@@ -55,9 +55,6 @@
             margin-bottom: 15px;
         }
         .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
             margin-bottom: 15px;
         }
         .btn {
@@ -68,84 +65,31 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
-            display: inline-block;
-        }
-        .btn-wa {
-            background-color: #25d366;
-        }
-        .form-box {
-            background: #f9f9f9;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        .form-box h3 {
-            font-size: 14px;
-            color: #0b3824;
-            margin-bottom: 8px;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 8px;
-        }
-        .form-group input {
+            display: block;
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 13px;
         }
-        .submit-btn {
-            width: 100%;
-            background: #0b3824;
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 13px;
+        .btn:hover {
+            background-color: #1b5e20;
         }
-        /* गैलरी सेक्शन स्टाइल */
-        .gallery-box {
-            background: #f1f8f5;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            text-align: left;
-        }
-        .gallery-box h3 {
-            font-size: 14px;
-            color: #0b3824;
-            margin-bottom: 8px;
-            text-align: center;
-            border-bottom: 2px solid #c8e6c9;
-            padding-bottom: 4px;
-        }
+        /* गैलरी ग्रिड सेक्शन */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 8px;
+            margin-bottom: 15px;
+            text-align: left;
         }
         .media-card {
             background: #fff;
             border-radius: 6px;
             overflow: hidden;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            text-align: center;
         }
-        .media-card img {
+        .media-card img, .media-card video {
             width: 100%;
-            height: 95px;
+            height: 120px;
             object-fit: cover;
             display: block;
-        }
-        .media-caption {
-            font-size: 11px;
-            color: #444;
-            padding: 4px;
-            font-weight: 600;
         }
         .footer {
             font-size: 11px;
@@ -162,55 +106,35 @@
         <h1>MeraGaov - मेरी पहचान</h1>
         <div class="badge">🚀 Closed Testing Live</div>
         
-        <p>हमारा नया डिजिटल गाँव प्लेटफ़ॉर्म गूगल प्ले पर लाइव है। ऐप टेस्टर बनें या व्हाट्सएप ग्रुप से जुड़ें!</p>
+        <p>हमारा नया डिजिटल गाँव प्लेटफ़ॉर्म गूगल प्ले पर लाइव है। ऐप डाउनलोड करने और टेस्टर बनने के लिए नीचे क्लिक करें!</p>
 
         <div class="btn-group">
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Join Closed Testing (Play Store)</a>
-            <a href="https://chat.whatsapp.com/GyCr4ne5oacIU1UDLiJ2RE?s=cl&p=a&mlu=4&ilr=4" class="btn btn-wa" target="_blank">💬 Join WhatsApp Community</a>
         </div>
 
-        <div class="form-box">
-            <h3>या अर्ली एक्सेस के लिए नंबर दर्ज करें</h3>
-            <form action="#" method="POST" onsubmit="alert('धन्यवाद! विवरण दर्ज हो गया है।'); return false;">
-                <div class="form-group">
-                    <input type="text" placeholder="आपका नाम" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" placeholder="गाँव / शहर का नाम" required>
-                </div>
-                <div class="form-group">
-                    <input type="tel" placeholder="मोबाइल नंबर (WhatsApp)" required>
-                </div>
-                <button type="submit" class="submit-btn">जुड़ें (Submit)</button>
-            </form>
-        </div>
-
-        <!-- गैलरी सेक्शन -->
-        <div class="gallery-box">
-            <h3>📸 गाँव की झलकियाँ & गैलरी</h3>
-            <div class="gallery-grid">
-                
-                <div class="media-card">
-                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300" alt="Village View">
-                    <div class="media-caption">गाँव की सुबह 🌅</div>
-                </div>
-
-                <div class="media-card">
-                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300" alt="Haryana Culture">
-                    <div class="media-caption">हरियाणा संस्कृति 🌾</div>
-                </div>
-
-                <div class="media-card">
-                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=300" alt="Local Market">
-                    <div class="media-caption">ओपन बाज़ार झलक 🛒</div>
-                </div>
-
-                <div class="media-card">
-                    <img src="https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?w=300" alt="Event">
-                    <div class="media-caption">विशेष कार्यक्रम 📢</div>
-                </div>
-
+        <!-- फोटो और वीडियो गैलरी फोल्डर सेक्शन -->
+        <div class="gallery-grid">
+            
+            <!-- फोटो 1: यहाँ अपनी फोटो का नाम बदल लें जैसे images/photo1.jpg -->
+            <div class="media-card">
+                <img src="images/photo1.jpg" alt="Gallery Photo 1" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300'">
             </div>
+
+            <!-- फोटो 2 -->
+            <div class="media-card">
+                <img src="images/photo2.jpg" alt="Gallery Photo 2" onerror="this.src='https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300'">
+            </div>
+
+            <!-- फोटो या वीडियो 3 -->
+            <div class="media-card">
+                <img src="images/photo3.jpg" alt="Gallery Photo 3" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=300'">
+            </div>
+
+            <!-- फोटो या वीडियो 4 -->
+            <div class="media-card">
+                <img src="images/photo4.jpg" alt="Gallery Photo 4" onerror="this.src='https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?w=300'">
+            </div>
+
         </div>
 
         <div class="footer">
