@@ -14,18 +14,23 @@
         html, body {
             height: 100%;
             overflow-x: hidden;
-            /* पूरी स्क्रीन का मल्टी-कलर शानदार बैकग्राउंड */
             background: linear-gradient(135deg, #02231c, #063c2c, #0d5c46);
             color: #fff;
         }
-        body {
+        
+        /* स्क्रीन को साइड-बाय-साइड बांटने के लिए नया लेआउट रैपर */
+        .page-wrapper {
             display: flex;
+            width: 100%;
+            min-height: 100vh;
             justify-content: center;
             align-items: center;
-            padding: 10px;
+            padding: 15px;
+            gap: 20px;
         }
+
+        /* लेफ्ट साइड: आपकी प्रोफाइल वाला हिस्सा */
         .container {
-            /* कंटेनर के लिए बेहतरीन कलरफुल ग्रेडिएंट */
             background: linear-gradient(145deg, #083c2d, #0f523f, #186c52);
             width: 100%;
             max-width: 480px;
@@ -34,9 +39,40 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             text-align: center;
             border: 1.5px solid rgba(130, 240, 180, 0.4);
+            flex-shrink: 0;
+        }
+
+        /* राइट साइड: खाली जगह जहाँ नया कंटेंट जोड़ा जा सकता है */
+        .right-content-space {
+            background: linear-gradient(145deg, #063124, #0b4232);
+            width: 100%;
+            max-width: 500px;
+            min-height: 500px;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            border: 1.5px solid rgba(130, 240, 180, 0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        .right-content-space h3 {
+            color: #69f0ae;
+            font-size: 20px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #1fa376;
+            padding-bottom: 5px;
+        }
+
+        .right-content-space p {
+            font-size: 14px;
+            color: #e8f5e9;
+            line-height: 1.5;
         }
         
-        /* प्रोफाइल सेक्शन - शानदार कलरफुल शेड */
+        /* प्रोफाइल सेक्शन */
         .profile-section {
             display: flex;
             align-items: center;
@@ -73,7 +109,6 @@
             margin-top: 4px;
         }
 
-        /* लाइव टेस्टिंग बैज - चमकीला कलर */
         .badge {
             display: inline-block;
             background: linear-gradient(135deg, #00c853, #64dd17);
@@ -95,7 +130,6 @@
             margin-bottom: 12px;
         }
         
-        /* प्ले स्टोर बटन - आकर्षक कलरफुल ग्रेडिएंट */
         .btn {
             background: linear-gradient(135deg, #00b0ff, #00e676);
             color: #002111;
@@ -124,12 +158,13 @@
             font-weight: bold;
         }
         
-        /* फाइल लिस्ट - हर कार्ड के लिए अलग मल्टी-कलर शेड */
         .file-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
             text-align: left;
+            max-height: 160px;
+            overflow-y: auto;
         }
         .file-item {
             display: flex;
@@ -158,7 +193,6 @@
             flex-grow: 1;
         }
 
-        /* फुल स्क्रीन पॉप-अप व्यूअर */
         #lightbox {
             display: none;
             position: fixed;
@@ -188,43 +222,70 @@
             padding-top: 10px;
             margin-top: 14px;
         }
+
+        /* मोबाइल स्क्रीन पर दोनों खानों को एक के नीचे एक करने के लिए (Responsive) */
+        @media (max-width: 850px) {
+            .page-wrapper {
+                flex-direction: column;
+                height: auto;
+                padding: 10px;
+            }
+            .right-content-space {
+                max-width: 480px;
+                min-height: auto;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <!-- पूरी स्क्रीन को दो हिस्सों में बांटने वाला रैपर -->
+    <div class="page-wrapper">
         
-        <script>
-            const myName = "राजेश यादव मालकोषिया";
-            const mySubTitle = "dakshyadav.co.in";
-            const myProfilePic = "images/profile.jpg";
-        </script>
+        <!-- लेफ्ट साइड: आपका मुख्य प्रोफाइल और मीडिया बॉक्स -->
+        <div class="container">
+            
+            <script>
+                const myName = "राजेश यादव मालकोषिया";
+                const mySubTitle = "dakshyadav.co.in";
+                const myProfilePic = "images/profile.jpg";
+            </script>
 
-        <div class="profile-section">
-            <img src="" alt="Profile" class="profile-pic" id="profileImg" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=150'">
-            <div class="profile-info">
-                <h2 id="profileTitle"></h2>
-                <p id="profileSub"></p>
+            <div class="profile-section">
+                <img src="" alt="Profile" class="profile-pic" id="profileImg" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=150'">
+                <div class="profile-info">
+                    <h2 id="profileTitle"></h2>
+                    <p id="profileSub"></p>
+                </div>
+            </div>
+
+            <div class="badge">🚀 Closed Testing Live</div>
+            
+            <p class="desc-text">हमारा नया डिजिटल प्लेटफ़ॉर्म गूगल प्ले पर लाइव है। ऐप डाउनलोड करने और टेस्टर बनने के लिए नीचे क्लिक करें!</p>
+
+            <div class="btn-group">
+                <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Join Closed Testing (Play Store)</a>
+            </div>
+
+            <div class="section-title">📸 Photos</div>
+            <div class="file-list" id="photoList"></div>
+
+            <div class="section-title">🎥 Videos</div>
+            <div class="file-list" id="videoList"></div>
+
+            <div class="footer">
+                &copy; 2026 dakshyadav.co.in | All Rights Reserved
             </div>
         </div>
 
-        <div class="badge">🚀 Closed Testing Live</div>
-        
-        <p class="desc-text">हमारा नया डिजिटल प्लेटफ़ॉर्म गूगल प्ले पर लाइव है। ऐप डाउनलोड करने और टेस्टर बनने के लिए नीचे क्लिक करें!</p>
-
-        <div class="btn-group">
-            <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Join Closed Testing (Play Store)</a>
+        <!-- राइट साइड: खाली जगह (यहाँ आप अपनी मर्जी से कोई भी नया कंटेंट या बॉक्स जोड़ सकते हैं) -->
+        <div class="right-content-space">
+            <h3>अतिरिक्त जानकारी / नया सेक्शन</h3>
+            <p>यह जगह बिल्कुल खाली है। आप यहाँ अपने गांव की अन्य जानकारी, घोषणाएं, फॉर्म या कोई भी अलग से नया सेक्शन आसानी से जोड़ सकते हैं।</p>
+            <br>
+            <p>जब आप गिटहब पर फोटो या वीडियो अपलोड करेंगे, तो वे किसी भी नाम से होंगे तो नीचे अपने आप इस लिस्ट में जुड़ जाएंगे।</p>
         </div>
 
-        <div class="section-title">📸 Photos</div>
-        <div class="file-list" id="photoList"></div>
-
-        <div class="section-title">🎥 Videos</div>
-        <div class="file-list" id="videoList"></div>
-
-        <div class="footer">
-            &copy; 2026 dakshyadav.co.in | All Rights Reserved
-        </div>
     </div>
 
     <div id="lightbox">
@@ -233,12 +294,11 @@
     </div>
 
     <script>
-        // प्रोफाइल डेटा सेट करना
         document.getElementById("profileTitle").innerText = myName;
         document.getElementById("profileSub").innerText = mySubTitle;
         document.getElementById("profileImg").src = myProfilePic;
 
-        // 🖼️ गैलरी की फोटो और वीडियो लिस्ट
+        // 🖼️ यहाँ आप किसी भी नाम से अपनी फोटो या वीडियो के नाम जोड़ सकते हैं
         const myPhotos = [
             "Screenshot_20260912_231949.jpg",
             "Screenshot_20260912_234617_Chrome.jpg"
@@ -248,7 +308,6 @@
             "VID-20260911-WA0056 (1) (1).mp4"
         ];
 
-        // फोटो लिस्ट जनरेट करना
         const photoContainer = document.getElementById("photoList");
         if(myPhotos.length > 0) {
             photoContainer.innerHTML = "";
@@ -263,7 +322,6 @@
             photoContainer.innerHTML = "<p style='font-size:12px; color:#a5d6a7;'>No Photos</p>";
         }
 
-        // वीडियो लिस्ट जनरेट करना
         const videoContainer = document.getElementById("videoList");
         if(myVideos.length > 0) {
             videoContainer.innerHTML = "";
@@ -278,7 +336,6 @@
             videoContainer.innerHTML = "<p style='font-size:12px; color:#a5d6a7;'>No Videos</p>";
         }
 
-        // फुल स्क्रीन ओपन करने का फंक्शन
         function openLightbox(src, type) {
             const content = document.getElementById('lightboxContent');
             if(type === 'image') {
