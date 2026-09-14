@@ -268,7 +268,7 @@
             </div>
         </div>
 
-        <!-- राइट साइड नया साफ़ बॉक्स (जहाँ राम-राम ऑडियो ग्रीटिंग जोड़ा गया है) -->
+        <!-- राइट साइड नया साफ़ बॉक्स -->
         <div class="right-content-space" id="rightBox">
             <div class="section-title" style="margin-top:0;">✨ स्वागत संदेश</div>
             
@@ -278,7 +278,7 @@
                     🙏 राम-राम भईयो, मेरी साइट पर आपका स्वागत है!
                 </p>
                 
-                <!-- अपनी ऑडियो फाइल यहाँ जोड़ें (राम-राम वाली mp3 फाइल का नाम या लिंक) -->
+                <!-- अपनी ऑडियो फाइल यहाँ जोड़ें -->
                 <audio id="welcomeAudio" src="ram-ram.mp3"></audio>
                 
                 <button onclick="document.getElementById('welcomeAudio').play()" style="background: #00ff66; color: #000; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s;">
@@ -287,9 +287,14 @@
             </div>
 
             <div class="section-title">✨ अन्य जानकारी</div>
-            <p style="font-size: 13px; color: #d1e7dd; line-height: 1.5;">
-                यहाँ आप अपनी जरूरत के मुताबिक कोई भी नया डेटा या सेक्शन जोड़ सकते हैं। (टिप: कीबोर्ड पर <b>'K'</b> या <b>'k'</b> बटन दबाकर कॉन्फेटी मैजिक देखें!)
+            <p style="font-size: 13px; color: #d1e7dd; line-height: 1.5; margin-bottom: 10px;">
+                यहाँ आप अपनी जरूरत के मुताबिक कोई भी नया डेटा या सेक्शन जोड़ सकते हैं।
             </p>
+
+            <!-- मोबाइल और कंप्यूटर दोनों के लिए मैजिक बटन -->
+            <button onclick="triggerConfetti()" style="background: linear-gradient(135deg, #ff007f, #7f00ff); color: #fff; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                🎉 कॉन्फेटी मैजिक देखें
+            </button>
         </div>
 
     </div>
@@ -300,7 +305,7 @@
         <div id="lightboxContent"></div>
     </div>
 
-    <!-- Confetti Library (कीबोर्ड शॉर्टकट के लिए) -->
+    <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <script>
@@ -363,14 +368,19 @@
             document.getElementById('lightboxContent').innerHTML = '';
         }
 
-        // कीबोर्ड शॉर्टकट: 'K' या 'k' दबाने पर कॉन्फेटी इफ़ेक्ट
+        // कॉन्फेटी ट्रिगर फंक्शन (मोबाइल और कंप्यूटर दोनों के लिए)
+        function triggerConfetti() {
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // कंप्यूटर कीबोर्ड के लिए 'K' शॉर्टकट
         document.addEventListener('keydown', function(event) {
             if (event.key === 'k' || event.key === 'K') {
-                confetti({
-                    particleCount: 120,
-                    spread: 80,
-                    origin: { y: 0.6 }
-                });
+                triggerConfetti();
             }
         });
     </script>
