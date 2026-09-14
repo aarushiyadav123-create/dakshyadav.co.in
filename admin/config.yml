@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: aarushiyadav123-create/dakshyadav.co.in
   branch: main
 
 media_folder: "images"
