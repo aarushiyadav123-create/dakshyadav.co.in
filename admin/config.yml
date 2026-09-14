@@ -1,13 +1,13 @@
 backend:
   name: git-gateway
-  branch: main # अगर आपकी मुख्य ब्रांच master है, तो यहाँ master लिखें
+  branch: main
 
-media_folder: "images" # जहाँ फोटोज़ सेव होंगी
+media_folder: "images"
 public_folder: "/images"
 
 collections:
   - name: "blog"
-  - label: "Blogs & Thoughts"
+    label: "Blogs & Thoughts"
     folder: "content/blog"
     create: true
     fields:
