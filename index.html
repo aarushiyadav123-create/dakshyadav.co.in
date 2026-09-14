@@ -125,6 +125,11 @@
             width: 100%;
             border: 1px solid #ffffff;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
         }
         
         .section-title {
@@ -136,12 +141,53 @@
             padding-bottom: 3px;
             font-weight: bold;
         }
-        
+
+        #galleryModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            padding: 20px;
+        }
+        .modal-content {
+            background: linear-gradient(145deg, #083c2d, #0f523f);
+            width: 100%;
+            max-width: 450px;
+            max-height: 80vh;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            border: 1px solid #69f0ae;
+            overflow-y: auto;
+            position: relative;
+            text-align: left;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 8px;
+        }
+        .modal-header h3 {
+            color: #69f0ae;
+            font-size: 16px;
+        }
+        .close-modal {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
         .file-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            text-align: left;
         }
         .file-item {
             display: flex;
@@ -150,12 +196,10 @@
             border: 1px solid rgba(105, 240, 174, 0.4);
             padding: 10px 12px;
             border-radius: 9px;
-            text-decoration: none;
             color: #fff;
             font-size: 13px;
             font-weight: 500;
             cursor: pointer;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
         }
         .file-item:hover {
             background: linear-gradient(135deg, #13634b, #1b7a5d);
@@ -179,16 +223,11 @@
             z-index: 9999;
             padding: 20px;
         }
-        #lightbox img {
+        #lightbox img, #lightbox video {
             max-width: 100%;
             max-height: 85vh;
             border-radius: 10px;
             object-fit: contain;
-        }
-        #lightbox video {
-            max-width: 100%;
-            max-height: 85vh;
-            border-radius: 10px;
         }
         #lightbox span {
             position: absolute;
@@ -247,15 +286,22 @@
             
             <p class="desc-text">हमारा नया डिजिटल प्लेटफ़ॉर्म गूगल प्ले पर लाइव है। ऐप डाउनलोड करने और टेस्टर बनने के लिए नीचे क्लिक करें!</p>
 
-            <div class="btn-group">
+            <div class="btn-group" style="margin-bottom: 15px;">
                 <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Join Closed Testing (Play Store)</a>
             </div>
 
-            <div class="section-title">📸 Photos</div>
-            <div class="file-list" id="photoList"></div>
+            <!-- अब बटन पर सिर्फ Photo और Video लिखा है -->
+            <div class="btn-group" style="margin-bottom: 10px;">
+                <button onclick="openGallery('photos')" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
+                    📸 Photo
+                </button>
+            </div>
 
-            <div class="section-title">🎥 Videos</div>
-            <div class="file-list" id="videoList"></div>
+            <div class="btn-group">
+                <button onclick="openGallery('videos')" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
+                    🎥 Video
+                </button>
+            </div>
 
             <div class="footer">
                 &copy; 2026 dakshyadav.co.in | All Rights Reserved
@@ -284,6 +330,16 @@
 
     </div>
 
+    <div id="galleryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Gallery</h3>
+                <button class="close-modal" onclick="closeGallery()">&times;</button>
+            </div>
+            <div class="file-list" id="modalFileList"></div>
+        </div>
+    </div>
+
     <div id="lightbox">
         <span onclick="closeLightbox()">&times;</span>
         <div id="lightboxContent"></div>
@@ -296,7 +352,6 @@
         document.getElementById("profileSub").innerText = mySubTitle;
         document.getElementById("profileImg").src = myProfilePic;
 
-        // 👇 Yahan aap jitni marzi photos aur videos ke naam add kar sakte hain (GitHub ke images folder ke anusaar)
         const myPhotos = [
             "photo1.jpg",
             "photo2.jpg"
@@ -306,32 +361,37 @@
             "video1.mp4"
         ];
 
-        const photoContainer = document.getElementById("photoList");
-        if(myPhotos.length > 0) {
-            photoContainer.innerHTML = "";
-            myPhotos.forEach(file => {
-                const item = document.createElement('div');
-                item.className = 'file-item';
-                item.innerHTML = `<span class="file-icon">🖼️</span><span class="file-name">${file}</span>`;
-                item.onclick = () => openLightbox(`images/${file}`, 'image');
-                photoContainer.appendChild(item);
-            });
-        } else {
-            photoContainer.innerHTML = "<p style='font-size:12px; color:#a5d6a7;'>No Photos</p>";
+        function openGallery(type) {
+            const modal = document.getElementById("galleryModal");
+            const title = document.getElementById("modalTitle");
+            const listContainer = document.getElementById("modalFileList");
+            listContainer.innerHTML = "";
+
+            if (type === 'photos') {
+                title.innerText = "📸 Photos";
+                myPhotos.forEach(file => {
+                    const item = document.createElement('div');
+                    item.className = 'file-item';
+                    item.innerHTML = `<span class="file-icon">🖼️</span><span class="file-name">${file}</span>`;
+                    item.onclick = () => openLightbox(`images/${file}`, 'image');
+                    listContainer.appendChild(item);
+                });
+            } else {
+                title.innerText = "🎥 Videos";
+                myVideos.forEach(file => {
+                    const item = document.createElement('div');
+                    item.className = 'file-item';
+                    item.innerHTML = `<span class="file-icon">🎥</span><span class="file-name">${file}</span>`;
+                    item.onclick = () => openLightbox(`images/${file}`, 'video');
+                    listContainer.appendChild(item);
+                });
+            }
+
+            modal.style.display = "flex";
         }
 
-        const videoContainer = document.getElementById("videoList");
-        if(myVideos.length > 0) {
-            videoContainer.innerHTML = "";
-            myVideos.forEach(file => {
-                const item = document.createElement('div');
-                item.className = 'file-item';
-                item.innerHTML = `<span class="file-icon">🎥</span><span class="file-name">${file}</span>`;
-                item.onclick = () => openLightbox(`images/${file}`, 'video');
-                videoContainer.appendChild(item);
-            });
-        } else {
-            videoContainer.innerHTML = "<p style='font-size:12px; color:#a5d6a7;'>No Videos</p>";
+        function closeGallery() {
+            document.getElementById("galleryModal").style.display = "none";
         }
 
         function openLightbox(src, type) {
