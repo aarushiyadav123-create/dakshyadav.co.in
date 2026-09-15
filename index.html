@@ -298,7 +298,7 @@
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
             
-            <p class="desc-text">रै भाई, हमारे गाँव का ऐप MeraGaov आ लिया है, डाउनलोड कर लो या व्हाट्सएप पर शेयर कर दो!</p>
+            <p class="desc-text">रै भाई, हमारे गाँव का ऐप MeraGaov आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो!</p>
 
             <div class="btn-group">
                 <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Play Store से डाउनलोड करें</a>
@@ -347,12 +347,21 @@
                 </button>
             </div>
 
-            <!-- नया डिजिटल स्टोर (एफिलिएट मार्केटिंग सेक्शन) -->
+            <!-- डिजिटल स्टोर (Flipkart शॉपिंग) -->
             <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग</div>
             <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;">
                 <p style="font-size: 12px; color: #b9f6ca; margin-bottom: 10px;">ऑनलाइन कुछ भी खरीदें और हमारे जरिए सहयोग करें!</p>
                 <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff; border: 1px solid #fff; font-size: 13px; padding: 10px;">
                     🛒 Flipkart महा-स्टोर (यहाँ से खरीदें)
+                </a>
+            </div>
+
+            <!-- यात्रा और टिकट बुकिंग (MakeMyTrip) -->
+            <div class="section-title">🚆 ट्रेन, बस & फ्लाइट बुकिंग</div>
+            <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;">
+                <p style="font-size: 12px; color: #b9f6ca; margin-bottom: 10px;">ट्रेन, बस, फ्लाइट या होटल बुक करें एक ही जगह से!</p>
+                <a href="https://bitli.in/FRHcUAK" class="btn" target="_blank" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; border: 1px solid #fff; font-size: 13px; padding: 10px;">
+                    ✈️ MakeMyTrip बुकिंग सेंटर (टिकट बुक करें)
                 </a>
             </div>
 
@@ -444,7 +453,7 @@
 
         function shareOnWhatsApp() {
             const appUrl = "https://play.google.com/store/apps/details?id=com.meragaov.haryana";
-            const message = "रै भाई, हमारे गाँव का ऐप MeraGaov आ लिया है, डाउनलोड कर लो या व्हाट्सएप पर शेयर कर दो! " + appUrl;
+            const message = "रै भाई, हमारे गाँव का ऐप MeraGaov आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो! " + appUrl;
             const whatsappUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
             window.open(whatsappUrl, '_blank');
         }
