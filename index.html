@@ -80,12 +80,26 @@
         .profile-info {
             text-align: left;
         }
+
+        /* नाम में कलरफुल चमकता हुआ एनिमेटेड इफ़ेक्ट */
         .profile-info h2 {
             font-size: 21px;
-            color: #ffffff;
+            font-weight: 800;
             line-height: 1.2;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(270deg, #ffeb3b, #00e676, #00b0ff, #ff4081, #ffeb3b);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowGlow 6s ease infinite;
+            text-shadow: 0 2px 10px rgba(0,255,150,0.3);
         }
+
+        @keyframes rainbowGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .profile-info p {
             font-size: 13px;
             color: #b9f6ca;
@@ -284,7 +298,6 @@
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
             
-            <!-- यहाँ "aa" को हिंदी में "आ" कर दिया गया है -->
             <p class="desc-text">रै भाई, हमारे गाँव का ऐप MeraGaov आ लिया है, डाउनलोड कर लो या व्हाट्सएप पर शेयर कर दो!</p>
 
             <div class="btn-group">
@@ -328,8 +341,9 @@
                     ▶ आवाज सुनें
                 </button>
 
+                <!-- "राम-राम ठोकें" बटन (0 से शुरुआत और केवल 1 बार क्लिक) -->
                 <button id="ramRamBtn" onclick="markAttendance()" style="background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 9px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; width: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-                    राम-राम ठोकें (<span id="visitorCount">0</span>)
+                    🔥 राम-राम ठोकें (<span id="visitorCount">0</span>)
                 </button>
             </div>
 
@@ -426,6 +440,7 @@
             window.open(whatsappUrl, '_blank');
         }
 
+        // राम-राम ठोकें काउंटर (0 से शुरू और केवल 1 बार क्लिक)
         function markAttendance() {
             let hasVoted = localStorage.getItem("hasVotedRamRam");
             if (!hasVoted) {
