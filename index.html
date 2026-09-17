@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MeraGaov - मेरी पहचान</title>
+    <title>MeraGaov - मेरी पहचान | अब प्ले स्टोर पर लाइव</title>
+    <meta name="description" content="MeraGaov - मेरी पहचान डिजिटल ऐप अब गूगल प्ले स्टोर पर लाइव है। अभी डाउनलोड करें और हमारे साथ जुड़ें!">
     <style>
         * {
             margin: 0;
@@ -340,7 +341,7 @@
                     ▶ आवाज सुनें
                 </button>
 
-                <!-- राम-राम बटन और बिल्कुल 0 से शुरू होने वाला विज़िटर काउंटर -->
+                <!-- राम-राम बटन और 0 से शुरू होने वाला विज़िटर काउंटर -->
                 <div style="display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap;">
                     <button id="ramRamBtn" onclick="markAttendance()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
                         🔥 राम-राम ठोकें (<span id="ramRamCount">0</span>)
@@ -398,7 +399,6 @@
         document.getElementById("profileSub").innerText = mySubTitle;
         document.getElementById("profileImg").src = myProfilePic;
 
-        // GitHub गैलरी लिस्ट (यहाँ आपकी सभी फाइलें सुरक्षित रूप से जुड़ी हैं)
         let myPhotos = [
             "photo1.jpg",
             "photo2.jpg",
@@ -473,7 +473,6 @@
             window.open(whatsappUrl, '_blank');
         }
 
-        // राम-राम बटन काउंटर
         function markAttendance() {
             let hasVoted = localStorage.getItem("hasVotedRamRam");
             if (!hasVoted) {
@@ -490,15 +489,13 @@
         }
 
         window.addEventListener('load', function() {
-            // बिल्कुल नया वर्जन सेट करने के लिए काउंटर को पूरी तरह 0 पर रीसेट कर रहे हैं
-            if (!localStorage.getItem("freshZeroReset_v3")) {
+            if (!localStorage.getItem("freshZeroReset_v4")) {
                 localStorage.setItem("siteTotalVisits", "0");
                 localStorage.setItem("ramRamCountVal", "0");
                 localStorage.removeItem("hasVotedRamRam");
-                localStorage.setItem("freshZeroReset_v3", "true");
+                localStorage.setItem("freshZeroReset_v4", "true");
             }
 
-            // ऑटोमैटिक विज़िटर काउंटर
             let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 0);
             
             if (!sessionStorage.getItem("visitedThisSession")) {
@@ -509,7 +506,6 @@
             
             document.getElementById("autoVisitorCount").innerText = totalVisits;
 
-            // राम-राम काउंटर लोड करना
             let ramCount = localStorage.getItem("ramRamCountVal") || 0;
             document.getElementById("ramRamCount").innerText = ramCount;
 
@@ -521,7 +517,6 @@
                 btn.style.cursor = "not-allowed";
             }
 
-            // गैलरी काउंटर बैज अपडेट
             document.getElementById("photoCountBadge").innerText = myPhotos.length;
             document.getElementById("videoCountBadge").innerText = myVideos.length;
         });
