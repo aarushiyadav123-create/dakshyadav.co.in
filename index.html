@@ -305,19 +305,19 @@
             </div>
 
             <div class="btn-group">
-                <button onclick="shareOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; border: 1px solid #ffffff;">
+                <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; border: 1px solid #ffffff;">
                     📤 ऐप व्हाट्सएप पर शेयर करें
                 </button>
             </div>
 
             <div class="btn-group">
-                <button onclick="openGallery('photos')" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
+                <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
                     📸 Photo <span style="font-size: 11px; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; margin-left: 5px;" id="photoCountBadge">0</span>
                 </button>
             </div>
 
             <div class="btn-group">
-                <button onclick="openGallery('videos')" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
+                <button onclick="openVideoCategories()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
                     🎥 Video <span style="font-size: 11px; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; margin-left: 5px;" id="videoCountBadge">0</span>
                 </button>
             </div>
@@ -341,7 +341,6 @@
                     ▶ आवाज सुनें
                 </button>
 
-                <!-- राम-राम बटन और 100% असली यूनिक विज़िटर काउंटर -->
                 <div style="display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap;">
                     <button id="ramRamBtn" onclick="markAttendance()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
                         🔥 राम-राम ठोकें (<span id="ramRamCount">0</span>)
@@ -352,7 +351,6 @@
                 </div>
             </div>
 
-            <!-- डिजिटल स्टोर (Flipkart शॉपिंग) -->
             <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग</div>
             <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;">
                 <p style="font-size: 12px; color: #b9f6ca; margin-bottom: 10px;">ऑनलाइन कुछ भी खरीदें और हमारे जरिए सहयोग करें!</p>
@@ -361,7 +359,6 @@
                 </a>
             </div>
 
-            <!-- यात्रा और टिकट बुकिंग (MakeMyTrip) -->
             <div class="section-title">🚆 ट्रेन, बस & फ्लाइट बुकिंग</div>
             <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;">
                 <p style="font-size: 12px; color: #b9f6ca; margin-bottom: 10px;">ट्रेन, बस, फ्लाइट या होटल बुक करें एक ही जगह से!</p>
@@ -399,52 +396,108 @@
         document.getElementById("profileSub").innerText = mySubTitle;
         document.getElementById("profileImg").src = myProfilePic;
 
+        // फोटो लिस्ट
         let myPhotos = [
             "photo1.jpg",
             "photo2.jpg",
             "photo3.jpg"
         ];
 
-        let myVideos = [
-            "video1.mp4",
-            "video2.mp4"
-        ];
+        // वीडियो फोल्डर और कैटेगरी सिस्टम
+        let videoCategories = {
+            "🙏 भक्ति सॉन्ग (Bhakti Songs)": [
+                "bhakti1.mp4",
+                "bhakti2.mp4"
+            ],
+            "🎵 हरियाणवी सॉन्ग (Haryanvi Songs)": [
+                "haryanvi1.mp4",
+                "haryanvi2.mp4"
+            ],
+            "💔 दर्द भरे सॉन्ग (Sad Songs)": [
+                "sad1.mp4"
+            ]
+        };
 
-        function openGallery(type) {
+        // कुल वीडियो की संख्या गिनकर बैज पर दिखाने के लिए
+        function getTotalVideosCount() {
+            let total = 0;
+            for (let cat in videoCategories) {
+                total += videoCategories[cat].length;
+            }
+            return total;
+        }
+
+        function openPhotoGallery() {
             const modal = document.getElementById("galleryModal");
             const title = document.getElementById("modalTitle");
             const listContainer = document.getElementById("modalFileList");
+            title.innerText = "📸 Photos Gallery";
             listContainer.innerHTML = "";
 
-            if (type === 'photos') {
-                title.innerText = "📸 Photos Gallery";
-                if(myPhotos.length === 0) {
-                    listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">कोई फोटो उपलब्ध नहीं है।</div>`;
-                } else {
-                    myPhotos.forEach(file => {
-                        const item = document.createElement('div');
-                        item.className = 'file-item';
-                        item.innerHTML = `<span class="file-icon">🖼️</span><span class="file-name">${file}</span>`;
-                        item.onclick = () => openLightbox(`images/${file}`, 'image');
-                        listContainer.appendChild(item);
-                    });
-                }
+            if(myPhotos.length === 0) {
+                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">कोई फोटो उपलब्ध नहीं है।</div>`;
             } else {
-                title.innerText = "🎥 Videos Gallery";
-                if(myVideos.length === 0) {
-                    listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">कोई वीडियो उपलब्ध नहीं है।</div>`;
-                } else {
-                    myVideos.forEach(file => {
-                        const item = document.createElement('div');
-                        item.className = 'file-item';
-                        item.innerHTML = `<span class="file-icon">🎥</span><span class="file-name">${file}</span>`;
-                        item.onclick = () => openLightbox(`images/${file}`, 'video');
-                        listContainer.appendChild(item);
-                    });
-                }
+                myPhotos.forEach(file => {
+                    const item = document.createElement('div');
+                    item.className = 'file-item';
+                    item.innerHTML = `<span class="file-icon">🖼️</span><span class="file-name">${file}</span>`;
+                    item.onclick = () => openLightbox(`images/${file}`, 'image');
+                    listContainer.appendChild(item);
+                });
             }
-
             modal.style.display = "flex";
+        }
+
+        // वीडियो बटन दबाने पर सबसे पहले फोल्डर (कैटेगरीज) दिखेंगे
+        function openVideoCategories() {
+            const modal = document.getElementById("galleryModal");
+            const title = document.getElementById("modalTitle");
+            const listContainer = document.getElementById("modalFileList");
+            title.innerText = "🎥 Video Folders & Categories";
+            listContainer.innerHTML = "";
+
+            for (let categoryName in videoCategories) {
+                const folderItem = document.createElement('div');
+                folderItem.className = 'file-item';
+                folderItem.innerHTML = `<span class="file-icon">📁</span><span class="file-name">${categoryName} (${videoCategories[categoryName].length} Videos)</span>`;
+                folderItem.onclick = () => openCategoryVideos(categoryName);
+                listContainer.appendChild(folderItem);
+            }
+            modal.style.display = "flex";
+        }
+
+        // किसी फोल्डर के अंदर क्लिक करने पर उसके वीडियो दिखेंगे
+        function openCategoryVideos(categoryName) {
+            const title = document.getElementById("modalTitle");
+            const listContainer = document.getElementById("modalFileList");
+            title.innerText = "📂 " + categoryName;
+            listContainer.innerHTML = "";
+
+            // वापस पीछे जाने के लिए 'बैक' बटन
+            const backBtn = document.createElement('div');
+            backBtn.className = 'file-item';
+            backBtn.style.background = "linear-gradient(135deg, #1b5e20, #2e7d32)";
+            backBtn.innerHTML = `<span class="file-icon">⬅️</span><span class="file-name"><b>सभी फोल्डर पर वापस जाएं</b></span>`;
+            backBtn.onclick = () => openVideoCategories();
+            listContainer.appendChild(backBtn);
+
+            let videos = videoCategories[categoryName];
+            if(videos.length === 0) {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.style.textAlign = "center";
+                emptyMsg.style.color = "#b9f6ca";
+                emptyMsg.style.padding = "15px";
+                emptyMsg.innerText = "इस फोल्डर में कोई वीडियो नहीं है।";
+                listContainer.appendChild(emptyMsg);
+            } else {
+                videos.forEach(file => {
+                    const item = document.createElement('div');
+                    item.className = 'file-item';
+                    item.innerHTML = `<span class="file-icon">🎥</span><span class="file-name">${file}</span>`;
+                    item.onclick = () => openLightbox(`images/${file}`, 'video');
+                    listContainer.appendChild(item);
+                });
+            }
         }
 
         function closeGallery() {
@@ -466,7 +519,7 @@
             document.getElementById('lightboxContent').innerHTML = '';
         }
 
-        function shareOnWhatsApp() {
+        function openWhatsAppShare() {
             const appUrl = "https://play.google.com/store/apps/details?id=com.meragaov.haryana";
             const message = "रै भाई, हमारे गाँव का ऐप MeraGaov आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो! " + appUrl;
             const whatsappUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
@@ -489,12 +542,11 @@
         }
 
         window.addEventListener('load', function() {
-            // परमानेंट यूनिक डिवाइस ट्रैकिंग लॉजिक (localStorage आधारित)
+            // यूनिक डिवाइस विज़िटर काउंटर
             let hasVisitedBefore = localStorage.getItem("hasVisitedUniqueDevice");
             let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 0);
 
             if (!hasVisitedBefore) {
-                // अगर इस डिवाइस से पहली बार खुला है, तभी गिनती 1 बढ़ेगी
                 totalVisits += 1;
                 localStorage.setItem("siteTotalVisits", totalVisits);
                 localStorage.setItem("hasVisitedUniqueDevice", "true");
@@ -514,7 +566,7 @@
             }
 
             document.getElementById("photoCountBadge").innerText = myPhotos.length;
-            document.getElementById("videoCountBadge").innerText = myVideos.length;
+            document.getElementById("videoCountBadge").innerText = getTotalVideosCount();
         });
 
         function triggerConfetti() {
