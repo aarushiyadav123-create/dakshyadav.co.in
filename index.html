@@ -341,7 +341,7 @@
                     ▶ आवाज सुनें
                 </button>
 
-                <!-- राम-राम बटन और 0 से शुरू होने वाला विज़िटर काउंटर -->
+                <!-- राम-राम बटन और 100% असली यूनिक विज़िटर काउंटर -->
                 <div style="display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap;">
                     <button id="ramRamBtn" onclick="markAttendance()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
                         🔥 राम-राम ठोकें (<span id="ramRamCount">0</span>)
@@ -489,19 +489,15 @@
         }
 
         window.addEventListener('load', function() {
-            if (!localStorage.getItem("freshZeroReset_v4")) {
-                localStorage.setItem("siteTotalVisits", "0");
-                localStorage.setItem("ramRamCountVal", "0");
-                localStorage.removeItem("hasVotedRamRam");
-                localStorage.setItem("freshZeroReset_v4", "true");
-            }
-
+            // परमानेंट यूनिक डिवाइस ट्रैकिंग लॉजिक (localStorage आधारित)
+            let hasVisitedBefore = localStorage.getItem("hasVisitedUniqueDevice");
             let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 0);
-            
-            if (!sessionStorage.getItem("visitedThisSession")) {
+
+            if (!hasVisitedBefore) {
+                // अगर इस डिवाइस से पहली बार खुला है, तभी गिनती 1 बढ़ेगी
                 totalVisits += 1;
                 localStorage.setItem("siteTotalVisits", totalVisits);
-                sessionStorage.setItem("visitedThisSession", "true");
+                localStorage.setItem("hasVisitedUniqueDevice", "true");
             }
             
             document.getElementById("autoVisitorCount").innerText = totalVisits;
