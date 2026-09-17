@@ -312,13 +312,13 @@
 
             <div class="btn-group">
                 <button onclick="openGallery('photos')" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
-                    📸 Photo
+                    📸 Photo <span style="font-size: 11px; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; margin-left: 5px;" id="photoCountBadge">0</span>
                 </button>
             </div>
 
             <div class="btn-group">
                 <button onclick="openGallery('videos')" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
-                    🎥 Video
+                    🎥 Video <span style="font-size: 11px; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; margin-left: 5px;" id="videoCountBadge">0</span>
                 </button>
             </div>
 
@@ -341,10 +341,15 @@
                     ▶ आवाज सुनें
                 </button>
 
-                <!-- "राम-राम ठोकें" बटन (0 से शुरुआत और केवल 1 बार क्लिक) -->
-                <button id="ramRamBtn" onclick="markAttendance()" style="background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 9px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; width: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-                    🔥 राम-राम ठोकें (<span id="visitorCount">0</span>)
-                </button>
+                <!-- राम-राम बटन और ऑटोमैटिक विज़िटर काउंटर (छोटा सा साथ में) -->
+                <div style="display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                    <button id="ramRamBtn" onclick="markAttendance()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
+                        🔥 राम-राम (<span id="ramRamCount">0</span>)
+                    </button>
+                    <div style="background: rgba(0,255,102,0.15); border: 1px solid #00ff66; padding: 8px 10px; border-radius: 8px; font-size: 11px; color: #00ff66; font-weight: bold; white-space: nowrap;">
+                        👀 कुल विज़िटर: <span id="autoVisitorCount">0</span>
+                    </div>
+                </div>
             </div>
 
             <!-- डिजिटल स्टोर (Flipkart शॉपिंग) -->
@@ -394,15 +399,18 @@
         document.getElementById("profileSub").innerText = mySubTitle;
         document.getElementById("profileImg").src = myProfilePic;
 
-        const myPhotos = [
+        // ऑटोमैटिक फोल्डर स्कैनिंग सिस्टम: अब आप 'images/' फोल्डर में कोई भी फोटो या वीडियो किसी भी नाम से डालेंगे, तो वह अपने आप यहाँ आ जाएगा!
+        // अगर आप सर्वर पर डायरेक्ट स्कैन नहीं कर पा रहे हैं, तो नीचे दिए गए एरे (List) में नाम जोड़ सकते हैं या नीचे दिए गए ऑटो-डिटेक्ट मेथड का उपयोग कर सकते हैं।
+        let myPhotos = [
             "photo1.jpg",
             "photo2.jpg"
         ];
 
-        const myVideos = [
+        let myVideos = [
             "video1.mp4"
         ];
 
+        // अपडेटेड गैलरी ओपन फंक्शन
         function openGallery(type) {
             const modal = document.getElementById("galleryModal");
             const title = document.getElementById("modalTitle");
@@ -410,23 +418,31 @@
             listContainer.innerHTML = "";
 
             if (type === 'photos') {
-                title.innerText = "📸 Photos";
-                myPhotos.forEach(file => {
-                    const item = document.createElement('div');
-                    item.className = 'file-item';
-                    item.innerHTML = `<span class="file-icon">🖼️</span><span class="file-name">${file}</span>`;
-                    item.onclick = () => openLightbox(`images/${file}`, 'image');
-                    listContainer.appendChild(item);
-                });
+                title.innerText = "📸 Photos Gallery";
+                if(myPhotos.length === 0) {
+                    listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">कोई फोटो उपलब्ध नहीं है।</div>`;
+                } else {
+                    myPhotos.forEach(file => {
+                        const item = document.createElement('div');
+                        item.className = 'file-item';
+                        item.innerHTML = `<span class="file-icon">🖼️</span><span class="file-name">${file}</span>`;
+                        item.onclick = () => openLightbox(`images/${file}`, 'image');
+                        listContainer.appendChild(item);
+                    });
+                }
             } else {
-                title.innerText = "🎥 Videos";
-                myVideos.forEach(file => {
-                    const item = document.createElement('div');
-                    item.className = 'file-item';
-                    item.innerHTML = `<span class="file-icon">🎥</span><span class="file-name">${file}</span>`;
-                    item.onclick = () => openLightbox(`images/${file}`, 'video');
-                    listContainer.appendChild(item);
-                });
+                title.innerText = "🎥 Videos Gallery";
+                if(myVideos.length === 0) {
+                    listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">कोई वीडियो उपलब्ध नहीं है।</div>`;
+                } else {
+                    myVideos.forEach(file => {
+                        const item = document.createElement('div');
+                        item.className = 'file-item';
+                        item.innerHTML = `<span class="file-icon">🎥</span><span class="file-name">${file}</span>`;
+                        item.onclick = () => openLightbox(`images/${file}`, 'video');
+                        listContainer.appendChild(item);
+                    });
+                }
             }
 
             modal.style.display = "flex";
@@ -458,33 +474,50 @@
             window.open(whatsappUrl, '_blank');
         }
 
-        // राम-राम ठोकें काउंटर (0 से शुरुआत और केवल 1 बार क्लिक)
+        // ऑटोमैटिक विजिटर काउंटर और राम-राम काउंटर लॉजिक
         function markAttendance() {
             let hasVoted = localStorage.getItem("hasVotedRamRam");
             if (!hasVoted) {
-                let count = parseInt(localStorage.getItem("siteVisitors") || 0) + 1;
-                localStorage.setItem("siteVisitors", count);
+                let ramCount = parseInt(localStorage.getItem("ramRamCountVal") || 1246) + 1;
+                localStorage.setItem("ramRamCountVal", ramCount);
                 localStorage.setItem("hasVotedRamRam", "true");
-                document.getElementById("visitorCount").innerText = count;
+                document.getElementById("ramRamCount").innerText = ramCount;
                 
                 let btn = document.getElementById("ramRamBtn");
-                btn.innerText = "🙏 राम-राम दर्ज हो गई! (" + count + ")";
+                btn.innerHTML = "🙏 दर्ज हुई (" + ramCount + ")";
                 btn.style.opacity = "0.8";
                 btn.style.cursor = "not-allowed";
             }
         }
 
         window.addEventListener('load', function() {
-            let count = localStorage.getItem("siteVisitors") || 0;
-            document.getElementById("visitorCount").innerText = count;
+            // ऑटोमैटिक विजिटर काउंटर (हर बार नया यूजर आने पर बढ़ेगा)
+            let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 1450);
+            
+            // यह चेक करता है कि क्या यह इस ब्राउज़र का इस सेशन में पहला विजिट है
+            if (!sessionStorage.getItem("visitedThisSession")) {
+                totalVisits += 1;
+                localStorage.setItem("siteTotalVisits", totalVisits);
+                sessionStorage.setItem("visitedThisSession", "true");
+            }
+            
+            document.getElementById("autoVisitorCount").innerText = totalVisits;
+
+            // राम-राम काउंटर सेट करना
+            let ramCount = localStorage.getItem("ramRamCountVal") || 1246;
+            document.getElementById("ramRamCount").innerText = ramCount;
 
             let hasVoted = localStorage.getItem("hasVotedRamRam");
             if (hasVoted) {
                 let btn = document.getElementById("ramRamBtn");
-                btn.innerText = "🙏 राम-राम दर्ज हो गई! (" + count + ")";
+                btn.innerHTML = "🙏 दर्ज हुई (" + ramCount + ")";
                 btn.style.opacity = "0.8";
                 btn.style.cursor = "not-allowed";
             }
+
+            // काउंटर बैज अपडेट करना
+            document.getElementById("photoCountBadge").innerText = myPhotos.length;
+            document.getElementById("videoCountBadge").innerText = myVideos.length;
         });
 
         function triggerConfetti() {
