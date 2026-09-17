@@ -3,284 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MeraGaov - मेरी पहचान | अब प्ले स्टोर पर लाइव</title>
-    <meta name="description" content="MeraGaov - मेरी पहचान डिजिटल ऐप अब गूगल प्ले स्टोर पर लाइव है। अभी डाउनलोड करें और हमारे साथ जुड़ें!">
+    <title>MeraGaov - मेरी पहचान | Live Status</title>
+    <meta name="description" content="MeraGaov - मेरी पहचान डिजिटल ऐप और वेबसाइट। लाइव वीडियो और फोल्डर मैनेजमेंट सिस्टम।">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        html, body {
-            width: 100%;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #02231c, #063c2c, #0d5c46);
-            color: #fff;
-            overflow-x: hidden;
-        }
-        
-        .page-wrapper {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 20px;
-            padding: 20px;
-            width: 100%;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .container {
-            background: linear-gradient(145deg, #083c2d, #0f523f, #186c52);
-            width: 100%;
-            max-width: 480px;
-            padding: 18px 15px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            text-align: center;
-            border: 1.5px solid rgba(130, 240, 180, 0.4);
-            flex: 1;
-        }
-
-        .right-content-space {
-            background: linear-gradient(145deg, #063124, #0b4232);
-            width: 100%;
-            max-width: 480px;
-            min-height: 400px;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            border: 1.5px solid rgba(130, 240, 180, 0.4);
-            text-align: left;
-            flex: 1;
-        }
-        
-        .profile-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 12px;
-            background: linear-gradient(120deg, #0e5843, #157356, #1f8a67);
-            padding: 14px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        .profile-pic {
-            width: 115px;
-            height: 115px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #69f0ae;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        }
-        .profile-info {
-            text-align: left;
-        }
-
-        .profile-info h2 {
-            font-size: 21px;
-            font-weight: 800;
-            line-height: 1.2;
-            background: linear-gradient(270deg, #ffeb3b, #00e676, #00b0ff, #ff4081, #ffeb3b);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rainbowGlow 6s ease infinite;
-            text-shadow: 0 2px 10px rgba(0,255,150,0.3);
-        }
-
-        @keyframes rainbowGlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .profile-info p {
-            font-size: 13px;
-            color: #b9f6ca;
-            margin-top: 4px;
-        }
-
-        .badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #00c853, #64dd17);
-            color: #00220c;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            box-shadow: 0 3px 10px rgba(0,200,83,0.3);
-        }
-        .desc-text {
-            font-size: 13px;
-            color: #e8f5e9;
-            line-height: 1.4;
-            margin-bottom: 12px;
-        }
-        .btn-group {
-            margin-bottom: 10px;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #00b0ff, #00e676);
-            color: #002111;
-            padding: 12px 16px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 14px;
-            display: block;
-            width: 100%;
-            border: 1px solid #ffffff;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn:hover {
-            opacity: 0.9;
-        }
-        
-        .section-title {
-            font-size: 15px;
-            color: #b9f6ca;
-            margin: 14px 0 6px 0;
-            text-align: left;
-            border-bottom: 2px solid #1fa376;
-            padding-bottom: 3px;
-            font-weight: bold;
-        }
-
-        #galleryModal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            justify-content: center;
-            align-items: center;
-            z-index: 9998;
-            padding: 20px;
-        }
-        .modal-content {
-            background: linear-gradient(145deg, #083c2d, #0f523f);
-            width: 100%;
-            max-width: 450px;
-            max-height: 80vh;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            border: 1px solid #69f0ae;
-            overflow-y: auto;
-            position: relative;
-            text-align: left;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding-bottom: 8px;
-        }
-        .modal-header h3 {
-            color: #69f0ae;
-            font-size: 16px;
-        }
-        .close-modal {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        .file-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .file-item {
-            display: flex;
-            align-items: center;
-            background: linear-gradient(135deg, #0c4a37, #13634b);
-            border: 1px solid rgba(105, 240, 174, 0.4);
-            padding: 10px 12px;
-            border-radius: 9px;
-            color: #fff;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        .file-item:hover {
-            background: linear-gradient(135deg, #13634b, #1b7a5d);
-        }
-        .file-icon {
-            margin-right: 10px;
-            font-size: 16px;
-        }
-        .file-name {
-            word-break: break-all;
-            flex-grow: 1;
-        }
-
-        #lightbox {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
-        }
-        #lightbox img, #lightbox video {
-            max-width: 100%;
-            max-height: 85vh;
-            border-radius: 10px;
-            object-fit: contain;
-        }
-        #lightbox span {
-            position: absolute;
-            top: 15px; right: 20px;
-            color: white; font-size: 35px;
-            cursor: pointer;
-            background: rgba(0,0,0,0.5);
-            width: 45px; height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .footer {
-            font-size: 11px;
-            color: #a5d6a7;
-            border-top: 1px solid rgba(255,255,255,0.15);
-            padding-top: 10px;
-            margin-top: 14px;
-            text-align: center;
-        }
-
-        @media (max-width: 768px) {
-            .page-wrapper {
-                flex-direction: column;
-                align-items: center;
-                padding: 10px;
-            }
-            .right-content-space, .container {
-                max-width: 100%;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        html, body { width: 100%; min-height: 100vh; background: linear-gradient(135deg, #02231c, #063c2c, #0d5c46); color: #fff; overflow-x: hidden; }
+        .page-wrapper { display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 20px; padding: 20px; width: 100%; max-width: 1100px; margin: 0 auto; }
+        .container { background: linear-gradient(145deg, #083c2d, #0f523f, #186c52); width: 100%; max-width: 480px; padding: 18px 15px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; border: 1.5px solid rgba(130, 240, 180, 0.4); flex: 1; }
+        .right-content-space { background: linear-gradient(145deg, #063124, #0b4232); width: 100%; max-width: 480px; min-height: 400px; padding: 20px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: left; flex: 1; }
+        .profile-section { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 12px; background: linear-gradient(120deg, #0e5843, #157356, #1f8a67); padding: 14px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .profile-pic { width: 115px; height: 115px; border-radius: 50%; object-fit: cover; border: 3px solid #69f0ae; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+        .profile-info { text-align: left; }
+        .profile-info h2 { font-size: 21px; font-weight: 800; line-height: 1.2; background: linear-gradient(270deg, #ffeb3b, #00e676, #00b0ff, #ff4081, #ffeb3b); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbowGlow 6s ease infinite; text-shadow: 0 2px 10px rgba(0,255,150,0.3); }
+        @keyframes rainbowGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .profile-info p { font-size: 13px; color: #b9f6ca; margin-top: 4px; }
+        .badge { display: inline-block; background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; margin-bottom: 10px; box-shadow: 0 3px 10px rgba(0,200,83,0.3); }
+        .desc-text { font-size: 13px; color: #e8f5e9; line-height: 1.4; margin-bottom: 12px; }
+        .btn-group { margin-bottom: 10px; }
+        .btn { background: linear-gradient(135deg, #00b0ff, #00e676); color: #002111; padding: 12px 16px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; display: block; width: 100%; border: 1px solid #ffffff; box-shadow: 0 5px 15px rgba(0,0,0,0.3); cursor: pointer; transition: 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .section-title { font-size: 15px; color: #b9f6ca; margin: 14px 0 6px 0; text-align: left; border-bottom: 2px solid #1fa376; padding-bottom: 3px; font-weight: bold; }
+        #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 20px; }
+        .modal-content { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 450px; max-height: 80vh; border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid #69f0ae; overflow-y: auto; position: relative; text-align: left; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; }
+        .modal-header h3 { color: #69f0ae; font-size: 16px; }
+        .close-modal { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
+        .file-list { display: flex; flex-direction: column; gap: 8px; }
+        .file-item { display: flex; align-items: center; background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); padding: 10px 12px; border-radius: 9px; color: #fff; font-size: 13px; font-weight: 500; cursor: pointer; }
+        .file-item:hover { background: linear-gradient(135deg, #13634b, #1b7a5d); }
+        .file-icon { margin-right: 10px; font-size: 16px; }
+        .file-name { word-break: break-all; flex-grow: 1; }
+        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
+        #lightbox img, #lightbox video { max-width: 100%; max-height: 85vh; border-radius: 10px; object-fit: contain; }
+        #lightbox span { position: absolute; top: 15px; right: 20px; color: white; font-size: 35px; cursor: pointer; background: rgba(0,0,0,0.5); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .footer { font-size: 11px; color: #a5d6a7; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 10px; margin-top: 14px; text-align: center; }
+        @media (max-width: 768px) { .page-wrapper { flex-direction: column; align-items: center; padding: 10px; } .right-content-space, .container { max-width: 100%; } }
     </style>
+
+    <!-- Firebase SDK & Database Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcINeRD8Xr35T9MI80h56AfWAi-JdACio",
+            authDomain: "dakshyadav-8499e.firebaseapp.com",
+            projectId: "dakshyadav-8499e",
+            storageBucket: "dakshyadav-8499e.firebasestorage.app",
+            messagingSenderId: "909826481940",
+            appId: "1:909826481940:web:d70320ded3431912396c01",
+            measurementId: "G-KT9C1L4ZMN"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let videoCategories = {};
+        let myPhotos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
+
+        // Firestore से वीडियो और फोल्डर लोड करने का फंक्शन
+        async function loadVideosFromFirebase() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "videos"));
+                videoCategories = {}; // रीसेट करें
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    let cat = data.category || "अन्य फोल्डर (Other)";
+                    let url = data.url || "";
+                    
+                    if (!videoCategories[cat]) {
+                        videoCategories[cat] = [];
+                    }
+                    if(url) {
+                        videoCategories[cat].push(url);
+                    }
+                });
+                console.log("Videos loaded successfully from Firebase Firestore:", videoCategories);
+            } catch (e) {
+                console.error("Error loading videos from Firestore: ", e);
+            }
+        }
+
+        window.openVideoCategoriesFromDB = async function() {
+            await loadVideosFromFirebase();
+            openVideoCategoriesModal();
+        }
+
+        window.getVideoCategoriesData = () => videoCategories;
+        window.getMyPhotosData = () => myPhotos;
+    </script>
 </head>
 <body>
 
     <div class="page-wrapper">
-        
         <div class="container">
             <script>
                 const myName = "राजेश यादव मालकोषिया";
@@ -297,7 +112,6 @@
             </div>
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
-            
             <p class="desc-text">रै भाई, हमारे गाँव का ऐप MeraGaov आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो!</p>
 
             <div class="btn-group">
@@ -312,35 +126,26 @@
 
             <div class="btn-group">
                 <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
-                    📸 Photo <span style="font-size: 11px; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; margin-left: 5px;" id="photoCountBadge">0</span>
+                    📸 Photo Gallery
                 </button>
             </div>
 
             <div class="btn-group">
-                <button onclick="openVideoCategories()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
-                    🎥 Video <span style="font-size: 11px; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; margin-left: 5px;" id="videoCountBadge">0</span>
+                <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
+                    🎥 Video (डेटाबेस से लाइव)
                 </button>
             </div>
 
-            <div class="footer">
-                &copy; 2026 dakshyadav.co.in | All Rights Reserved
-            </div>
+            <div class="footer">&copy; 2026 dakshyadav.co.in | All Rights Reserved</div>
         </div>
 
         <div class="right-content-space" id="rightBox">
             <div class="section-title" style="margin-top:0;">✨ स्वागत संदेश</div>
             
             <div style="background: linear-gradient(135deg, #112211, #0a180a); border: 2px solid #00ff66; border-radius: 12px; padding: 12px; text-align: center; color: #fff; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,255,102,0.2);">
-                <p style="font-size: 15px; font-weight: bold; margin-bottom: 8px; color: #00ff66;">
-                    🙏 राम-राम भईयो, स्वागत है!
-                </p>
-                
+                <p style="font-size: 15px; font-weight: bold; margin-bottom: 8px; color: #00ff66;">🙏 राम-राम भईयो, स्वागत है!</p>
                 <audio id="welcomeAudio" src="ram-ram.mp3"></audio>
-                
-                <button onclick="document.getElementById('welcomeAudio').play()" style="background: #00ff66; color: #000; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; margin-bottom: 10px;">
-                    ▶ आवाज सुनें
-                </button>
-
+                <button onclick="document.getElementById('welcomeAudio').play()" style="background: #00ff66; color: #000; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; margin-bottom: 10px;">▶ आवाज सुनें</button>
                 <div style="display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap;">
                     <button id="ramRamBtn" onclick="markAttendance()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
                         🔥 राम-राम ठोकें (<span id="ramRamCount">0</span>)
@@ -354,24 +159,17 @@
             <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग</div>
             <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;">
                 <p style="font-size: 12px; color: #b9f6ca; margin-bottom: 10px;">ऑनलाइन कुछ भी खरीदें और हमारे जरिए सहयोग करें!</p>
-                <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff; border: 1px solid #fff; font-size: 13px; padding: 10px;">
-                    🛒 Flipkart महा-स्टोर (यहाँ से खरीदें)
-                </a>
+                <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff; border: 1px solid #fff; font-size: 13px; padding: 10px;">🛒 Flipkart महा-स्टोर</a>
             </div>
 
             <div class="section-title">🚆 ट्रेन, बस & फ्लाइट बुकिंग</div>
             <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;">
                 <p style="font-size: 12px; color: #b9f6ca; margin-bottom: 10px;">ट्रेन, बस, फ्लाइट या होटल बुक करें एक ही जगह से!</p>
-                <a href="https://bitli.in/FRHcUAK" class="btn" target="_blank" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; border: 1px solid #fff; font-size: 13px; padding: 10px;">
-                    ✈️ MakeMyTrip बुकिंग सेंटर (टिकट बुक करें)
-                </a>
+                <a href="https://bitli.in/FRHcUAK" class="btn" target="_blank" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; border: 1px solid #fff; font-size: 13px; padding: 10px;">✈️ MakeMyTrip बुकिंग सेंटर</a>
             </div>
 
-            <button onclick="triggerConfetti()" style="background: linear-gradient(135deg, #ff007f, #7f00ff); color: #fff; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-                🎉 कॉन्फेटी मैजिक देखें
-            </button>
+            <button onclick="triggerConfetti()" style="background: linear-gradient(135deg, #ff007f, #7f00ff); color: #fff; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">🎉 कॉन्फेटी मैजिक देखें</button>
         </div>
-
     </div>
 
     <div id="galleryModal">
@@ -396,108 +194,69 @@
         document.getElementById("profileSub").innerText = mySubTitle;
         document.getElementById("profileImg").src = myProfilePic;
 
-        // फोटो लिस्ट
-        let myPhotos = [
-            "photo1.jpg",
-            "photo2.jpg",
-            "photo3.jpg"
-        ];
-
-        // वीडियो फोल्डर और कैटेगरी सिस्टम
-        let videoCategories = {
-            "🙏 भक्ति सॉन्ग (Bhakti Songs)": [
-                "bhakti1.mp4",
-                "bhakti2.mp4"
-            ],
-            "🎵 हरियाणवी सॉन्ग (Haryanvi Songs)": [
-                "haryanvi1.mp4",
-                "haryanvi2.mp4"
-            ],
-            "💔 दर्द भरे सॉन्ग (Sad Songs)": [
-                "sad1.mp4"
-            ]
-        };
-
-        // कुल वीडियो की संख्या गिनकर बैज पर दिखाने के लिए
-        function getTotalVideosCount() {
-            let total = 0;
-            for (let cat in videoCategories) {
-                total += videoCategories[cat].length;
-            }
-            return total;
-        }
-
         function openPhotoGallery() {
             const modal = document.getElementById("galleryModal");
             const title = document.getElementById("modalTitle");
             const listContainer = document.getElementById("modalFileList");
             title.innerText = "📸 Photos Gallery";
             listContainer.innerHTML = "";
+            let photos = window.getMyPhotosData();
 
-            if(myPhotos.length === 0) {
-                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">कोई फोटो उपलब्ध नहीं है।</div>`;
-            } else {
-                myPhotos.forEach(file => {
-                    const item = document.createElement('div');
-                    item.className = 'file-item';
-                    item.innerHTML = `<span class="file-icon">🖼️</span><span class="file-name">${file}</span>`;
-                    item.onclick = () => openLightbox(`images/${file}`, 'image');
-                    listContainer.appendChild(item);
-                });
-            }
+            photos.forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `<span class="file-icon">🖼️</span><span class="file-name">${file}</span>`;
+                item.onclick = () => openLightbox(`images/${file}`, 'image');
+                listContainer.appendChild(item);
+            });
             modal.style.display = "flex";
         }
 
-        // वीडियो बटन दबाने पर सबसे पहले फोल्डर (कैटेगरीज) दिखेंगे
-        function openVideoCategories() {
+        function openVideoCategoriesModal() {
             const modal = document.getElementById("galleryModal");
             const title = document.getElementById("modalTitle");
             const listContainer = document.getElementById("modalFileList");
             title.innerText = "🎥 Video Folders & Categories";
             listContainer.innerHTML = "";
+            let videoCategories = window.getVideoCategoriesData();
 
-            for (let categoryName in videoCategories) {
-                const folderItem = document.createElement('div');
-                folderItem.className = 'file-item';
-                folderItem.innerHTML = `<span class="file-icon">📁</span><span class="file-name">${categoryName} (${videoCategories[categoryName].length} Videos)</span>`;
-                folderItem.onclick = () => openCategoryVideos(categoryName);
-                listContainer.appendChild(folderItem);
+            let keys = Object.keys(videoCategories);
+            if(keys.length === 0) {
+                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">डेटाबेस में कोई वीडियो नहीं मिला या लोड हो रहा है।</div>`;
+            } else {
+                keys.forEach(categoryName => {
+                    const folderItem = document.createElement('div');
+                    folderItem.className = 'file-item';
+                    folderItem.innerHTML = `<span class="file-icon">📁</span><span class="file-name">${categoryName} (${videoCategories[categoryName].length} Videos)</span>`;
+                    folderItem.onclick = () => openCategoryVideos(categoryName);
+                    listContainer.appendChild(folderItem);
+                });
             }
             modal.style.display = "flex";
         }
 
-        // किसी फोल्डर के अंदर क्लिक करने पर उसके वीडियो दिखेंगे
         function openCategoryVideos(categoryName) {
             const title = document.getElementById("modalTitle");
             const listContainer = document.getElementById("modalFileList");
             title.innerText = "📂 " + categoryName;
             listContainer.innerHTML = "";
+            let videoCategories = window.getVideoCategoriesData();
 
-            // वापस पीछे जाने के लिए 'बैक' बटन
             const backBtn = document.createElement('div');
             backBtn.className = 'file-item';
             backBtn.style.background = "linear-gradient(135deg, #1b5e20, #2e7d32)";
             backBtn.innerHTML = `<span class="file-icon">⬅️</span><span class="file-name"><b>सभी फोल्डर पर वापस जाएं</b></span>`;
-            backBtn.onclick = () => openVideoCategories();
+            backBtn.onclick = () => openVideoCategoriesModal();
             listContainer.appendChild(backBtn);
 
-            let videos = videoCategories[categoryName];
-            if(videos.length === 0) {
-                const emptyMsg = document.createElement('div');
-                emptyMsg.style.textAlign = "center";
-                emptyMsg.style.color = "#b9f6ca";
-                emptyMsg.style.padding = "15px";
-                emptyMsg.innerText = "इस फोल्डर में कोई वीडियो नहीं है।";
-                listContainer.appendChild(emptyMsg);
-            } else {
-                videos.forEach(file => {
-                    const item = document.createElement('div');
-                    item.className = 'file-item';
-                    item.innerHTML = `<span class="file-icon">🎥</span><span class="file-name">${file}</span>`;
-                    item.onclick = () => openLightbox(`images/${file}`, 'video');
-                    listContainer.appendChild(item);
-                });
-            }
+            let videos = videoCategories[categoryName] || [];
+            videos.forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `<span class="file-icon">🎥</span><span class="file-name">${file}</span>`;
+                item.onclick = () => openLightbox(file.startsWith('http') ? file : `images/${file}`, 'video');
+                listContainer.appendChild(item);
+            });
         }
 
         function closeGallery() {
@@ -522,8 +281,7 @@
         function openWhatsAppShare() {
             const appUrl = "https://play.google.com/store/apps/details?id=com.meragaov.haryana";
             const message = "रै भाई, हमारे गाँव का ऐप MeraGaov आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो! " + appUrl;
-            const whatsappUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
-            window.open(whatsappUrl, '_blank');
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(message), '_blank');
         }
 
         function markAttendance() {
@@ -533,7 +291,6 @@
                 localStorage.setItem("ramRamCountVal", ramCount);
                 localStorage.setItem("hasVotedRamRam", "true");
                 document.getElementById("ramRamCount").innerText = ramCount;
-                
                 let btn = document.getElementById("ramRamBtn");
                 btn.innerHTML = "🙏 राम-राम दर्ज हुई (" + ramCount + ")";
                 btn.style.opacity = "0.8";
@@ -542,16 +299,13 @@
         }
 
         window.addEventListener('load', function() {
-            // यूनिक डिवाइस विज़िटर काउंटर
             let hasVisitedBefore = localStorage.getItem("hasVisitedUniqueDevice");
             let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 0);
-
             if (!hasVisitedBefore) {
                 totalVisits += 1;
                 localStorage.setItem("siteTotalVisits", totalVisits);
                 localStorage.setItem("hasVisitedUniqueDevice", "true");
             }
-            
             document.getElementById("autoVisitorCount").innerText = totalVisits;
 
             let ramCount = localStorage.getItem("ramRamCountVal") || 0;
@@ -564,19 +318,11 @@
                 btn.style.opacity = "0.8";
                 btn.style.cursor = "not-allowed";
             }
-
-            document.getElementById("photoCountBadge").innerText = myPhotos.length;
-            document.getElementById("videoCountBadge").innerText = getTotalVideosCount();
         });
 
         function triggerConfetti() {
-            confetti({
-                particleCount: 120,
-                spread: 80,
-                origin: { y: 0.6 }
-            });
+            confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
         }
     </script>
-
 </body>
 </html>
