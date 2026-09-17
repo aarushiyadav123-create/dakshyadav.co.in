@@ -74,12 +74,12 @@
                         videoCategories[cat] = [];
                     }
                     if(url) {
-                        videoCategories[cat].push(url);
+                        videoCategories[cat].push({ name: data.title || "वीडियो", url: url });
                     }
                 });
-                console.log("Videos loaded successfully from Firebase Firestore:", videoCategories);
+                console.log("Videos loaded successfully:", videoCategories);
             } catch (e) {
-                console.error("Error loading videos from Firestore: ", e);
+                console.error("Error loading videos: ", e);
             }
         }
 
@@ -131,7 +131,7 @@
 
             <div class="btn-group">
                 <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
-                    🎥 Video (डेटाबेस से लाइव)
+                    🎥 वीडियो (Video)
                 </button>
             </div>
 
@@ -221,7 +221,7 @@
 
             let keys = Object.keys(videoCategories);
             if(keys.length === 0) {
-                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">डेटाबेस में कोई वीडियो नहीं मिला। कृपया Firebase Firestore चेक करें।</div>`;
+                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">डेटाबेस में कोई वीडियो नहीं मिला।</div>`;
             } else {
                 keys.forEach(categoryName => {
                     const folderItem = document.createElement('div');
@@ -249,11 +249,11 @@
             listContainer.appendChild(backBtn);
 
             let videos = videoCategories[categoryName] || [];
-            videos.forEach(file => {
+            videos.forEach(vObj => {
                 const item = document.createElement('div');
                 item.className = 'file-item';
-                item.innerHTML = `<span class="file-icon">🎥</span><span class="file-name">${file}</span>`;
-                item.onclick = () => openLightbox(file.startsWith('http') ? file : `images/${file}`, 'video');
+                item.innerHTML = `<span class="file-icon">🎥</span><span class="file-name">${vObj.name}</span>`;
+                item.onclick = () => openLightbox(vObj.url, 'video');
                 listContainer.appendChild(item);
             });
         }
@@ -267,7 +267,7 @@
             if(type === 'image') {
                 content.innerHTML = `<img src="${src}" alt="Media View">`;
             } else {
-                content.innerHTML = `<video src="${src}" controls autoplay playsinline></video>`;
+                content.innerHTML = `<video src="${src}" controls autoplay playsinline style="width:100%; max-height:85vh;"></video>`;
             }
             document.getElementById('lightbox').style.display = 'flex';
         }
