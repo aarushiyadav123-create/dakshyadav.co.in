@@ -81,7 +81,6 @@
             text-align: left;
         }
 
-        /* नाम में कलरफुल चमकता हुआ एनिमेटेड इफ़ेक्ट */
         .profile-info h2 {
             font-size: 21px;
             font-weight: 800;
@@ -341,10 +340,10 @@
                     ▶ आवाज सुनें
                 </button>
 
-                <!-- राम-राम बटन और ऑटोमैटिक विज़िटर काउंटर (छोटा सा साथ में) -->
+                <!-- राम-राम बटन और 0 से शुरू होने वाला विज़िटर काउंटर -->
                 <div style="display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap;">
                     <button id="ramRamBtn" onclick="markAttendance()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
-                        🔥 राम-राम (<span id="ramRamCount">0</span>)
+                        🔥 राम-राम ठोकें (<span id="ramRamCount">0</span>)
                     </button>
                     <div style="background: rgba(0,255,102,0.15); border: 1px solid #00ff66; padding: 8px 10px; border-radius: 8px; font-size: 11px; color: #00ff66; font-weight: bold; white-space: nowrap;">
                         👀 कुल विज़िटर: <span id="autoVisitorCount">0</span>
@@ -399,8 +398,7 @@
         document.getElementById("profileSub").innerText = mySubTitle;
         document.getElementById("profileImg").src = myProfilePic;
 
-        // ऑटोमैटिक फोल्डर स्कैनिंग सिस्टम: अब आप 'images/' फोल्डर में कोई भी फोटो या वीडियो किसी भी नाम से डालेंगे, तो वह अपने आप यहाँ आ जाएगा!
-        // अगर आप सर्वर पर डायरेक्ट स्कैन नहीं कर पा रहे हैं, तो नीचे दिए गए एरे (List) में नाम जोड़ सकते हैं या नीचे दिए गए ऑटो-डिटेक्ट मेथड का उपयोग कर सकते हैं।
+        // यहाँ अपनी फोटो और वीडियो के फाइल नाम जोड़ दें (जब भी नई फोटो या वीडियो डालें, उसका नाम यहाँ लिख दें)
         let myPhotos = [
             "photo1.jpg",
             "photo2.jpg"
@@ -410,7 +408,6 @@
             "video1.mp4"
         ];
 
-        // अपडेटेड गैलरी ओपन फंक्शन
         function openGallery(type) {
             const modal = document.getElementById("galleryModal");
             const title = document.getElementById("modalTitle");
@@ -474,27 +471,26 @@
             window.open(whatsappUrl, '_blank');
         }
 
-        // ऑटोमैटिक विजिटर काउंटर और राम-राम काउंटर लॉजिक
+        // राम-राम बटन काउंटर (0 से शुरुआत)
         function markAttendance() {
             let hasVoted = localStorage.getItem("hasVotedRamRam");
             if (!hasVoted) {
-                let ramCount = parseInt(localStorage.getItem("ramRamCountVal") || 1246) + 1;
+                let ramCount = parseInt(localStorage.getItem("ramRamCountVal") || 0) + 1;
                 localStorage.setItem("ramRamCountVal", ramCount);
                 localStorage.setItem("hasVotedRamRam", "true");
                 document.getElementById("ramRamCount").innerText = ramCount;
                 
                 let btn = document.getElementById("ramRamBtn");
-                btn.innerHTML = "🙏 दर्ज हुई (" + ramCount + ")";
+                btn.innerHTML = "🙏 राम-राम दर्ज हुई (" + ramCount + ")";
                 btn.style.opacity = "0.8";
                 btn.style.cursor = "not-allowed";
             }
         }
 
         window.addEventListener('load', function() {
-            // ऑटोमैटिक विजिटर काउंटर (हर बार नया यूजर आने पर बढ़ेगा)
-            let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 1450);
+            // ऑटोमैटिक विज़िटर काउंटर (0 से शुरुआत)
+            let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 0);
             
-            // यह चेक करता है कि क्या यह इस ब्राउज़र का इस सेशन में पहला विजिट है
             if (!sessionStorage.getItem("visitedThisSession")) {
                 totalVisits += 1;
                 localStorage.setItem("siteTotalVisits", totalVisits);
@@ -503,19 +499,19 @@
             
             document.getElementById("autoVisitorCount").innerText = totalVisits;
 
-            // राम-राम काउंटर सेट करना
-            let ramCount = localStorage.getItem("ramRamCountVal") || 1246;
+            // राम-राम काउंटर लोड करना (0 से शुरुआत)
+            let ramCount = localStorage.getItem("ramRamCountVal") || 0;
             document.getElementById("ramRamCount").innerText = ramCount;
 
             let hasVoted = localStorage.getItem("hasVotedRamRam");
             if (hasVoted) {
                 let btn = document.getElementById("ramRamBtn");
-                btn.innerHTML = "🙏 दर्ज हुई (" + ramCount + ")";
+                btn.innerHTML = "🙏 राम-राम दर्ज हुई (" + ramCount + ")";
                 btn.style.opacity = "0.8";
                 btn.style.cursor = "not-allowed";
             }
 
-            // काउंटर बैज अपडेट करना
+            // गैलरी काउंटर बैज अपडेट
             document.getElementById("photoCountBadge").innerText = myPhotos.length;
             document.getElementById("videoCountBadge").innerText = myVideos.length;
         });
