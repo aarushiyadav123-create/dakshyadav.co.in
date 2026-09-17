@@ -61,11 +61,10 @@
         let videoCategories = {};
         let myPhotos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
 
-        // Firestore से वीडियो और फोल्डर लोड करने का मुख्य फंक्शन
         async function loadVideosFromFirebase() {
             try {
                 const querySnapshot = await getDocs(collection(db, "videos"));
-                videoCategories = {}; // रीसेट करें ताकि डुप्लीकेट न हो
+                videoCategories = {};
                 querySnapshot.forEach((doc) => {
                     let data = doc.data();
                     let cat = data.category || "अन्य फोल्डर (Other)";
@@ -85,7 +84,6 @@
         }
 
         window.openVideoCategoriesFromDB = async function() {
-            // लोड होने का मैसेज या इंडिकेशन दिखा सकते हैं
             await loadVideosFromFirebase();
             openVideoCategoriesModal();
         }
@@ -97,7 +95,6 @@
 <body>
 
     <div class="page-wrapper">
-        <!-- बाईं तरफ का प्रोफाइल और मेनू सेक्शन -->
         <div class="container">
             <script>
                 const myName = "राजेश यादव मालकोषिया";
@@ -114,7 +111,7 @@
             </div>
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
-            <p class="desc-text">रै भाई, हमारे गाँव का डिजिटल प्लेटफॉर्म आ लिया है, इसे एक्सप्लोर करें और व्हाट्सएप पर शेयर करें!</p>
+            <p class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो!</p>
 
             <div class="btn-group">
                 <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📱 Play Store ऐप लिंक</a>
@@ -141,7 +138,6 @@
             <div class="footer">&copy; 2026 dakshyadav.co.in | All Rights Reserved</div>
         </div>
 
-        <!-- दाईं तरफ का विजिटर, स्वागत और शॉपिंग सेक्शन -->
         <div class="right-content-space" id="rightBox">
             <div class="section-title" style="margin-top:0;">✨ स्वागत संदेश</div>
             
@@ -175,7 +171,6 @@
         </div>
     </div>
 
-    <!-- गैलरी और फोल्डर मॉडल विंडो -->
     <div id="galleryModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -186,13 +181,11 @@
         </div>
     </div>
 
-    <!-- वीडियो / फोटो देखने के लिए लाइटबॉक्स -->
     <div id="lightbox">
         <span onclick="closeLightbox()">&times;</span>
         <div id="lightboxContent"></div>
     </div>
 
-    <!-- कॉन्फेटी एनिमेशन स्क्रिप्ट -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <script>
@@ -228,7 +221,7 @@
 
             let keys = Object.keys(videoCategories);
             if(keys.length === 0) {
-                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">डेटाबेस में कोई वीडियो नहीं मिला। कृपया Firebase Firestore में 'videos' कलेक्शन और 'category', 'url' फील्ड चेक करें।</div>`;
+                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">डेटाबेस में कोई वीडियो नहीं मिला। कृपया Firebase Firestore चेक करें।</div>`;
             } else {
                 keys.forEach(categoryName => {
                     const folderItem = document.createElement('div');
@@ -286,7 +279,7 @@
 
         function openWhatsAppShare() {
             const appUrl = "https://dakshyadav.co.in";
-            const message = "रै भाई, dakshyadav.co.in पर हमारे गाँव का लाइव डिजिटल प्लेटफॉर्म देख लो और शेयर कर दो! " + appUrl;
+            const message = "रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो! " + appUrl;
             window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(message), '_blank');
         }
 
