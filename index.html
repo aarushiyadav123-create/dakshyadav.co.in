@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MeraGaov - मेरी पहचान | Live Status</title>
+    <title>MeraGaov - मेरी पहचान | Live Status & Admin</title>
     <meta name="description" content="MeraGaov - मेरी पहचान डिजिटल ऐप और वेबसाइट। लाइव वीडियो और फोल्डर मैनेजमेंट सिस्टम।">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -23,6 +23,12 @@
         .btn { background: linear-gradient(135deg, #00b0ff, #00e676); color: #002111; padding: 12px 16px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; display: block; width: 100%; border: 1px solid #ffffff; box-shadow: 0 5px 15px rgba(0,0,0,0.3); cursor: pointer; transition: 0.2s; }
         .btn:hover { opacity: 0.9; }
         .section-title { font-size: 15px; color: #b9f6ca; margin: 14px 0 6px 0; text-align: left; border-bottom: 2px solid #1fa376; padding-bottom: 3px; font-weight: bold; }
+        
+        /* Admin Panel Styles */
+        .admin-box { background: rgba(0, 0, 0, 0.35); border: 1.5px dashed #69f0ae; padding: 12px; border-radius: 12px; margin-top: 15px; }
+        .admin-input { width: 100%; padding: 8px 10px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #69f0ae; background: #04241b; color: #fff; font-size: 13px; }
+        .admin-input:focus { outline: none; border-color: #00e676; }
+
         #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 20px; }
         .modal-content { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 450px; max-height: 80vh; border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid #69f0ae; overflow-y: auto; position: relative; text-align: left; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; }
@@ -43,7 +49,8 @@
     <!-- Firebase SDK & Database Integration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBcINeRD8Xr35T9MI80h56AfWAi-JdACio",
@@ -57,6 +64,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         let videoCategories = {};
         let myPhotos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
@@ -90,6 +98,57 @@
 
         window.getVideoCategoriesData = () => videoCategories;
         window.getMyPhotosData = () => myPhotos;
+
+        // Admin Upload Functionality
+        window.verifyAdminAndUpload = async function() {
+            const pass = document.getElementById("adminPass").value;
+            if(pass !== "12345") { // Yahan apna secret password badal sakta hai
+                alert("गलत पासवर्ड! एडमिन एक्सेस अस्वीकृत।");
+                return;
+            }
+
+            const title = document.getElementById("mediaTitle").value;
+            const category = document.getElementById("mediaCategory").value || "General";
+            const fileInput = document.getElementById("mediaFile").files[0];
+            const directUrl = document.getElementById("mediaUrl").value;
+
+            if(!title) {
+                alert("कृपया मीडिया का टाइटल (नाम) दर्ज करें!");
+                return;
+            }
+
+            let finalUrl = directUrl;
+
+            try {
+                if(fileInput) {
+                    alert("फाइल अपलोड हो रही है, कृपया प्रतीक्षा करें...");
+                    const storageRef = ref(storage, 'uploads/' + Date.now() + '_' + fileInput.name);
+                    const snapshot = await uploadBytes(storageRef, fileInput);
+                    finalUrl = await getDownloadURL(snapshot.ref);
+                }
+
+                if(!finalUrl) {
+                    alert("कृपया कोई YouTube लिंक डालें या लाइव कैमरा से फाइल चुनें!");
+                    return;
+                }
+
+                await addDoc(collection(db, "videos"), {
+                    title: title,
+                    category: category,
+                    url: finalUrl,
+                    timestamp: new Date()
+                });
+
+                alert("सफलतापूर्वक अपलोड हो गया!");
+                document.getElementById("mediaTitle").value = "";
+                document.getElementById("mediaUrl").value = "";
+                document.getElementById("mediaFile").value = "";
+                loadVideosFromFirebase();
+            } catch (error) {
+                console.error("Upload Error: ", error);
+                alert("अपलोड करने में त्रुटि आई: " + error.message);
+            }
+        }
     </script>
 </head>
 <body>
@@ -155,7 +214,18 @@
                 </div>
             </div>
 
-            <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग</div>
+            <div class="section-title">🔐 सिक्योर एडमिन पैनल (मीडिया अपलोड)</div>
+            <div class="admin-box">
+                <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें">
+                <input type="text" id="mediaTitle" class="admin-input" placeholder="वीडियो/फोटो का टाइटल (नाम)">
+                <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम (जैसे: गाँव के कार्यक्रम)">
+                <input type="text" id="mediaUrl" class="admin-input" placeholder="या YouTube / Direct MP4 लिंक पेस्ट करें">
+                <label style="font-size:12px; color:#b9f6ca; display:block; margin-bottom:4px;">📸 लाइव कैमरा से फोटो/वीडियो कैप्चर करें:</label>
+                <input type="file" id="mediaFile" accept="image/*,video/*" capture="environment" class="admin-input" style="padding:4px;">
+                <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #ff9800, #ff5722); font-size: 13px; padding: 8px; margin-top: 5px;">🚀 डायरेक्ट अपलोड करें</button>
+            </div>
+
+            <div class="section-title" style="margin-top:15px;">🛍️ डिजिटल स्टोर & शॉपिंग</div>
             <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;">
                 <p style="font-size: 12px; color: #b9f6ca; margin-bottom: 10px;">ऑनलाइन कुछ भी खरीदें और हमारे जरिए सहयोग करें!</p>
                 <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff; border: 1px solid #fff; font-size: 13px; padding: 10px;">🛒 Flipkart महा-स्टोर</a>
@@ -267,7 +337,6 @@
             if(type === 'image') {
                 content.innerHTML = `<img src="${url}" alt="Media View">`;
             } else {
-                // YouTube और Direct MP4 दोनों को चलाने के लिए स्मार्ट हाइब्रिड प्लेयर
                 if (url.includes("youtube.com") || url.includes("youtu.be")) {
                     let videoId = "";
                     if (url.includes("youtu.be/")) {
@@ -290,7 +359,7 @@
 
         function openWhatsAppShare() {
             const appUrl = "https://dakshyadav.co.in";
-            const message = "रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो! " + appUrl;
+            const message = "रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर do! " + appUrl;
             window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(message), '_blank');
         }
 
