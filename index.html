@@ -12,34 +12,34 @@
         .container { background: linear-gradient(145deg, #083c2d, #0f523f, #186c52); width: 100%; max-width: 480px; padding: 18px 15px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; border: 1.5px solid rgba(130, 240, 180, 0.4); flex: 1; }
         .right-content-space { background: linear-gradient(145deg, #063124, #0b4232); width: 100%; max-width: 480px; min-height: 400px; padding: 20px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: left; flex: 1; }
         
-        .profile-section { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 12px; background: linear-gradient(120deg, #0e5843, #157356, #1f8a67); padding: 14px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .profile-section { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px; background: linear-gradient(120deg, #0e5843, #157356, #1f8a67); padding: 14px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .profile-pic { width: 105px; height: 105px; border-radius: 50%; object-fit: cover; border: 3px solid #69f0ae; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-        .profile-info { text-align: left; }
+        .profile-info { text-align: left; width: 100%; }
         
-        /* Chota Digital Platform Name & Bold "Re Bhai" Style */
+        /* Bada & Stylish Name Style */
         .profile-info p.sub-platform { font-size: 11px; color: #a5d6a7; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
-        .profile-info h2 { font-size: 18px; font-weight: 700; line-height: 1.2; background: linear-gradient(270deg, #ffeb3b, #00e676, #00b0ff, #ff4081, #ffeb3b); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbowGlow 6s ease infinite; text-shadow: 0 2px 8px rgba(0,255,150,0.2); }
+        .profile-info h2 { font-size: 21px; font-weight: 800; line-height: 1.2; background: linear-gradient(270deg, #ffeb3b, #00e676, #00b0ff, #ff4081, #ffeb3b); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbowGlow 6s ease infinite; text-shadow: 0 2px 8px rgba(0,255,150,0.3); }
         @keyframes rainbowGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* Bold & Big "Re Bhai" description style */
-        .desc-text { font-size: 14px; color: #e8f5e9; line-height: 1.5; margin-bottom: 12px; font-weight: 500; }
-        .desc-text b, .desc-text strong { font-size: 17px; color: #ffeb3b; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        /* Bada & Colored "Re Bhai" description style */
+        .desc-text { font-size: 15px; color: #e8f5e9; line-height: 1.6; margin-bottom: 15px; font-weight: 500; text-align: center; background: rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 10px; border: 1px dashed rgba(105, 240, 174, 0.3); }
+        .desc-text b, .desc-text strong { font-size: 19px; color: #ffeb3b; font-weight: 900; text-shadow: 0 2px 6px rgba(255, 235, 59, 0.4); text-transform: uppercase; }
 
         .badge { display: inline-block; background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 10px; box-shadow: 0 3px 10px rgba(0,200,83,0.3); }
         .btn-group { margin-bottom: 10px; }
-        .btn { background: linear-gradient(135deg, #00b0ff, #00e676); color: #002111; padding: 12px 16px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; display: block; width: 100%; border: 1px solid #ffffff; box-shadow: 0 5px 15px rgba(0,0,0,0.3); cursor: pointer; transition: 0.2s; }
+        .btn { background: linear-gradient(135deg, #00b0ff, #00e676); color: #002111; padding: 12px 16px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; display: block; width: 100%; border: 1px solid #ffffff; box-shadow: 0 5px 15px rgba(0,0,0,0.3); cursor: pointer; transition: 0.2s; text-align: center; }
         .btn:hover { opacity: 0.9; }
         .section-title { font-size: 15px; color: #b9f6ca; margin: 14px 0 6px 0; text-align: left; border-bottom: 2px solid #1fa376; padding-bottom: 3px; font-weight: bold; }
         
-        /* Admin Panel Styles */
-        .admin-box { background: rgba(0, 0, 0, 0.35); border: 1.5px dashed #69f0ae; padding: 12px; border-radius: 12px; margin-top: 15px; }
-        .admin-input { width: 100%; padding: 8px 10px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #69f0ae; background: #04241b; color: #fff; font-size: 13px; }
+        /* Collapsible Admin Panel Button & Box */
+        .admin-toggle-btn { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffffe0; padding: 10px 14px; border-radius: 10px; font-weight: bold; font-size: 14px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-bottom: 10px; }
+        .admin-box { display: none; background: rgba(0, 0, 0, 0.4); border: 1.5px dashed #69f0ae; padding: 12px; border-radius: 12px; margin-top: 5px; margin-bottom: 15px; }
+        .admin-input { width: 100%; padding: 9px 10px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #69f0ae; background: #04241b; color: #fff; font-size: 13px; }
         .admin-input:focus { outline: none; border-color: #00e676; }
 
-        /* Chota Live Camera Button Style */
         .camera-btn-wrapper { display: flex; align-items: center; justify-content: space-between; background: #04241b; border: 1px solid #69f0ae; padding: 6px 10px; border-radius: 6px; margin-bottom: 8px; }
         .camera-btn-wrapper label { font-size: 12px; color: #b9f6ca; font-weight: 600; cursor: pointer; }
-        .camera-btn-wrapper input[type="file"] { font-size: 11px; color: #fff; width: 65%; }
+        .camera-btn-wrapper input[type="file"] { font-size: 11px; color: #fff; width: 60%; }
 
         #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 20px; }
         .modal-content { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 450px; max-height: 80vh; border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid #69f0ae; overflow-y: auto; position: relative; text-align: left; }
@@ -113,7 +113,7 @@
         // Admin Upload Functionality
         window.verifyAdminAndUpload = async function() {
             const pass = document.getElementById("adminPass").value;
-            if(pass !== "12345") { // Yahan apna secret password badal sakta hai
+            if(pass !== "12345") { 
                 alert("गलत पासवर्ड! एडमिन एक्सेस अस्वीकृत।");
                 return;
             }
@@ -225,23 +225,27 @@
                 </div>
             </div>
 
-            <div class="section-title">🔐 सिक्योर एडमिन पैनल (मीडिया अपलोड)</div>
-            <div class="admin-box">
+            <!-- Admin Toggle Button -->
+            <button class="admin-toggle-btn" onclick="toggleAdminPanel()">
+                🔐 Admin
+            </button>
+
+            <!-- Collapsible Admin Box -->
+            <div class="admin-box" id="adminPanelBox">
                 <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें">
-                <input type="text" id="mediaTitle" class="admin-input" placeholder="वीडियो/फोटो का टाइटल (नाम)">
-                <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम (जैसे: गाँव के कार्यक्रम)">
-                <input type="text" id="mediaUrl" class="admin-input" placeholder="या YouTube / Direct MP4 लिंक पेस्ट करें">
+                <input type="text" id="mediaTitle" class="admin-input" placeholder="मीडिया का टाइटल (नाम)">
+                <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम">
+                <input type="text" id="mediaUrl" class="admin-input" placeholder="YouTube या Direct MP4 लिंक">
                 
-                <!-- Chota Live Camera Button -->
                 <div class="camera-btn-wrapper">
-                    <label for="mediaFile">📷 कैमरा से फोटो/वीडियो लें:</label>
+                    <label for="mediaFile">📷 फाइल चुनें:</label>
                     <input type="file" id="mediaFile" accept="image/*,video/*" capture="environment">
                 </div>
 
-                <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #ff9800, #ff5722); font-size: 13px; padding: 8px; margin-top: 5px;">🚀 डायरेक्ट अपलोड करें</button>
+                <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); color: #002111; font-size: 13px; padding: 9px; margin-top: 5px;">📥 डाउनलोड / अपलोड करें</button>
             </div>
 
-            <div class="section-title" style="margin-top:15px;">🛍️ डिजिटल स्टोर & शॉपिंग</div>
+            <div class="section-title" style="margin-top:10px;">🛍️ डिजिटल स्टोर & शॉपिंग</div>
             <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;">
                 <p style="font-size: 12px; color: #b9f6ca; margin-bottom: 10px;">ऑनलाइन कुछ भी खरीदें और हमारे जरिए सहयोग करें!</p>
                 <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff; border: 1px solid #fff; font-size: 13px; padding: 10px;">🛒 Flipkart महा-स्टोर</a>
@@ -278,6 +282,16 @@
         document.getElementById("profileTitle").innerText = myName;
         document.getElementById("profileSub").innerText = mySubTitle;
         document.getElementById("profileImg").src = myProfilePic;
+
+        // Admin Panel Toggle Function
+        function toggleAdminPanel() {
+            const box = document.getElementById("adminPanelBox");
+            if(box.style.display === "block") {
+                box.style.display = "none";
+            } else {
+                box.style.display = "block";
+            }
+        }
 
         function openPhotoGallery() {
             const modal = document.getElementById("galleryModal");
