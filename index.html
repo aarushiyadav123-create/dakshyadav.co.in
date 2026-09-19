@@ -40,9 +40,9 @@
         .admin-box { display: none; background: rgba(0, 0, 0, 0.5); border: 1.5px dashed #69f0ae; padding: 10px; border-radius: 10px; margin-bottom: 12px; text-align: left; }
         .admin-input { width: 100%; padding: 8px; margin-bottom: 6px; border-radius: 5px; border: 1px solid #69f0ae; background: #04241b; color: #fff; font-size: 12px; }
         .admin-input:focus { outline: none; border-color: #00e676; }
-        .camera-btn-wrapper { display: flex; align-items: center; justify-content: space-between; background: #04241b; border: 1px solid #69f0ae; padding: 5px 8px; border-radius: 5px; margin-bottom: 6px; }
+        .camera-btn-wrapper { display: flex; align-items: center; justify-content: space-between; background: #04241b; border: 1px solid #69f0ae; padding: 6px 8px; border-radius: 5px; margin-bottom: 6px; }
         .camera-btn-wrapper label { font-size: 11px; color: #b9f6ca; font-weight: 600; cursor: pointer; }
-        .camera-btn-wrapper input[type="file"] { font-size: 10px; color: #fff; width: 55%; }
+        .camera-btn-wrapper input[type="file"] { font-size: 10px; color: #fff; width: 60%; }
 
         /* Gallery Modal & Lightbox */
         #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 15px; }
@@ -142,46 +142,54 @@
             if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
 
             const newsText = document.getElementById("adminLiveNewsInput").value.trim();
-            const tickerImgUrl = document.getElementById("adminTickerImgInput").value.trim();
+            const tickerFile = document.getElementById("adminTickerImgFile").files[0];
             const title = document.getElementById("mediaTitle").value;
             const category = document.getElementById("mediaCategory").value || "General";
             const fileInput = document.getElementById("mediaFile").files[0];
-            const directUrl = document.getElementById("mediaUrl").value;
 
             try {
+                let tickerImgUrl = "";
+                if(tickerFile) {
+                    alert("टिकर फोटो अपलोड हो रही है...");
+                    const tickerStorageRef = ref(storage, 'ticker/' + Date.now() + '_' + tickerFile.name);
+                    const tickerSnapshot = await uploadBytes(tickerStorageRef, tickerFile);
+                    tickerImgUrl = await getDownloadURL(tickerSnapshot.ref);
+                }
+
                 if(newsText !== "" || tickerImgUrl !== "") {
-                    await setDoc(doc(db, "settings", "linenews"), { text: newsText, imgUrl: tickerImgUrl });
-                    document.getElementById("liveNewsText").innerText = newsText;
-                    const imgElem = document.getElementById("tickerImage");
-                    if(tickerImgUrl) {
+                    let updateData = { text: newsText };
+                    if(tickerImgUrl !== "") updateData.imgUrl = tickerImgUrl;
+                    
+                    await setDoc(doc(db, "settings", "linenews"), updateData, { merge: true });
+                    
+                    if(newsText !== "") document.getElementById("liveNewsText").innerText = newsText;
+                    if(tickerImgUrl !== "") {
+                        const imgElem = document.getElementById("tickerImage");
                         imgElem.src = tickerImgUrl;
                         imgElem.style.display = "inline-block";
-                    } else {
-                        imgElem.style.display = "none";
                     }
                     document.getElementById("liveNewsBoxContainer").style.display = "flex";
                 }
 
-                if(title) {
-                    let finalUrl = directUrl;
-                    if(fileInput) {
-                        alert("फाइल अपलोड हो रही है...");
-                        const storageRef = ref(storage, 'uploads/' + Date.now() + '_' + fileInput.name);
-                        const snapshot = await uploadBytes(storageRef, fileInput);
-                        finalUrl = await getDownloadURL(snapshot.ref);
-                    }
-                    if(finalUrl) {
-                        await addDoc(collection(db, "videos"), { title: title, category: category, url: finalUrl, timestamp: new Date() });
-                        alert("मीडिया सफलतापूर्वक अपलोड हो गया!");
-                        document.getElementById("mediaTitle").value = "";
-                        document.getElementById("mediaUrl").value = "";
-                        document.getElementById("mediaFile").value = "";
-                        loadVideosFromFirebase();
-                    }
+                if(title && fileInput) {
+                    alert("मीडिया फाइल अपलोड हो रही है...");
+                    const storageRef = ref(storage, 'uploads/' + Date.now() + '_' + fileInput.name);
+                    const snapshot = await uploadBytes(storageRef, fileInput);
+                    let finalUrl = await getDownloadURL(snapshot.ref);
+
+                    await addDoc(collection(db, "videos"), { title: title, category: category, url: finalUrl, timestamp: new Date() });
+                    alert("मीडिया सफलतापूर्वक अपलोड हो गया!");
+                    document.getElementById("mediaTitle").value = "";
+                    document.getElementById("mediaFile").value = "";
+                    loadVideosFromFirebase();
+                } else if(title && !fileInput) {
+                    alert("कृपया मीडिया के लिए गैलरी से फाइल चुनें!");
                 }
+
                 alert("अपडेट सफल रहा!");
+                document.getElementById("adminPass").value = "";
                 document.getElementById("adminLiveNewsInput").value = "";
-                document.getElementById("adminTickerImgInput").value = "";
+                document.getElementById("adminTickerImgFile").value = "";
             } catch (error) { alert("त्रुटि: " + error.message); }
         }
 
@@ -242,19 +250,22 @@
                 </div>
             </div>
 
-            <!-- Hidden Admin Panel -->
+            <!-- Hidden Admin Panel (No Links Required, Direct Gallery File Selection) -->
             <div class="admin-box" id="adminPanel">
                 <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें">
                 <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
-                <input type="text" id="adminTickerImgInput" class="admin-input" placeholder="टिकर फोटो का लिंक (URL) यहाँ डालें">
                 
-                <div style="font-size: 11px; color: #69f0ae; margin: 4px 0;">🎥 मीडिया अपलोड:</div>
-                <input type="text" id="mediaTitle" class="admin-input" placeholder="मीडिया का टाइटल (नाम)">
-                <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम">
-                <input type="text" id="mediaUrl" class="admin-input" placeholder="YouTube या MP4 लिंक">
                 <div class="camera-btn-wrapper">
-                    <label for="mediaFile">📷 फाइल चुनें:</label>
-                    <input type="file" id="mediaFile" accept="image/*,video/*" capture="environment">
+                    <label for="adminTickerImgFile">🖼️ टिकर फोटो चुनें:</label>
+                    <input type="file" id="adminTickerImgFile" accept="image/*">
+                </div>
+                
+                <div style="font-size: 11px; color: #69f0ae; margin: 6px 0 2px 0;">🎥 वीडियो/फोटो अपलोड (गैलरी से):</div>
+                <input type="text" id="mediaTitle" class="admin-input" placeholder="मीडिया का टाइटल (नाम)">
+                <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम (जैसे: वीडियो, न्यूज़)">
+                <div class="camera-btn-wrapper">
+                    <label for="mediaFile">📂 गैलरी से फाइल चुनें:</label>
+                    <input type="file" id="mediaFile" accept="image/*,video/*">
                 </div>
 
                 <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 7px; font-size: 12px; margin-bottom: 5px;">🚀 अपडेट / अपलोड करें</button>
@@ -267,8 +278,8 @@
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 Play Store से ऐप डाउनलोड करें</a>
             <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप पर शेयर करें</button>
             
-            <!-- Contact Us Button for News/Ads -->
-            <a href="https://api.whatsapp.com/send?phone=919876543210&text=Ramram%20bhai,%20mujhe%20apni%20news%20ya%20ad%20chalwani%20hai.%20Details%20batao." class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 अपनी न्यूज़ चलवायें (Contact Us)</a>
+            <!-- Contact Us Button with Original Number 7015445900 -->
+            <a href="https://api.whatsapp.com/send?phone=917015445900&text=Ramram%20bhai,%20mujhe%20apni%20news%20ya%20ad%20chalwani%20hai.%20Details%20batao." class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 अपनी न्यूज़ चलवायें (Contact Us)</a>
 
             <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 Photo Gallery</button>
             <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो (Video)</button>
