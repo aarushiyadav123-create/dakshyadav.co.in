@@ -3,68 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MeraGaov - मेरी पहचान | Live Status & Admin</title>
-    <meta name="description" content="MeraGaov - मेरी पहचान डिजिटल ऐप और वेबसाइट। लाइव वीडियो और फोल्डर मैनेजमेंट सिस्टम।">
+    <title>MeraGaov - मेरी पहचान</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        html, body { width: 100%; min-height: 100vh; background: linear-gradient(135deg, #02231c, #063c2c, #0d5c46); color: #fff; overflow-x: hidden; }
-        .page-wrapper { display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 20px; padding: 20px; width: 100%; max-width: 1100px; margin: 0 auto; }
-        .container { background: linear-gradient(145deg, #083c2d, #0f523f, #186c52); width: 100%; max-width: 480px; padding: 18px 15px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; border: 1.5px solid rgba(130, 240, 180, 0.4); flex: 1; }
-        .right-content-space { background: linear-gradient(145deg, #063124, #0b4232); width: 100%; max-width: 480px; min-height: 400px; padding: 20px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: left; flex: 1; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: linear-gradient(135deg, #02231c, #063c2c, #0d5c46); color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 15px; }
+        .page-wrapper { display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 20px; width: 100%; max-width: 1100px; margin: 0 auto; }
+        .container { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 480px; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: center; flex: 1; }
+        .right-content-space { background: linear-gradient(145deg, #063124, #0b4232); width: 100%; max-width: 480px; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: left; flex: 1; }
         
-        /* Top Most Live News Ticker */
-        .live-news-box-top { background: rgba(0, 0, 0, 0.7); border: 1.5px solid #ffeb3b; border-radius: 12px; padding: 8px 12px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .live-badge { background: #d32f2f; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 6px; animation: pulseBlink 1.5s infinite; flex-shrink: 0; }
-        @keyframes pulseBlink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        .live-news-text { font-size: 14px; color: #fff; font-weight: 600; width: 100%; overflow: hidden; }
+        /* Live News Ticker */
+        #liveNewsBoxContainer { display: flex; }
+        .live-news-box { background: rgba(0, 0, 0, 0.7); border: 1.5px solid #ffeb3b; border-radius: 10px; padding: 7px 10px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; width: 100%; }
+        .live-badge { background: #d32f2f; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; animation: blink 1.5s infinite; flex-shrink: 0; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .live-news-text { font-size: 13px; color: #fff; font-weight: 600; width: 100%; overflow: hidden; }
 
-        .profile-section { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px; background: linear-gradient(120deg, #0e5843, #157356, #1f8a67); padding: 14px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .profile-pic { width: 105px; height: 105px; border-radius: 50%; object-fit: cover; border: 3px solid #69f0ae; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+        /* Profile & Header Admin Button */
+        .profile-section { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; background: linear-gradient(120deg, #0e5843, #157356); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .profile-pic { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #69f0ae; flex-shrink: 0; }
         .profile-info { text-align: left; width: 100%; }
-        
-        .profile-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 3px; }
-        .profile-info p.sub-platform { font-size: 13px; color: #a5d6a7; font-weight: 700; letter-spacing: 0.5px; margin: 0; }
-        
-        /* Small Header Admin Button */
-        .header-admin-btn { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffffe0; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-        
-        .profile-info h2 { font-size: 21px; font-weight: 800; line-height: 1.2; background: linear-gradient(270deg, #ffeb3b, #00e676, #00b0ff, #ff4081, #ffeb3b); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbowGlow 6s ease infinite; text-shadow: 0 2px 8px rgba(0,255,150,0.3); }
-        @keyframes rainbowGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .profile-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2px; }
+        .sub-platform { font-size: 12px; color: #a5d6a7; font-weight: 700; }
+        .header-admin-btn { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffffe0; padding: 2px 7px; border-radius: 5px; font-weight: bold; font-size: 10px; cursor: pointer; }
+        .profile-info h2 { font-size: 19px; font-weight: 800; background: linear-gradient(270deg, #ffeb3b, #00e676, #00b0ff, #ffeb3b); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: glow 5s ease infinite; }
+        @keyframes glow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        .desc-text { font-size: 16px; color: #fff9c4; line-height: 1.6; margin-bottom: 15px; font-weight: 700; text-align: center; background: rgba(0, 0, 0, 0.3); padding: 12px; border-radius: 10px; border: 1.5px solid #ffeb3b; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-
-        .badge { display: inline-block; background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 10px; box-shadow: 0 3px 10px rgba(0,200,83,0.3); }
-        .btn-group { margin-bottom: 10px; }
-        .btn { background: linear-gradient(135deg, #00b0ff, #00e676); color: #002111; padding: 12px 16px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; display: block; width: 100%; border: 1px solid #ffffff; box-shadow: 0 5px 15px rgba(0,0,0,0.3); cursor: pointer; transition: 0.2s; text-align: center; }
-        .btn:hover { opacity: 0.9; }
-        .section-title { font-size: 15px; color: #b9f6ca; margin: 14px 0 6px 0; text-align: left; border-bottom: 2px solid #1fa376; padding-bottom: 3px; font-weight: bold; }
+        .desc-text { font-size: 14px; color: #fff9c4; line-height: 1.5; margin-bottom: 12px; font-weight: 700; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px; border: 1px solid #ffeb3b; }
+        .badge { display: inline-block; background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: 700; margin-bottom: 8px; }
         
-        .admin-box { display: none; background: rgba(0, 0, 0, 0.4); border: 1.5px dashed #69f0ae; padding: 12px; border-radius: 12px; margin-top: 5px; margin-bottom: 15px; }
-        .admin-input { width: 100%; padding: 9px 10px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #69f0ae; background: #04241b; color: #fff; font-size: 13px; }
+        .btn { background: linear-gradient(135deg, #00b0ff, #00e676); color: #002111; padding: 10px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; display: block; width: 100%; border: 1px solid #ffffff; margin-bottom: 8px; cursor: pointer; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .section-title { font-size: 14px; color: #b9f6ca; margin: 12px 0 6px 0; border-bottom: 2px solid #1fa376; padding-bottom: 3px; font-weight: bold; }
+        
+        /* Hidden Admin Panel */
+        .admin-box { display: none; background: rgba(0, 0, 0, 0.5); border: 1.5px dashed #69f0ae; padding: 10px; border-radius: 10px; margin-bottom: 12px; text-align: left; }
+        .admin-input { width: 100%; padding: 8px; margin-bottom: 6px; border-radius: 5px; border: 1px solid #69f0ae; background: #04241b; color: #fff; font-size: 12px; }
         .admin-input:focus { outline: none; border-color: #00e676; }
+        .camera-btn-wrapper { display: flex; align-items: center; justify-content: space-between; background: #04241b; border: 1px solid #69f0ae; padding: 5px 8px; border-radius: 5px; margin-bottom: 6px; }
+        .camera-btn-wrapper label { font-size: 11px; color: #b9f6ca; font-weight: 600; cursor: pointer; }
+        .camera-btn-wrapper input[type="file"] { font-size: 10px; color: #fff; width: 55%; }
 
-        .camera-btn-wrapper { display: flex; align-items: center; justify-content: space-between; background: #04241b; border: 1px solid #69f0ae; padding: 6px 10px; border-radius: 6px; margin-bottom: 8px; }
-        .camera-btn-wrapper label { font-size: 12px; color: #b9f6ca; font-weight: 600; cursor: pointer; }
-        .camera-btn-wrapper input[type="file"] { font-size: 11px; color: #fff; width: 60%; }
+        /* Gallery Modal & Lightbox */
+        #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 15px; }
+        .modal-content { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 420px; max-height: 80vh; border-radius: 12px; padding: 15px; border: 1px solid #69f0ae; overflow-y: auto; text-align: left; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px; }
+        .modal-header h3 { color: #69f0ae; font-size: 15px; }
+        .close-modal { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
+        .file-list { display: flex; flex-direction: column; gap: 6px; }
+        .file-item { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); padding: 8px 10px; border-radius: 8px; color: #fff; font-size: 12px; }
+        .file-info { display: flex; align-items: center; gap: 6px; flex-grow: 1; cursor: pointer; overflow: hidden; }
+        .delete-btn { background: #d32f2f; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: bold; }
 
-        #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 20px; }
-        .modal-content { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 450px; max-height: 80vh; border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid #69f0ae; overflow-y: auto; position: relative; text-align: left; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; }
-        .modal-header h3 { color: #69f0ae; font-size: 16px; }
-        .close-modal { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
-        .file-list { display: flex; flex-direction: column; gap: 8px; }
-        .file-item { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); padding: 10px 12px; border-radius: 9px; color: #fff; font-size: 13px; font-weight: 500; }
-        .file-info { display: flex; align-items: center; gap: 8px; flex-grow: 1; cursor: pointer; overflow: hidden; }
-        .file-icon { font-size: 16px; flex-shrink: 0; }
-        .file-name { word-break: break-all; }
-        .delete-btn { background: #d32f2f; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px; font-weight: bold; flex-shrink: 0; }
-        .delete-btn:hover { background: #b71c1c; }
-
-        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
+        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 9999; padding: 15px; }
         #lightbox img, #lightbox video, #lightbox iframe { max-width: 100%; max-height: 85vh; border-radius: 10px; object-fit: contain; }
-        #lightbox span { position: absolute; top: 15px; right: 20px; color: white; font-size: 35px; cursor: pointer; background: rgba(0,0,0,0.5); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .footer { font-size: 11px; color: #a5d6a7; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 10px; margin-top: 14px; text-align: center; }
-        @media (max-width: 768px) { .page-wrapper { flex-direction: column; align-items: center; padding: 10px; } .right-content-space, .container { max-width: 100%; } }
+        #lightbox span { position: absolute; top: 12px; right: 18px; color: white; font-size: 30px; cursor: pointer; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .footer { font-size: 10px; color: #a5d6a7; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 8px; margin-top: 10px; text-align: center; }
+        @media (max-width: 768px) { .page-wrapper { flex-direction: column; align-items: center; padding: 5px; } .right-content-space, .container { max-width: 100%; } }
     </style>
 
     <!-- Firebase SDK & Database Integration -->
@@ -96,14 +89,15 @@
 
         async function loadLiveNews() {
             try {
-                const docRef = doc(db, "settings", "linenews");
-                const docSnap = await getDoc(docRef);
+                const docSnap = await getDoc(doc(db, "settings", "linenews"));
                 if (docSnap.exists() && docSnap.data().text) {
-                    document.getElementById("liveNewsTickerContent").innerText = docSnap.data().text;
+                    let txt = docSnap.data().text;
+                    document.getElementById("liveNewsText").innerText = txt;
+                    document.getElementById("liveNewsBoxContainer").style.display = txt.trim() === "" ? "none" : "flex";
+                } else {
+                    document.getElementById("liveNewsBoxContainer").style.display = "none";
                 }
-            } catch (e) {
-                console.error("Error loading live news: ", e);
-            }
+            } catch (e) { console.error(e); }
         }
         window.addEventListener('DOMContentLoaded', loadLiveNews);
 
@@ -115,17 +109,10 @@
                     let data = documentSnap.data();
                     let cat = data.category || "अन्य फोल्डर (Other)";
                     let url = data.url || "";
-                    
-                    if (!videoCategories[cat]) {
-                        videoCategories[cat] = [];
-                    }
-                    if(url) {
-                        videoCategories[cat].push({ id: documentSnap.id, name: data.title || "वीडियो", url: url });
-                    }
+                    if (!videoCategories[cat]) videoCategories[cat] = [];
+                    if(url) videoCategories[cat].push({ id: documentSnap.id, name: data.title || "वीडियो", url: url });
                 });
-            } catch (e) {
-                console.error("Error loading videos: ", e);
-            }
+            } catch (e) { console.error(e); }
         }
 
         window.openVideoCategoriesFromDB = async function() {
@@ -138,10 +125,7 @@
 
         window.verifyAdminAndUpload = async function() {
             const pass = document.getElementById("adminPass").value;
-            if(pass !== "336200") { 
-                alert("गलत पासवर्ड! एडमिन एक्सेस अस्वीकृत।");
-                return;
-            }
+            if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
 
             const newsText = document.getElementById("adminLiveNewsInput").value.trim();
             const title = document.getElementById("mediaTitle").value;
@@ -150,29 +134,22 @@
             const directUrl = document.getElementById("mediaUrl").value;
 
             try {
-                if(newsText) {
+                if(newsText !== "") {
                     await setDoc(doc(db, "settings", "linenews"), { text: newsText });
-                    document.getElementById("liveNewsTickerContent").innerText = newsText;
-                    document.getElementById("adminLiveNewsInput").value = "";
-                    alert("लाइव न्यूज टिकर सफलतापूर्वक अपडेट हो गया!");
+                    document.getElementById("liveNewsText").innerText = newsText;
+                    document.getElementById("liveNewsBoxContainer").style.display = "flex";
                 }
 
                 if(title) {
                     let finalUrl = directUrl;
                     if(fileInput) {
-                        alert("फाइल अपलोड हो रही है, कृपया प्रतीक्षा करें...");
+                        alert("फाइल अपलोड हो रही है...");
                         const storageRef = ref(storage, 'uploads/' + Date.now() + '_' + fileInput.name);
                         const snapshot = await uploadBytes(storageRef, fileInput);
                         finalUrl = await getDownloadURL(snapshot.ref);
                     }
-
                     if(finalUrl) {
-                        await addDoc(collection(db, "videos"), {
-                            title: title,
-                            category: category,
-                            url: finalUrl,
-                            timestamp: new Date()
-                        });
+                        await addDoc(collection(db, "videos"), { title: title, category: category, url: finalUrl, timestamp: new Date() });
                         alert("मीडिया सफलतापूर्वक अपलोड हो गया!");
                         document.getElementById("mediaTitle").value = "";
                         document.getElementById("mediaUrl").value = "";
@@ -180,48 +157,34 @@
                         loadVideosFromFirebase();
                     }
                 }
+                alert("अपडेट सफल रहा!");
+                document.getElementById("adminLiveNewsInput").value = "";
+            } catch (error) { alert("त्रुटि: " + error.message); }
+        }
 
-                if(!newsText && !title) {
-                    alert("कृपया लाइव न्यूज टेक्स्ट या मीडिया विवरण दर्ज करें!");
-                }
-
-            } catch (error) {
-                console.error("Upload Error: ", error);
-                alert("अपलोड करने में त्रुटि आई: " + error.message);
-            }
+        window.deleteLiveNews = async function() {
+            const pass = document.getElementById("adminPass").value;
+            if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
+            await setDoc(doc(db, "settings", "linenews"), { text: "" });
+            document.getElementById("liveNewsBoxContainer").style.display = "none";
+            alert("लाइव न्यूज़ हटा दी गई है!");
         }
 
         window.deleteVideoFromDB = async function(id, categoryName) {
-            const pass = prompt("डिलीट करने के लिए एडमिन पासवर्ड दर्ज करें:");
-            if(pass !== "12345") {
-                alert("गलत पासवर्ड!");
-                return;
-            }
-
-            if(confirm("क्या आप वाकई इस वीडियो को डिलीट करना चाहते हैं?")) {
-                try {
-                    await deleteDoc(doc(db, "videos", id));
-                    alert("वीडियो सफलतापूर्वक डिलीट हो गया!");
-                    await loadVideosFromFirebase();
-                    window.openCategoryVideos(categoryName);
-                } catch(e) {
-                    alert("डिलिट करने में एरर आया: " + e.message);
-                }
+            const pass = prompt("एडमिन पासवर्ड दर्ज करें:");
+            if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
+            if(confirm("डिलीट करना चाहते हैं?")) {
+                await deleteDoc(doc(db, "videos", id));
+                await loadVideosFromFirebase();
+                window.openCategoryVideos(categoryName);
             }
         }
 
         window.deletePhotoLocal = function(id) {
-            const pass = prompt("डिलीट करने के लिए एडमिन पासवर्ड दर्ज करें:");
-            if(pass !== "12345") {
-                alert("गलत पासवर्ड!");
-                return;
-            }
-
-            if(confirm("क्या आप वाकई इस फोटो को हटाना चाहते हैं?")) {
-                myPhotos = myPhotos.filter(p => p.id !== id);
-                alert("फोटो हटा दी गई है!");
-                window.openPhotoGallery();
-            }
+            const pass = prompt("एडमिन पासवर्ड दर्ज करें:");
+            if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
+            myPhotos = myPhotos.filter(p => p.id !== id);
+            window.openPhotoGallery();
         }
     </script>
 </head>
@@ -229,115 +192,92 @@
 
     <div class="page-wrapper">
         <div class="container">
-            <script>
-                const myName = "राजेश यादव मालकोषिया";
-                const mySubTitle = "dakshyadav.co.in";
-                const myProfilePic = "images/profile.jpg";
-            </script>
-
-            <!-- 🌟 सबसे ऊपर लाइव न्यूज टिकर (माउस ले जाने पर रुकेगा) -->
-            <div class="live-news-box-top">
-                <div class="live-badge">LIVE</div>
-                <div class="live-news-text">
-                    <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
-                        <span id="liveNewsTickerContent">हरियाणा डिजिटल अपडेट: MeraGaov ऐप के माध्यम से गांवों में डिजिटल सेवाएं और सूचनाएं सुलभ हो रही हैं। &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; स्थानीय सूचना: गांवों में स्वच्छता और सामुदायिक विकास कार्यों के लिए विशेष अभियान जारी है।</span>
-                    </marquee>
+            <!-- Live News Box -->
+            <div id="liveNewsBoxContainer">
+                <div class="live-news-box">
+                    <div class="live-badge">LIVE</div>
+                    <div class="live-news-text">
+                        <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
+                            <span id="liveNewsText">हरियाणा डिजिटल अपडेट: MeraGaov ऐप के माध्यम से गांवों में डिजिटल सेवाएं सुलभ हो रही हैं।</span>
+                        </marquee>
+                    </div>
                 </div>
             </div>
 
-            <!-- Profile Header Section with Small Header Admin Button -->
+            <!-- Profile Section with Admin Button -->
             <div class="profile-section">
-                <img src="" alt="Profile" class="profile-pic" id="profileImg" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=150'">
+                <img src="images/profile.jpg" alt="Profile" class="profile-pic" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=150'">
                 <div class="profile-info">
                     <div class="profile-header-row">
-                        <p class="sub-platform" id="profileSub"></p>
-                        <button class="header-admin-btn" onclick="toggleAdminPanel()">Admin</button>
+                        <span class="sub-platform">dakshyadav.co.in</span>
+                        <button class="header-admin-btn" onclick="toggleAdmin()">Admin</button>
                     </div>
-                    <h2 id="profileTitle"></h2>
+                    <h2>राजेश यादव मलकोषिया</h2>
                 </div>
             </div>
 
-            <!-- Collapsible Admin Box moved just below profile or right side -->
-            <div class="admin-box" id="adminPanelBox">
+            <!-- Hidden Admin Panel -->
+            <div class="admin-box" id="adminPanel">
                 <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें">
-                
-                <div style="font-size: 12px; color: #ffeb3b; margin-bottom: 4px; font-weight: bold;">📰 लाइव न्यूज टिकर बदलें:</div>
                 <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
-
-                <div style="font-size: 12px; color: #69f0ae; margin: 6px 0 4px 0; font-weight: bold;">🎥 वीडियो या मीडिया अपलोड करें:</div>
+                
+                <div style="font-size: 11px; color: #69f0ae; margin: 4px 0;">🎥 मीडिया अपलोड:</div>
                 <input type="text" id="mediaTitle" class="admin-input" placeholder="मीडिया का टाइटल (नाम)">
                 <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम">
-                <input type="text" id="mediaUrl" class="admin-input" placeholder="YouTube या Direct MP4 लिंक">
-                
+                <input type="text" id="mediaUrl" class="admin-input" placeholder="YouTube या MP4 लिंक">
                 <div class="camera-btn-wrapper">
                     <label for="mediaFile">📷 फाइल चुनें:</label>
                     <input type="file" id="mediaFile" accept="image/*,video/*" capture="environment">
                 </div>
 
-                <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); color: #002111; font-size: 13px; padding: 9px; margin-top: 5px;">🚀 अपडेट / अपलोड करें</button>
+                <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 7px; font-size: 12px; margin-bottom: 5px;">🚀 अपडेट / अपलोड करें</button>
+                <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ डिलीट करें</button>
             </div>
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
             <div class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो!</div>
 
-            <div class="btn-group">
-                <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 Play Store से ऐप डाउनलोड करें</a>
-            </div>
-
-            <div class="btn-group">
-                <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; border: 1px solid #ffffff;">
-                    📤 व्हाट्सएप पर शेयर करें
-                </button>
-            </div>
-
-            <div class="btn-group">
-                <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
-                    📸 Photo Gallery
-                </button>
-            </div>
-
-            <div class="btn-group">
-                <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">
-                    🎥 वीडियो (Video)
-                </button>
-            </div>
+            <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 Play Store से ऐप डाउनलोड करें</a>
+            <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप पर शेयर करें</button>
+            <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 Photo Gallery</button>
+            <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो (Video)</button>
 
             <div class="footer">&copy; 2026 dakshyadav.co.in | All Rights Reserved</div>
         </div>
 
         <div class="right-content-space" id="rightBox">
             <div class="section-title" style="margin-top:0;">✨ स्वागत संदेश</div>
-            
-            <div style="background: linear-gradient(135deg, #112211, #0a180a); border: 2px solid #00ff66; border-radius: 12px; padding: 12px; text-align: center; color: #fff; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,255,102,0.2);">
-                <p style="font-size: 15px; font-weight: bold; margin-bottom: 8px; color: #00ff66;">🙏 राम-राम भईयो, स्वागत है!</p>
+            <div style="background: linear-gradient(135deg, #112211, #0a180a); border: 1.5px solid #00ff66; border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 12px;">
+                <p style="font-size: 14px; font-weight: bold; margin-bottom: 6px; color: #00ff66;">🙏 राम-राम भईयो, स्वागत है!</p>
                 <audio id="welcomeAudio" src="ram-ram.mp3"></audio>
-                <button onclick="document.getElementById('welcomeAudio').play()" style="background: #00ff66; color: #000; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; margin-bottom: 10px;">▶ आवाज सुनें</button>
-                <div style="display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap;">
-                    <button id="ramRamBtn" onclick="markAttendance()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.3);">
+                <button onclick="document.getElementById('welcomeAudio').play()" style="background: #00ff66; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 11px; margin-bottom: 8px;">▶ आवाज सुनें</button>
+                <div style="display: flex; gap: 6px; align-items: center; justify-content: center;">
+                    <button id="ramRamBtn" onclick="markAttendance()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 7px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px;">
                         🔥 राम-राम ठोकें (<span id="ramRamCount">0</span>)
                     </button>
-                    <div style="background: rgba(0,255,102,0.15); border: 1px solid #00ff66; padding: 8px 10px; border-radius: 8px; font-size: 11px; color: #00ff66; font-weight: bold; white-space: nowrap;">
-                        👀 कुल विज़िटर: <span id="autoVisitorCount">0</span>
+                    <div style="background: rgba(0,255,102,0.15); border: 1px solid #00ff66; padding: 6px 8px; border-radius: 6px; font-size: 10px; color: #00ff66; font-weight: bold;">
+                        👀 विज़िटर: <span id="autoVisitorCount">0</span>
                     </div>
                 </div>
             </div>
 
-            <div class="section-title" style="margin-top:10px;">🛍️ डिजिटल स्टोर & शॉपिंग</div>
-            <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;">
-                <p style="font-size: 12px; color: #b9f6ca; margin-bottom: 10px;">ऑनलाइन कुछ भी खरीदें और हमारे जरिए सहयोग करें!</p>
-                <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff; border: 1px solid #fff; font-size: 13px; padding: 10px;">🛒 Flipkart महा-स्टोर</a>
+            <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग</div>
+            <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center;">
+                <p style="font-size: 11px; color: #b9f6ca; margin-bottom: 8px;">ऑनलाइन कुछ भी खरीदें और सहयोग करें!</p>
+                <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff; padding: 8px; font-size: 12px; margin-bottom:0;">🛒 Flipkart महा-स्टोर</a>
             </div>
 
             <div class="section-title">🚆 ट्रेन, बस & फ्लाइट बुकिंग</div>
-            <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;">
-                <p style="font-size: 12px; color: #b9f6ca; margin-bottom: 10px;">ट्रेन, बस, फ्लाइट या होटल बुक करें एक ही जगह से!</p>
-                <a href="https://bitli.in/FRHcUAK" class="btn" target="_blank" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; border: 1px solid #fff; font-size: 13px; padding: 10px;">✈️ MakeMyTrip बुकिंग सेंटर</a>
+            <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center;">
+                <p style="font-size: 11px; color: #b9f6ca; margin-bottom: 8px;">ट्रेन, बस या होटल बुक करें एक ही जगह से!</p>
+                <a href="https://bitli.in/FRHcUAK" class="btn" target="_blank" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 8px; font-size: 12px; margin-bottom:0;">✈️ MakeMyTrip बुकिंग सेंटर</a>
             </div>
 
-            <button onclick="triggerConfetti()" style="background: linear-gradient(135deg, #ff007f, #7f00ff); color: #fff; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">🎉 कॉन्फेटी मैजिक देखें</button>
+            <button onclick="triggerConfetti()" style="background: linear-gradient(135deg, #ff007f, #7f00ff); color: #fff; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; width: 100%;">🎉 कॉन्फेटी मैजिक देखें</button>
         </div>
     </div>
 
+    <!-- Gallery Modal -->
     <div id="galleryModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -348,6 +288,7 @@
         </div>
     </div>
 
+    <!-- Lightbox Modal -->
     <div id="lightbox">
         <span onclick="closeLightbox()">&times;</span>
         <div id="lightboxContent"></div>
@@ -356,17 +297,9 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <script>
-        document.getElementById("profileTitle").innerText = myName;
-        document.getElementById("profileSub").innerText = mySubTitle;
-        document.getElementById("profileImg").src = myProfilePic;
-
-        function toggleAdminPanel() {
-            const box = document.getElementById("adminPanelBox");
-            if(box.style.display === "block") {
-                box.style.display = "none";
-            } else {
-                box.style.display = "block";
-            }
+        function toggleAdmin() {
+            const box = document.getElementById("adminPanel");
+            box.style.display = box.style.display === "block" ? "none" : "block";
         }
 
         window.openPhotoGallery = function() {
@@ -377,22 +310,17 @@
             listContainer.innerHTML = "";
             let photos = window.getMyPhotosData();
 
-            if(photos.length === 0) {
-                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">कोई फोटो नहीं मिली।</div>`;
-            } else {
-                photos.forEach(p => {
-                    const item = document.createElement('div');
-                    item.className = 'file-item';
-                    item.innerHTML = `
-                        <div class="file-info" onclick="openLightbox('${p.url}', 'image')">
-                            <span class="file-icon">🖼️</span>
-                            <span class="file-name">${p.name}</span>
-                        </div>
-                        <button class="delete-btn" onclick="deletePhotoLocal('${p.id}')">Delete</button>
-                    `;
-                    listContainer.appendChild(item);
-                });
-            }
+            photos.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-info" onclick="openLightbox('${p.url}', 'image')">
+                        <span>🖼️</span><span>${p.name}</span>
+                    </div>
+                    <button class="delete-btn" onclick="deletePhotoLocal('${p.id}')">Delete</button>
+                `;
+                listContainer.appendChild(item);
+            });
             modal.style.display = "flex";
         }
 
@@ -400,21 +328,20 @@
             const modal = document.getElementById("galleryModal");
             const title = document.getElementById("modalTitle");
             const listContainer = document.getElementById("modalFileList");
-            title.innerText = "🎥 Video Folders & Categories";
+            title.innerText = "🎥 Video Folders";
             listContainer.innerHTML = "";
             let videoCategories = window.getVideoCategoriesData();
-
             let keys = Object.keys(videoCategories);
+
             if(keys.length === 0) {
-                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:15px;">डेटाबेस में कोई वीडियो नहीं मिला।</div>`;
+                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:10px;">कोई वीडियो नहीं मिला।</div>`;
             } else {
                 keys.forEach(categoryName => {
                     const folderItem = document.createElement('div');
                     folderItem.className = 'file-item';
                     folderItem.innerHTML = `
                         <div class="file-info" onclick="openCategoryVideos('${categoryName}')">
-                            <span class="file-icon">📁</span>
-                            <span class="file-name">${categoryName} (${videoCategories[categoryName].length} Videos)</span>
+                            <span>📁</span><span>${categoryName} (${videoCategories[categoryName].length})</span>
                         </div>
                     `;
                     listContainer.appendChild(folderItem);
@@ -432,11 +359,10 @@
 
             const backBtn = document.createElement('div');
             backBtn.className = 'file-item';
-            backBtn.style.background = "linear-gradient(135deg, #1b5e20, #2e7d32)";
+            backBtn.style.background = "#1b5e20";
             backBtn.innerHTML = `
                 <div class="file-info" onclick="openVideoCategoriesModal()">
-                    <span class="file-icon">⬅️</span>
-                    <span class="file-name"><b>सभी फोल्डर पर वापस जाएं</b></span>
+                    <span>⬅️</span><span><b>वापस जाएं</b></span>
                 </div>
             `;
             listContainer.appendChild(backBtn);
@@ -447,8 +373,7 @@
                 item.className = 'file-item';
                 item.innerHTML = `
                     <div class="file-info" onclick="openLightbox('${vObj.url}', 'video')">
-                        <span class="file-icon">🎥</span>
-                        <span class="file-name">${vObj.name}</span>
+                        <span>🎥</span><span>${vObj.name}</span>
                     </div>
                     <button class="delete-btn" onclick="deleteVideoFromDB('${vObj.id}', '${categoryName}')">Delete</button>
                 `;
@@ -456,25 +381,18 @@
             });
         }
 
-        function closeGallery() {
-            document.getElementById("galleryModal").style.display = "none";
-        }
+        function closeGallery() { document.getElementById("galleryModal").style.display = "none"; }
 
         function openLightbox(url, type) {
             const content = document.getElementById('lightboxContent');
             if(type === 'image') {
-                content.innerHTML = `<img src="${url}" alt="Media View">`;
+                content.innerHTML = `<img src="${url}" alt="View">`;
             } else {
                 if (url.includes("youtube.com") || url.includes("youtu.be")) {
-                    let videoId = "";
-                    if (url.includes("youtu.be/")) {
-                        videoId = url.split("youtu.be/")[1].split("?")[0];
-                    } else if (url.includes("watch?v=")) {
-                        videoId = url.split("watch?v=")[1].split("&")[0];
-                    }
-                    content.innerHTML = `<iframe width="100%" height="350" src="https://www.youtube.com/embed/${videoId}?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 12px; background:#000;"></iframe>`;
+                    let videoId = url.includes("youtu.be/") ? url.split("youtu.be/")[1].split("?")[0] : url.split("watch?v=")[1].split("&")[0];
+                    content.innerHTML = `<iframe width="100%" height="320" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
                 } else {
-                    content.innerHTML = `<video src="${url}" controls autoplay playsinline style="width:100%; max-height:85vh; border-radius:12px;"></video>`;
+                    content.innerHTML = `<video src="${url}" controls autoplay playsinline style="width:100%; max-height:85vh; border-radius:10px;"></video>`;
                 }
             }
             document.getElementById('lightbox').style.display = 'flex';
@@ -486,45 +404,27 @@
         }
 
         function openWhatsAppShare() {
-            const appUrl = "https://dakshyadav.co.in";
-            const message = "रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो! " + appUrl;
+            const message = "रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो! https://dakshyadav.co.in";
             window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(message), '_blank');
         }
 
         function markAttendance() {
-            let hasVoted = localStorage.getItem("hasVotedRamRam");
-            if (!hasVoted) {
+            if (!localStorage.getItem("hasVotedRamRam")) {
                 let ramCount = parseInt(localStorage.getItem("ramRamCountVal") || 0) + 1;
                 localStorage.setItem("ramRamCountVal", ramCount);
                 localStorage.setItem("hasVotedRamRam", "true");
                 document.getElementById("ramRamCount").innerText = ramCount;
-                let btn = document.getElementById("ramRamBtn");
-                btn.innerHTML = "🙏 राम-राम दर्ज हुई (" + ramCount + ")";
-                btn.style.opacity = "0.8";
-                btn.style.cursor = "not-allowed";
             }
         }
 
         window.addEventListener('load', function() {
-            let hasVisitedBefore = localStorage.getItem("hasVisitedUniqueDevice");
-            let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 0);
-            if (!hasVisitedBefore) {
-                totalVisits += 1;
+            if (!localStorage.getItem("hasVisitedUniqueDevice")) {
+                let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 0) + 1;
                 localStorage.setItem("siteTotalVisits", totalVisits);
                 localStorage.setItem("hasVisitedUniqueDevice", "true");
             }
-            document.getElementById("autoVisitorCount").innerText = totalVisits;
-
-            let ramCount = localStorage.getItem("ramRamCountVal") || 0;
-            document.getElementById("ramRamCount").innerText = ramCount;
-
-            let hasVoted = localStorage.getItem("hasVotedRamRam");
-            if (hasVoted) {
-                let btn = document.getElementById("ramRamBtn");
-                btn.innerHTML = "🙏 राम-राम दर्ज हुई (" + ramCount + ")";
-                btn.style.opacity = "0.8";
-                btn.style.cursor = "not-allowed";
-            }
+            document.getElementById("autoVisitorCount").innerText = localStorage.getItem("siteTotalVisits") || 1;
+            document.getElementById("ramRamCount").innerText = localStorage.getItem("ramRamCountVal") || 0;
         });
 
         function triggerConfetti() {
