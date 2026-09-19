@@ -7,9 +7,8 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { background: linear-gradient(135deg, #02231c, #063c2c, #0d5c46); color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 15px; }
-        .page-wrapper { display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 20px; width: 100%; max-width: 1100px; margin: 0 auto; }
-        .container { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 480px; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: center; flex: 1; }
-        .right-content-space { background: linear-gradient(145deg, #063124, #0b4232); width: 100%; max-width: 480px; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: left; flex: 1; }
+        .page-wrapper { display: flex; justify-content: center; align-items: flex-start; width: 100%; max-width: 480px; margin: 0 auto; }
+        .container { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: center; }
         
         /* Live News Ticker with Smooth Continuous Animation */
         #liveNewsBoxContainer { display: flex; }
@@ -39,7 +38,7 @@
         .badge { display: inline-block; background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: 700; margin-bottom: 8px; }
         
         .btn { background: linear-gradient(135deg, #00b0ff, #00e676); color: #002111; padding: 10px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; display: block; width: 100%; border: 1px solid #ffffff; margin-bottom: 8px; cursor: pointer; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .section-title { font-size: 14px; color: #b9f6ca; margin: 12px 0 6px 0; border-bottom: 2px solid #1fa376; padding-bottom: 3px; font-weight: bold; }
+        .section-title { font-size: 13px; color: #b9f6ca; margin: 10px 0 6px 0; border-bottom: 2px solid #1fa376; padding-bottom: 3px; font-weight: bold; text-align: left; }
         
         /* Hidden Admin Panel */
         .admin-box { display: none; background: rgba(0, 0, 0, 0.5); border: 1.5px dashed #69f0ae; padding: 10px; border-radius: 10px; margin-bottom: 12px; text-align: left; }
@@ -64,13 +63,12 @@
         #lightbox img, #lightbox video, #lightbox iframe { max-width: 100%; max-height: 85vh; border-radius: 10px; object-fit: contain; }
         #lightbox span { position: absolute; top: 12px; right: 18px; color: white; font-size: 30px; cursor: pointer; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .footer { font-size: 10px; color: #a5d6a7; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 8px; margin-top: 10px; text-align: center; }
-        @media (max-width: 768px) { .page-wrapper { flex-direction: column; align-items: center; padding: 5px; } .right-content-space, .container { max-width: 100%; } }
     </style>
 
     <!-- Firebase SDK & Database Integration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBcINeRD8Xr35T9MI80h56AfWAi-JdACio",
@@ -91,49 +89,6 @@
             { id: 'p2', name: 'photo2.jpg', url: 'images/photo2.jpg' },
             { id: 'p3', name: 'photo3.jpg', url: 'images/photo3.jpg' }
         ];
-
-        async function initCounters() {
-            try {
-                const statsRef = doc(db, "settings", "stats");
-                const statsSnap = await getDoc(statsRef);
-
-                if (!statsSnap.exists()) {
-                    await setDoc(statsRef, { visitors: 1, ramram: 0 });
-                    document.getElementById("autoVisitorCount").innerText = "1";
-                    document.getElementById("ramRamCount").innerText = "0";
-                } else {
-                    if (!sessionStorage.getItem("hasCountedVisitor")) {
-                        await updateDoc(statsRef, { visitors: increment(1) });
-                        sessionStorage.setItem("hasCountedVisitor", "true");
-                    }
-                    const updatedSnap = await getDoc(statsRef);
-                    let data = updatedSnap.data();
-                    document.getElementById("autoVisitorCount").innerText = data.visitors || 1;
-                    document.getElementById("ramRamCount").innerText = data.ramram || 0;
-                }
-            } catch (e) {
-                console.error("Counter Error:", e);
-            }
-        }
-
-        window.markAttendanceFromDB = async function() {
-            if (!localStorage.getItem("hasVotedRamRam")) {
-                try {
-                    const statsRef = doc(db, "settings", "stats");
-                    await updateDoc(statsRef, { ramram: increment(1) });
-                    
-                    const statsSnap = await getDoc(statsRef);
-                    document.getElementById("ramRamCount").innerText = statsSnap.data().ramram;
-                    
-                    localStorage.setItem("hasVotedRamRam", "true");
-                    alert("राम-राम सफलताપूर्वक दर्ज हो गई!");
-                } catch(e) {
-                    console.error("RamRam Error:", e);
-                }
-            } else {
-                alert("आप पहले ही राम-राम ठोक चुके हैं!");
-            }
-        }
 
         async function loadLiveNews() {
             try {
@@ -159,11 +114,7 @@
                 }
             } catch (e) { console.error("Error loading live news:", e); }
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadLiveNews();
-            initCounters();
-        });
+        window.addEventListener('DOMContentLoaded', loadLiveNews);
 
         async function loadVideosFromFirebase() {
             try {
@@ -359,38 +310,16 @@
             <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 Photo Gallery</button>
             <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो (Video)</button>
 
-            <div class="footer">&copy; 2026 dakshyadav.co.in | All Rights Reserved</div>
-        </div>
-
-        <div class="right-content-space" id="rightBox">
-            <div class="section-title" style="margin-top:0;">✨ स्वागत संदेश</div>
-            <div style="background: linear-gradient(135deg, #112211, #0a180a); border: 1.5px solid #00ff66; border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 12px;">
-                <p style="font-size: 14px; font-weight: bold; margin-bottom: 6px; color: #00ff66;">🙏 राम-राम भईयो, स्वागत है!</p>
-                <audio id="welcomeAudio" src="ram-ram.mp3"></audio>
-                <button onclick="document.getElementById('welcomeAudio').play()" style="background: #00ff66; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 11px; margin-bottom: 8px;">▶ आवाज सुनें</button>
-                <div style="display: flex; gap: 6px; align-items: center; justify-content: center;">
-                    <button id="ramRamBtn" onclick="markAttendanceFromDB()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 7px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px;">
-                        🔥 राम-राम ठोकें (<span id="ramRamCount">0</span>)
-                    </button>
-                    <div style="background: rgba(0,255,102,0.15); border: 1px solid #00ff66; padding: 6px 8px; border-radius: 6px; font-size: 10px; color: #00ff66; font-weight: bold;">
-                        👀 विज़िटर: <span id="autoVisitorCount">0</span>
-                    </div>
-                </div>
-            </div>
-
+            <!-- Quick Links / Shopping Section Integrated Linearly -->
             <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग</div>
-            <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center;">
-                <p style="font-size: 11px; color: #b9f6ca; margin-bottom: 8px;">ऑनलाइन कुछ भी खरीदें और सहयोग करें!</p>
-                <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff; padding: 8px; font-size: 12px; margin-bottom:0;">🛒 Flipkart महा-स्टोर</a>
-            </div>
+            <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff;">🛒 Flipkart महा-स्टोर (ऑनलाइन शॉपिंग)</a>
 
             <div class="section-title">🚆 ट्रेन, बस & फ्लाइट बुकिंग</div>
-            <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center;">
-                <p style="font-size: 11px; color: #b9f6ca; margin-bottom: 8px;">ट्रेन, बस या होटल बुक करें एक ही जगह से!</p>
-                <a href="https://bitli.in/FRHcUAK" class="btn" target="_blank" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 8px; font-size: 12px; margin-bottom:0;">✈️ MakeMyTrip बुकिंग सेंटर</a>
-            </div>
+            <a href="https://bitli.in/FRHcUAK" class="btn" target="_blank" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff;">✈️ MakeMyTrip बुकिंग सेंटर</a>
 
-            <button onclick="triggerConfetti()" style="background: linear-gradient(135deg, #ff007f, #7f00ff); color: #fff; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; width: 100%;">🎉 कॉन्फेटी मैजिक देखें</button>
+            <button onclick="triggerConfetti()" style="background: linear-gradient(135deg, #ff007f, #7f00ff); color: #fff; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; width: 100%; margin-top: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">🎉 कॉन्फेटी मैजिक देखें</button>
+
+            <div class="footer">&copy; 2026 dakshyadav.co.in | All Rights Reserved</div>
         </div>
     </div>
 
