@@ -7,13 +7,18 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { background: linear-gradient(135deg, #02231c, #063c2c, #0d5c46); color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 15px; }
-        .container { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 480px; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: center; }
+        .page-wrapper { display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 20px; width: 100%; max-width: 1100px; margin: 0 auto; }
+        .container { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 480px; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: center; flex: 1; }
+        .right-content-space { background: linear-gradient(145deg, #063124, #0b4232); width: 100%; max-width: 480px; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: left; flex: 1; }
         
-        /* Live News Ticker */
-        .live-news-box { background: rgba(0, 0, 0, 0.7); border: 1.5px solid #ffeb3b; border-radius: 10px; padding: 7px 10px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .live-badge { background: #d32f2f; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; animation: blink 1.5s infinite; }
+        /* Live News Ticker with Photo */
+        #liveNewsBoxContainer { display: flex; }
+        .live-news-box { background: rgba(0, 0, 0, 0.7); border: 1.5px solid #ffeb3b; border-radius: 10px; padding: 6px 10px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; width: 100%; }
+        .live-badge { background: #d32f2f; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; animation: blink 1.5s infinite; flex-shrink: 0; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
         .live-news-text { font-size: 13px; color: #fff; font-weight: 600; width: 100%; overflow: hidden; }
+        .ticker-content-wrapper { display: flex; align-items: center; gap: 8px; }
+        .ticker-img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid #ffeb3b; flex-shrink: 0; }
 
         /* Profile & Header Admin Button */
         .profile-section { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; background: linear-gradient(120deg, #0e5843, #157356); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); }
@@ -22,26 +27,46 @@
         .profile-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2px; }
         .sub-platform { font-size: 12px; color: #a5d6a7; font-weight: 700; }
         .header-admin-btn { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffffe0; padding: 2px 7px; border-radius: 5px; font-weight: bold; font-size: 10px; cursor: pointer; }
-        .profile-info h2 { font-size: 19px; font-weight: 800; background: linear-gradient(270deg, #ffeb3b, #00e676, #00b0ff, #ffeb3b); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: glow 5s ease infinite; }
+        .profile-info h2 { font-size: 18px; font-weight: 800; background: linear-gradient(270deg, #ffeb3b, #00e676, #00b0ff, #ffeb3b); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: glow 5s ease infinite; }
         @keyframes glow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         .desc-text { font-size: 14px; color: #fff9c4; line-height: 1.5; margin-bottom: 12px; font-weight: 700; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px; border: 1px solid #ffeb3b; }
         .badge { display: inline-block; background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: 700; margin-bottom: 8px; }
         
         .btn { background: linear-gradient(135deg, #00b0ff, #00e676); color: #002111; padding: 10px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; display: block; width: 100%; border: 1px solid #ffffff; margin-bottom: 8px; cursor: pointer; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .section-title { font-size: 14px; color: #b9f6ca; margin: 12px 0 6px 0; border-bottom: 2px solid #1fa376; padding-bottom: 3px; font-weight: bold; }
         
         /* Hidden Admin Panel */
         .admin-box { display: none; background: rgba(0, 0, 0, 0.5); border: 1.5px dashed #69f0ae; padding: 10px; border-radius: 10px; margin-bottom: 12px; text-align: left; }
         .admin-input { width: 100%; padding: 8px; margin-bottom: 6px; border-radius: 5px; border: 1px solid #69f0ae; background: #04241b; color: #fff; font-size: 12px; }
         .admin-input:focus { outline: none; border-color: #00e676; }
+        .camera-btn-wrapper { display: flex; align-items: center; justify-content: space-between; background: #04241b; border: 1px solid #69f0ae; padding: 5px 8px; border-radius: 5px; margin-bottom: 6px; }
+        .camera-btn-wrapper label { font-size: 11px; color: #b9f6ca; font-weight: 600; cursor: pointer; }
+        .camera-btn-wrapper input[type="file"] { font-size: 10px; color: #fff; width: 55%; }
 
+        /* Gallery Modal & Lightbox */
+        #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 15px; }
+        .modal-content { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 420px; max-height: 80vh; border-radius: 12px; padding: 15px; border: 1px solid #69f0ae; overflow-y: auto; text-align: left; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px; }
+        .modal-header h3 { color: #69f0ae; font-size: 15px; }
+        .close-modal { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
+        .file-list { display: flex; flex-direction: column; gap: 6px; }
+        .file-item { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); padding: 8px 10px; border-radius: 8px; color: #fff; font-size: 12px; }
+        .file-info { display: flex; align-items: center; gap: 6px; flex-grow: 1; cursor: pointer; overflow: hidden; }
+        .delete-btn { background: #d32f2f; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: bold; }
+
+        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 9999; padding: 15px; }
+        #lightbox img, #lightbox video, #lightbox iframe { max-width: 100%; max-height: 85vh; border-radius: 10px; object-fit: contain; }
+        #lightbox span { position: absolute; top: 12px; right: 18px; color: white; font-size: 30px; cursor: pointer; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .footer { font-size: 10px; color: #a5d6a7; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 8px; margin-top: 10px; text-align: center; }
+        @media (max-width: 768px) { .page-wrapper { flex-direction: column; align-items: center; padding: 5px; } .right-content-space, .container { max-width: 100%; } }
     </style>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK & Database Integration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBcINeRD8Xr35T9MI80h56AfWAi-JdACio",
@@ -49,80 +74,392 @@
             projectId: "dakshyadav-8499e",
             storageBucket: "dakshyadav-8499e.firebasestorage.app",
             messagingSenderId: "909826481940",
-            appId: "1:909826481940:web:d70320ded3431912396c01"
+            appId: "1:909826481940:web:d70320ded3431912396c01",
+            measurementId: "G-KT9C1L4ZMN"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        let videoCategories = {};
+        let myPhotos = [
+            { id: 'p1', name: 'photo1.jpg', url: 'images/photo1.jpg' },
+            { id: 'p2', name: 'photo2.jpg', url: 'images/photo2.jpg' },
+            { id: 'p3', name: 'photo3.jpg', url: 'images/photo3.jpg' }
+        ];
 
         async function loadLiveNews() {
             try {
                 const docSnap = await getDoc(doc(db, "settings", "linenews"));
-                if (docSnap.exists() && docSnap.data().text) {
-                    document.getElementById("liveNewsText").innerText = docSnap.data().text;
+                if (docSnap.exists()) {
+                    let data = docSnap.data();
+                    let txt = data.text || "";
+                    let imgUrl = data.imgUrl || "";
+
+                    document.getElementById("liveNewsText").innerText = txt;
+                    
+                    const imgElem = document.getElementById("tickerImage");
+                    if(imgUrl.trim() !== "") {
+                        imgElem.src = imgUrl;
+                        imgElem.style.display = "inline-block";
+                    } else {
+                        imgElem.style.display = "none";
+                    }
+
+                    document.getElementById("liveNewsBoxContainer").style.display = (txt.trim() === "" && imgUrl.trim() === "") ? "none" : "flex";
+                } else {
+                    document.getElementById("liveNewsBoxContainer").style.display = "none";
                 }
             } catch (e) { console.error(e); }
         }
         window.addEventListener('DOMContentLoaded', loadLiveNews);
 
-        window.updateLiveNews = async function() {
+        async function loadVideosFromFirebase() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "videos"));
+                videoCategories = {};
+                querySnapshot.forEach((documentSnap) => {
+                    let data = documentSnap.data();
+                    let cat = data.category || "अन्य फोल्डर (Other)";
+                    let url = data.url || "";
+                    if (!videoCategories[cat]) videoCategories[cat] = [];
+                    if(url) videoCategories[cat].push({ id: documentSnap.id, name: data.title || "वीडियो", url: url });
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        window.openVideoCategoriesFromDB = async function() {
+            await loadVideosFromFirebase();
+            window.openVideoCategoriesModal();
+        }
+
+        window.getVideoCategoriesData = () => videoCategories;
+        window.getMyPhotosData = () => myPhotos;
+
+        window.verifyAdminAndUpload = async function() {
             const pass = document.getElementById("adminPass").value;
             if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
+
             const newsText = document.getElementById("adminLiveNewsInput").value.trim();
-            if(newsText) {
-                await setDoc(doc(db, "settings", "linenews"), { text: newsText });
-                document.getElementById("liveNewsText").innerText = newsText;
-                alert("लाइव न्यूज अपडेट हो गई!");
+            const tickerImgUrl = document.getElementById("adminTickerImgInput").value.trim();
+            const title = document.getElementById("mediaTitle").value;
+            const category = document.getElementById("mediaCategory").value || "General";
+            const fileInput = document.getElementById("mediaFile").files[0];
+            const directUrl = document.getElementById("mediaUrl").value;
+
+            try {
+                if(newsText !== "" || tickerImgUrl !== "") {
+                    await setDoc(doc(db, "settings", "linenews"), { text: newsText, imgUrl: tickerImgUrl });
+                    document.getElementById("liveNewsText").innerText = newsText;
+                    const imgElem = document.getElementById("tickerImage");
+                    if(tickerImgUrl) {
+                        imgElem.src = tickerImgUrl;
+                        imgElem.style.display = "inline-block";
+                    } else {
+                        imgElem.style.display = "none";
+                    }
+                    document.getElementById("liveNewsBoxContainer").style.display = "flex";
+                }
+
+                if(title) {
+                    let finalUrl = directUrl;
+                    if(fileInput) {
+                        alert("फाइल अपलोड हो रही है...");
+                        const storageRef = ref(storage, 'uploads/' + Date.now() + '_' + fileInput.name);
+                        const snapshot = await uploadBytes(storageRef, fileInput);
+                        finalUrl = await getDownloadURL(snapshot.ref);
+                    }
+                    if(finalUrl) {
+                        await addDoc(collection(db, "videos"), { title: title, category: category, url: finalUrl, timestamp: new Date() });
+                        alert("मीडिया सफलतापूर्वक अपलोड हो गया!");
+                        document.getElementById("mediaTitle").value = "";
+                        document.getElementById("mediaUrl").value = "";
+                        document.getElementById("mediaFile").value = "";
+                        loadVideosFromFirebase();
+                    }
+                }
+                alert("अपडेट सफल रहा!");
                 document.getElementById("adminLiveNewsInput").value = "";
+                document.getElementById("adminTickerImgInput").value = "";
+            } catch (error) { alert("त्रुटि: " + error.message); }
+        }
+
+        window.deleteLiveNews = async function() {
+            const pass = document.getElementById("adminPass").value;
+            if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
+            await setDoc(doc(db, "settings", "linenews"), { text: "", imgUrl: "" });
+            document.getElementById("liveNewsBoxContainer").style.display = "none";
+            alert("लाइव न्यूज़ हटा दी गई है!");
+        }
+
+        window.deleteVideoFromDB = async function(id, categoryName) {
+            const pass = prompt("एडमिन पासवर्ड दर्ज करें:");
+            if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
+            if(confirm("डिलीट करना चाहते हैं?")) {
+                await deleteDoc(doc(db, "videos", id));
+                await loadVideosFromFirebase();
+                window.openCategoryVideos(categoryName);
             }
+        }
+
+        window.deletePhotoLocal = function(id) {
+            const pass = prompt("एडमिन पासवर्ड दर्ज करें:");
+            if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
+            myPhotos = myPhotos.filter(p => p.id !== id);
+            window.openPhotoGallery();
         }
     </script>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Live News Box -->
-        <div class="live-news-box">
-            <div class="live-badge">LIVE</div>
-            <div class="live-news-text">
-                <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
-                    <span id="liveNewsText">हरियाणा डिजिटल अपडेट: MeraGaov ऐप के माध्यम से गांवों में डिजिटल सेवाएं सुलभ हो रही हैं।</span>
-                </marquee>
-            </div>
-        </div>
-
-        <!-- Profile Section with Admin Button -->
-        <div class="profile-section">
-            <img src="images/profile.jpg" alt="Profile" class="profile-pic" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=150'">
-            <div class="profile-info">
-                <div class="profile-header-row">
-                    <span class="sub-platform">dakshyadav.co.in</span>
-                    <button class="header-admin-btn" onclick="toggleAdmin()">Admin</button>
+    <div class="page-wrapper">
+        <div class="container">
+            <!-- Live News Box with Photo -->
+            <div id="liveNewsBoxContainer">
+                <div class="live-news-box">
+                    <div class="live-badge">LIVE</div>
+                    <div class="live-news-text">
+                        <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
+                            <div class="ticker-content-wrapper">
+                                <img id="tickerImage" class="ticker-img" src="" alt="" style="display:none;">
+                                <span id="liveNewsText">रै भाइयो, ऐप अभी Play Store पे आना बाकी है, पर जलवा ऐसा काटेंगे कि पूरे हरियाणा में हल्ला बोल देंगे! सब्र रखो, धमाकेदार एंट्री जल्द होगी!</span>
+                            </div>
+                        </marquee>
+                    </div>
                 </div>
-                <h2>राजेश यादव मलकोषिया</h2>
             </div>
+
+            <!-- Profile Section with Admin Button -->
+            <div class="profile-section">
+                <img src="images/profile.jpg" alt="Profile" class="profile-pic" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=150'">
+                <div class="profile-info">
+                    <div class="profile-header-row">
+                        <span class="sub-platform">dakshyadav.co.in</span>
+                        <button class="header-admin-btn" onclick="toggleAdmin()">Admin</button>
+                    </div>
+                    <h2>राजेश यादव मालकोषिया</h2>
+                </div>
+            </div>
+
+            <!-- Hidden Admin Panel -->
+            <div class="admin-box" id="adminPanel">
+                <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें">
+                <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
+                <input type="text" id="adminTickerImgInput" class="admin-input" placeholder="टिकर फोटो का लिंक (URL) यहाँ डालें">
+                
+                <div style="font-size: 11px; color: #69f0ae; margin: 4px 0;">🎥 मीडिया अपलोड:</div>
+                <input type="text" id="mediaTitle" class="admin-input" placeholder="मीडिया का टाइटल (नाम)">
+                <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम">
+                <input type="text" id="mediaUrl" class="admin-input" placeholder="YouTube या MP4 लिंक">
+                <div class="camera-btn-wrapper">
+                    <label for="mediaFile">📷 फाइल चुनें:</label>
+                    <input type="file" id="mediaFile" accept="image/*,video/*" capture="environment">
+                </div>
+
+                <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 7px; font-size: 12px; margin-bottom: 5px;">🚀 अपडेट / अपलोड करें</button>
+                <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ डिलीट करें</button>
+            </div>
+
+            <div class="badge">✨ MeraGaov Digital Platform</div>
+            <div class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो!</div>
+
+            <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 Play Store से ऐप डाउनलोड करें</a>
+            <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप पर शेयर करें</button>
+            
+            <!-- Contact Us Button for News/Ads -->
+            <a href="https://api.whatsapp.com/send?phone=919876543210&text=Ramram%20bhai,%20mujhe%20apni%20news%20ya%20ad%20chalwani%20hai.%20Details%20batao." class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 अपनी न्यूज़ चलवायें (Contact Us)</a>
+
+            <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 Photo Gallery</button>
+            <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो (Video)</button>
+
+            <div class="footer">&copy; 2026 dakshyadav.co.in | All Rights Reserved</div>
         </div>
 
-        <!-- Hidden Admin Panel (Password Hidden inside) -->
-        <div class="admin-box" id="adminPanel">
-            <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें">
-            <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
-            <button onclick="updateLiveNews()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 7px; font-size: 12px; margin-bottom: 0;">न्यूज़ अपडेट करें</button>
+        <div class="right-content-space" id="rightBox">
+            <div class="section-title" style="margin-top:0;">✨ स्वागत संदेश</div>
+            <div style="background: linear-gradient(135deg, #112211, #0a180a); border: 1.5px solid #00ff66; border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 12px;">
+                <p style="font-size: 14px; font-weight: bold; margin-bottom: 6px; color: #00ff66;">🙏 राम-राम भईयो, स्वागत है!</p>
+                <audio id="welcomeAudio" src="ram-ram.mp3"></audio>
+                <button onclick="document.getElementById('welcomeAudio').play()" style="background: #00ff66; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 11px; margin-bottom: 8px;">▶ आवाज सुनें</button>
+                <div style="display: flex; gap: 6px; align-items: center; justify-content: center;">
+                    <button id="ramRamBtn" onclick="markAttendance()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 7px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px;">
+                        🔥 राम-राम ठोकें (<span id="ramRamCount">0</span>)
+                    </button>
+                    <div style="background: rgba(0,255,102,0.15); border: 1px solid #00ff66; padding: 6px 8px; border-radius: 6px; font-size: 10px; color: #00ff66; font-weight: bold;">
+                        👀 विज़िटर: <span id="autoVisitorCount">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग</div>
+            <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center;">
+                <p style="font-size: 11px; color: #b9f6ca; margin-bottom: 8px;">ऑनलाइन कुछ भी खरीदें और सहयोग करें!</p>
+                <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff; padding: 8px; font-size: 12px; margin-bottom:0;">🛒 Flipkart महा-स्टोर</a>
+            </div>
+
+            <div class="section-title">🚆 ट्रेन, बस & फ्लाइट बुकिंग</div>
+            <div style="background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center;">
+                <p style="font-size: 11px; color: #b9f6ca; margin-bottom: 8px;">ट्रेन, बस या होटल बुक करें एक ही जगह से!</p>
+                <a href="https://bitli.in/FRHcUAK" class="btn" target="_blank" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 8px; font-size: 12px; margin-bottom:0;">✈️ MakeMyTrip बुकिंग सेंटर</a>
+            </div>
+
+            <button onclick="triggerConfetti()" style="background: linear-gradient(135deg, #ff007f, #7f00ff); color: #fff; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; width: 100%;">🎉 कॉन्फेटी मैजिक देखें</button>
         </div>
-
-        <div class="badge">✨ MeraGaov Digital Platform</div>
-        <div class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो!</div>
-
-        <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 Play Store से ऐप डाउनलोड करें</a>
-        <a href="https://api.whatsapp.com/send?text=रै%20भाई,%20हमारे%20गाँव%20का%20MeraGaov%20ऐप%20आ%20लिया%20है,%20डाउनलोड%20कर%20लो:%20https://dakshyadav.co.in" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;" target="_blank">📤 व्हाट्सएप पर शेयर करें</a>
-
-        <div class="footer">&copy; 2026 dakshyadav.co.in | All Rights Reserved</div>
     </div>
+
+    <!-- Gallery Modal -->
+    <div id="galleryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Gallery</h3>
+                <button class="close-modal" onclick="closeGallery()">&times;</button>
+            </div>
+            <div class="file-list" id="modalFileList"></div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox">
+        <span onclick="closeLightbox()">&times;</span>
+        <div id="lightboxContent"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <script>
         function toggleAdmin() {
             const box = document.getElementById("adminPanel");
             box.style.display = box.style.display === "block" ? "none" : "block";
+        }
+
+        window.openPhotoGallery = function() {
+            const modal = document.getElementById("galleryModal");
+            const title = document.getElementById("modalTitle");
+            const listContainer = document.getElementById("modalFileList");
+            title.innerText = "📸 Photos Gallery";
+            listContainer.innerHTML = "";
+            let photos = window.getMyPhotosData();
+
+            photos.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-info" onclick="openLightbox('${p.url}', 'image')">
+                        <span>🖼️</span><span>${p.name}</span>
+                    </div>
+                    <button class="delete-btn" onclick="deletePhotoLocal('${p.id}')">Delete</button>
+                `;
+                listContainer.appendChild(item);
+            });
+            modal.style.display = "flex";
+        }
+
+        window.openVideoCategoriesModal = function() {
+            const modal = document.getElementById("galleryModal");
+            const title = document.getElementById("modalTitle");
+            const listContainer = document.getElementById("modalFileList");
+            title.innerText = "🎥 Video Folders";
+            listContainer.innerHTML = "";
+            let videoCategories = window.getVideoCategoriesData();
+            let keys = Object.keys(videoCategories);
+
+            if(keys.length === 0) {
+                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:10px;">कोई वीडियो नहीं मिला।</div>`;
+            } else {
+                keys.forEach(categoryName => {
+                    const folderItem = document.createElement('div');
+                    folderItem.className = 'file-item';
+                    folderItem.innerHTML = `
+                        <div class="file-info" onclick="openCategoryVideos('${categoryName}')">
+                            <span>📁</span><span>${categoryName} (${videoCategories[categoryName].length})</span>
+                        </div>
+                    `;
+                    listContainer.appendChild(folderItem);
+                });
+            }
+            modal.style.display = "flex";
+        }
+
+        window.openCategoryVideos = function(categoryName) {
+            const title = document.getElementById("modalTitle");
+            const listContainer = document.getElementById("modalFileList");
+            title.innerText = "📂 " + categoryName;
+            listContainer.innerHTML = "";
+            let videoCategories = window.getVideoCategoriesData();
+
+            const backBtn = document.createElement('div');
+            backBtn.className = 'file-item';
+            backBtn.style.background = "#1b5e20";
+            backBtn.innerHTML = `
+                <div class="file-info" onclick="openVideoCategoriesModal()">
+                    <span>⬅️</span><span><b>वापस जाएं</b></span>
+                </div>
+            `;
+            listContainer.appendChild(backBtn);
+
+            let videos = videoCategories[categoryName] || [];
+            videos.forEach(vObj => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-info" onclick="openLightbox('${vObj.url}', 'video')">
+                        <span>🎥</span><span>${vObj.name}</span>
+                    </div>
+                    <button class="delete-btn" onclick="deleteVideoFromDB('${vObj.id}', '${categoryName}')">Delete</button>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        function closeGallery() { document.getElementById("galleryModal").style.display = "none"; }
+
+        function openLightbox(url, type) {
+            const content = document.getElementById('lightboxContent');
+            if(type === 'image') {
+                content.innerHTML = `<img src="${url}" alt="View">`;
+            } else {
+                if (url.includes("youtube.com") || url.includes("youtu.be")) {
+                    let videoId = url.includes("youtu.be/") ? url.split("youtu.be/")[1].split("?")[0] : url.split("watch?v=")[1].split("&")[0];
+                    content.innerHTML = `<iframe width="100%" height="320" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
+                } else {
+                    content.innerHTML = `<video src="${url}" controls autoplay playsinline style="width:100%; max-height:85vh; border-radius:10px;"></video>`;
+                }
+            }
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+            document.getElementById('lightboxContent').innerHTML = '';
+        }
+
+        function openWhatsAppShare() {
+            const message = "रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो! https://dakshyadav.co.in";
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(message), '_blank');
+        }
+
+        function markAttendance() {
+            if (!localStorage.getItem("hasVotedRamRam")) {
+                let ramCount = parseInt(localStorage.getItem("ramRamCountVal") || 0) + 1;
+                localStorage.setItem("ramRamCountVal", ramCount);
+                localStorage.setItem("hasVotedRamRam", "true");
+                document.getElementById("ramRamCount").innerText = ramCount;
+            }
+        }
+
+        window.addEventListener('load', function() {
+            if (!localStorage.getItem("hasVisitedUniqueDevice")) {
+                let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 0) + 1;
+                localStorage.setItem("siteTotalVisits", totalVisits);
+                localStorage.setItem("hasVisitedUniqueDevice", "true");
+            }
+            document.getElementById("autoVisitorCount").innerText = localStorage.getItem("siteTotalVisits") || 1;
+            document.getElementById("ramRamCount").innerText = localStorage.getItem("ramRamCountVal") || 0;
+        });
+
+        function triggerConfetti() {
+            confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
         }
     </script>
 </body>
