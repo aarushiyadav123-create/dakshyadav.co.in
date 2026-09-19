@@ -18,7 +18,7 @@
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
         .live-news-text { font-size: 13px; color: #fff; font-weight: 600; width: 100%; overflow: hidden; }
         .ticker-content-wrapper { display: flex; align-items: center; gap: 8px; }
-        .ticker-img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid #ffeb3b; flex-shrink: 0; }
+        .ticker-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid #ffeb3b; flex-shrink: 0; }
 
         /* Profile & Header Admin Button */
         .profile-section { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; background: linear-gradient(120deg, #0e5843, #157356); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); }
@@ -141,7 +141,7 @@
             const pass = document.getElementById("adminPass").value;
             if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
 
-            const newsText = document.getElementById("adminLiveNewsInput").value.trim();
+            const rawNewsText = document.getElementById("adminLiveNewsInput").value.trim();
             const tickerFile = document.getElementById("adminTickerImgFile").files[0];
             const title = document.getElementById("mediaTitle").value;
             const category = document.getElementById("mediaCategory").value || "General";
@@ -156,13 +156,21 @@
                     tickerImgUrl = await getDownloadURL(tickerSnapshot.ref);
                 }
 
-                if(newsText !== "" || tickerImgUrl !== "") {
-                    let updateData = { text: newsText };
-                    if(tickerImgUrl !== "") updateData.imgUrl = tickerImgUrl;
+                if(rawNewsText !== "" || tickerImgUrl !== "") {
+                    let updateData = {};
+                    if(rawNewsText !== "") {
+                        // Nayi news ke aage automatic symbol/badge laga diya hai
+                        updateData.text = "🔥 " + rawNewsText;
+                    }
+                    if(tickerImgUrl !== "") {
+                        updateData.imgUrl = tickerImgUrl;
+                    }
                     
                     await setDoc(doc(db, "settings", "linenews"), updateData, { merge: true });
                     
-                    if(newsText !== "") document.getElementById("liveNewsText").innerText = newsText;
+                    if(rawNewsText !== "") {
+                        document.getElementById("liveNewsText").innerText = "🔥 " + rawNewsText;
+                    }
                     if(tickerImgUrl !== "") {
                         const imgElem = document.getElementById("tickerImage");
                         imgElem.src = tickerImgUrl;
@@ -182,23 +190,27 @@
                     document.getElementById("mediaTitle").value = "";
                     document.getElementById("mediaFile").value = "";
                     loadVideosFromFirebase();
-                } else if(title && !fileInput) {
-                    alert("कृपया मीडिया के लिए गैलरी से फाइल चुनें!");
                 }
 
                 alert("अपडेट सफल रहा!");
                 document.getElementById("adminPass").value = "";
                 document.getElementById("adminLiveNewsInput").value = "";
                 document.getElementById("adminTickerImgFile").value = "";
+                document.getElementById("mediaFile").value = "";
             } catch (error) { alert("त्रुटि: " + error.message); }
         }
 
         window.deleteLiveNews = async function() {
             const pass = document.getElementById("adminPass").value;
             if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
-            await setDoc(doc(db, "settings", "linenews"), { text: "", imgUrl: "" });
+            
+            // Sirf live news text aur photo ko blank karenge, baki site data safe rahega
+            await setDoc(doc(db, "settings", "linenews"), { text: "", imgUrl: "" }, { merge: true });
             document.getElementById("liveNewsBoxContainer").style.display = "none";
-            alert("लाइव न्यूज़ हटा दी गई है!");
+            document.getElementById("liveNewsText").innerText = "";
+            document.getElementById("tickerImage").style.display = "none";
+            document.getElementById("adminPass").value = "";
+            alert("लाइव न्यूज़ सफलतापूर्वक हटा दी गई है!");
         }
 
         window.deleteVideoFromDB = async function(id, categoryName) {
@@ -224,14 +236,14 @@
     <div class="page-wrapper">
         <div class="container">
             <!-- Live News Box with Photo -->
-            <div id="liveNewsBoxContainer">
+            <div id="liveNewsBoxContainer" style="display:none;">
                 <div class="live-news-box">
                     <div class="live-badge">LIVE</div>
                     <div class="live-news-text">
                         <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
                             <div class="ticker-content-wrapper">
                                 <img id="tickerImage" class="ticker-img" src="" alt="" style="display:none;">
-                                <span id="liveNewsText">रै भाइयो, ऐप अभी Play Store पे आना बाकी है, पर जलवा ऐसा काटेंगे कि पूरे हरियाणा में हल्ला बोल देंगे! सब्र रखो, धमाकेदार एंट्री जल्द होगी!</span>
+                                <span id="liveNewsText"></span>
                             </div>
                         </marquee>
                     </div>
@@ -250,7 +262,7 @@
                 </div>
             </div>
 
-            <!-- Hidden Admin Panel (No Links Required, Direct Gallery File Selection) -->
+            <!-- Hidden Admin Panel -->
             <div class="admin-box" id="adminPanel">
                 <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें">
                 <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
