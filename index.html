@@ -12,16 +12,20 @@
         .container { background: linear-gradient(145deg, #083c2d, #0f523f, #186c52); width: 100%; max-width: 480px; padding: 18px 15px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; border: 1.5px solid rgba(130, 240, 180, 0.4); flex: 1; }
         .right-content-space { background: linear-gradient(145deg, #063124, #0b4232); width: 100%; max-width: 480px; min-height: 400px; padding: 20px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: left; flex: 1; }
         
+        /* Top Most Live News Ticker (Above Header) */
+        .live-news-box-top { background: rgba(0, 0, 0, 0.7); border: 1.5px solid #ffeb3b; border-radius: 12px; padding: 8px 12px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .live-badge { background: #d32f2f; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 6px; animation: pulseBlink 1.5s infinite; flex-shrink: 0; }
+        @keyframes pulseBlink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .live-news-text { font-size: 14px; color: #fff; font-weight: 600; width: 100%; overflow: hidden; }
+
         .profile-section { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px; background: linear-gradient(120deg, #0e5843, #157356, #1f8a67); padding: 14px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .profile-pic { width: 105px; height: 105px; border-radius: 50%; object-fit: cover; border: 3px solid #69f0ae; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
         .profile-info { text-align: left; width: 100%; }
         
-        /* Name & Site Name Styling */
         .profile-info p.sub-platform { font-size: 13px; color: #a5d6a7; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 3px; }
         .profile-info h2 { font-size: 21px; font-weight: 800; line-height: 1.2; background: linear-gradient(270deg, #ffeb3b, #00e676, #00b0ff, #ff4081, #ffeb3b); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbowGlow 6s ease infinite; text-shadow: 0 2px 8px rgba(0,255,150,0.3); }
         @keyframes rainbowGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* Full Line Color & Size Style */
         .desc-text { font-size: 16px; color: #fff9c4; line-height: 1.6; margin-bottom: 15px; font-weight: 700; text-align: center; background: rgba(0, 0, 0, 0.3); padding: 12px; border-radius: 10px; border: 1.5px solid #ffeb3b; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
         .badge { display: inline-block; background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 10px; box-shadow: 0 3px 10px rgba(0,200,83,0.3); }
@@ -30,13 +34,6 @@
         .btn:hover { opacity: 0.9; }
         .section-title { font-size: 15px; color: #b9f6ca; margin: 14px 0 6px 0; text-align: left; border-bottom: 2px solid #1fa376; padding-bottom: 3px; font-weight: bold; }
         
-        /* Live News Ticker Box Styling */
-        .live-news-box { background: rgba(0, 0, 0, 0.5); border: 1.5px solid #ffeb3b; border-radius: 12px; padding: 10px 14px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .live-badge { background: #d32f2f; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 6px; animation: pulseBlink 1.5s infinite; flex-shrink: 0; }
-        @keyframes pulseBlink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        .live-news-text { font-size: 13px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
-
-        /* Admin Panel Toggle Button & Box */
         .admin-toggle-btn { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffffe0; padding: 10px 14px; border-radius: 10px; font-weight: bold; font-size: 14px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-bottom: 10px; }
         .admin-box { display: none; background: rgba(0, 0, 0, 0.4); border: 1.5px dashed #69f0ae; padding: 12px; border-radius: 12px; margin-top: 5px; margin-bottom: 15px; }
         .admin-input { width: 100%; padding: 9px 10px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #69f0ae; background: #04241b; color: #fff; font-size: 13px; }
@@ -122,7 +119,6 @@
         window.getVideoCategoriesData = () => videoCategories;
         window.getMyPhotosData = () => myPhotos;
 
-        // Admin Upload Functionality
         window.verifyAdminAndUpload = async function() {
             const pass = document.getElementById("adminPass").value;
             if(pass !== "336200") { 
@@ -173,7 +169,6 @@
             }
         }
 
-        // Delete Video from Firebase
         window.deleteVideoFromDB = async function(id, categoryName) {
             const pass = prompt("डिलीट करने के लिए एडमिन पासवर्ड दर्ज करें:");
             if(pass !== "12345") {
@@ -193,7 +188,6 @@
             }
         }
 
-        // Delete Photo locally
         window.deletePhotoLocal = function(id) {
             const pass = prompt("डिलीट करने के लिए एडमिन पासवर्ड दर्ज करें:");
             if(pass !== "12345") {
@@ -219,6 +213,17 @@
                 const myProfilePic = "images/profile.jpg";
             </script>
 
+            <!-- 🌟 सबसे ऊपर हेडर से भी ऊपर लाइव न्यूज टिकर -->
+            <div class="live-news-box-top">
+                <div class="live-badge">LIVE</div>
+                <div class="live-news-text">
+                    <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
+                        <span id="liveNewsTickerContent">हरियाणा डिजिटल अपडेट: MeraGaov ऐप के माध्यम से गांवों में डिजिटल सेवाएं और सूचनाएं सुलभ हो रही हैं। &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; स्थानीय सूचना: गांवों में स्वच्छता और सामुदायिक विकास कार्यों के लिए विशेष अभियान जारी है। &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; कृषि एवं पंचायत अपडेट: हरियाणा के ग्रामीण क्षेत्रों में आधुनिक तकनीकों से जुड़ रहे हैं युवा।</span>
+                    </marquee>
+                </div>
+            </div>
+
+            <!-- Profile Header Section -->
             <div class="profile-section">
                 <img src="" alt="Profile" class="profile-pic" id="profileImg" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=150'">
                 <div class="profile-info">
@@ -229,12 +234,6 @@
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
             <div class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो!</div>
-
-            <!-- ऑटोमैटिक लाइव न्यूज टिकर (बिना यूजर के दखल वाला) -->
-            <div class="live-news-box">
-                <div class="live-badge">LIVE</div>
-                <div class="live-news-text" id="liveNewsTicker">हरियाणा की ताजा डिजिटल और ग्रामीण अपडेट लोड हो रही हैं...</div>
-            </div>
 
             <div class="btn-group">
                 <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 Play Store से ऐप डाउनलोड करें</a>
@@ -335,24 +334,6 @@
         document.getElementById("profileTitle").innerText = myName;
         document.getElementById("profileSub").innerText = mySubTitle;
         document.getElementById("profileImg").src = myProfilePic;
-
-        // ऑटोमैटिक लाइव न्यूज रोटेशन लॉजिक (बिना यूजर के इनपुट के)
-        const autoNewsList = [
-            "हरियाणा डिजिटल अपडेट: MeraGaov ऐप के माध्यम से गांवों में डिजिटल सेवाएं और सूचनाएं सुलभ हो रही हैं।",
-            "स्थानीय सूचना: गांवों में स्वच्छता और सामुदायिक विकास कार्यों के लिए विशेष अभियान जारी है।",
-            "कृषि एवं पंचायत अपडेट: हरियाणा के ग्रामीण क्षेत्रों में आधुनिक तकनीकों से जुड़ रहे हैं युवा।",
-            "dakshyadav.co.in पर उपलब्ध डिजिटल सेवाओं और शॉपिंग लिंक्स का लाभ उठाएं।"
-        ];
-        
-        let currentNewsIndex = 0;
-        function rotateLiveNews() {
-            const ticker = document.getElementById("liveNewsTicker");
-            if(ticker) {
-                ticker.innerText = autoNewsList[currentNewsIndex];
-                currentNewsIndex = (currentNewsIndex + 1) % autoNewsList.length;
-            }
-        }
-        setInterval(rotateLiveNews, 4000); // हर 4 सेकंड में नई फ्रेश खबर ऑटोमैटिक आएगी
 
         function toggleAdminPanel() {
             const box = document.getElementById("adminPanelBox");
@@ -500,7 +481,7 @@
         }
 
         window.addEventListener('load', function() {
-            let hasVisitedBefore = localStorage.getItem("hasVisitedUniqueDevice");
+            let hasVisitedBefore = localStorage.logo?.getItem("hasVisitedUniqueDevice");
             let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 0);
             if (!hasVisitedBefore) {
                 totalVisits += 1;
@@ -519,9 +500,6 @@
                 btn.style.opacity = "0.8";
                 btn.style.cursor = "not-allowed";
             }
-            
-            // Start news ticker
-            rotateLiveNews();
         });
 
         function triggerConfetti() {
