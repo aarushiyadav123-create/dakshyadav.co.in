@@ -279,7 +279,7 @@
                 
                 <div class="camera-btn-wrapper">
                     <label for="adminTickerImgFile">🖼️ टिकर फोटो चुनें:</label>
-                    <input type="file" id="adminTickerImgFile" accept="image/*">
+                    <input type="file" id="adminTickerImgFile" accept="image/*" onchange="previewTickerFile(event)">
                 </div>
                 <input type="text" id="adminTickerImgUrl" class="admin-input" placeholder="या टिकर फोटो का डायरेक्ट URL (Link) यहाँ डालें">
                 
@@ -289,7 +289,7 @@
                 
                 <div class="camera-btn-wrapper">
                     <label for="mediaFile">📂 गैलरी से फाइल चुनें:</label>
-                    <input type="file" id="mediaFile" accept="image/*,video/*">
+                    <input type="file" id="mediaFile" accept="image/*,video/*" onchange="previewMediaFile(event)">
                 </div>
                 <input type="text" id="mediaUrlInput" class="admin-input" placeholder="या वीडियो/फोटो का डायरेक्ट URL (Link) यहाँ डालें">
 
@@ -366,6 +366,29 @@
         function toggleAdmin() {
             const box = document.getElementById("adminPanel");
             box.style.display = box.style.display === "block" ? "none" : "block";
+        }
+
+        // Auto convert selected gallery file into a local Data URL (Base64 link) instantly so it works without storage error
+        function previewTickerFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("adminTickerImgUrl").value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewMediaFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("mediaUrlInput").value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         window.openPhotoGallery = function() {
