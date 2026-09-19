@@ -66,7 +66,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBcINeRD8Xr35T9MI80h56AfWAi-JdACio",
@@ -80,7 +79,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const storage = getStorage(app);
 
         let videoCategories = {};
         let myPhotos = [
@@ -142,12 +140,10 @@
             if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
 
             const rawNewsText = document.getElementById("adminLiveNewsInput").value.trim();
-            const tickerFile = document.getElementById("adminTickerImgFile").files[0];
             const tickerUrlInput = document.getElementById("adminTickerImgUrl").value.trim();
             
             const title = document.getElementById("mediaTitle").value;
             const category = document.getElementById("mediaCategory").value || "General";
-            const fileInput = document.getElementById("mediaFile").files[0];
             const mediaUrlInput = document.getElementById("mediaUrlInput").value.trim();
 
             try {
@@ -155,17 +151,9 @@
                 let existingData = existingDoc.exists() ? existingDoc.data() : {};
                 
                 let finalNewsText = rawNewsText !== "" ? ("🔥 " + rawNewsText) : (existingData.text || "");
-                let finalImgUrl = existingData.imgUrl || "";
+                let finalImgUrl = tickerUrlInput !== "" ? tickerUrlInput : (existingData.imgUrl || "");
 
-                if (tickerUrlInput !== "") {
-                    finalImgUrl = tickerUrlInput;
-                } else if (tickerFile) {
-                    const tickerStorageRef = ref(storage, 'ticker/' + Date.now() + '_' + tickerFile.name);
-                    const tickerSnapshot = await uploadBytes(tickerStorageRef, tickerFile);
-                    finalImgUrl = await getDownloadURL(tickerSnapshot.ref);
-                }
-
-                if(rawNewsText !== "" || tickerFile || tickerUrlInput !== "" || finalImgUrl !== "") {
+                if(rawNewsText !== "" || tickerUrlInput !== "") {
                     let updateData = {
                         text: finalNewsText,
                         imgUrl: finalImgUrl
@@ -185,17 +173,9 @@
                     document.getElementById("liveNewsBoxContainer").style.display = "flex";
                 }
 
-                if(title && (fileInput || mediaUrlInput)) {
-                    let finalMediaUrl = mediaUrlInput;
-                    if(fileInput) {
-                        const storageRef = ref(storage, 'uploads/' + Date.now() + '_' + fileInput.name);
-                        const snapshot = await uploadBytes(storageRef, fileInput);
-                        finalMediaUrl = await getDownloadURL(snapshot.ref);
-                    }
-
-                    await addDoc(collection(db, "videos"), { title: title, category: category, url: finalMediaUrl, timestamp: new Date() });
+                if(title && mediaUrlInput) {
+                    await addDoc(collection(db, "videos"), { title: title, category: category, url: mediaUrlInput, timestamp: new Date() });
                     document.getElementById("mediaTitle").value = "";
-                    document.getElementById("mediaFile").value = "";
                     document.getElementById("mediaUrlInput").value = "";
                     loadVideosFromFirebase();
                 }
@@ -203,7 +183,6 @@
                 alert("अपडेट सफलतापूर्वक हो गया है!");
                 document.getElementById("adminPass").value = "";
                 document.getElementById("adminLiveNewsInput").value = "";
-                document.getElementById("adminTickerImgFile").value = "";
                 document.getElementById("adminTickerImgUrl").value = "";
             } catch (error) { 
                 console.error("Upload Error:", error);
@@ -215,12 +194,37 @@
             const pass = document.getElementById("adminPass").value;
             if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
             
-            await setDoc(doc(db, "settings", "linenews"), { text: "", imgUrl: "" }, { merge: true });
-            document.getElementById("liveNewsBoxContainer").style.display = "none";
-            document.getElementById("liveNewsText").innerText = "";
-            document.getElementById("tickerImage").style.display = "none";
-            document.getElementById("adminPass").value = "";
-            alert("लाइव न्यूज़ सफलतापूर्वक हटा दी गई है!");
+            try {
+                const docSnap = await getDoc(doc(db, "settings", "linenews"));
+                let currentText = docSnap.exists() ? (docSnap.data().text || "") : "";
+                
+                let editedText = prompt("मौजूदा न्यूज़ नीचे दी गई है। जो शब्द काटना/हटाना हो उसे हटाकर OK करें:", currentText);
+                if (editedText === null) return; // Cancelled
+                
+                editedText = editedText.trim();
+                let finalSaveText = editedText !== "" ? (editedText.startsWith("🔥") ? editedText : "🔥 " + editedText) : "";
+                
+                let updatePayload = { text: finalSaveText };
+                if(finalSaveText === "") {
+                    updatePayload.imgUrl = "";
+                }
+
+                await setDoc(doc(db, "settings", "linenews"), updatePayload, { merge: true });
+                
+                if(finalSaveText === "") {
+                    document.getElementById("liveNewsBoxContainer").style.display = "none";
+                    document.getElementById("liveNewsText").innerText = "";
+                    document.getElementById("tickerImage").style.display = "none";
+                } else {
+                    document.getElementById("liveNewsText").innerText = finalSaveText;
+                }
+                
+                document.getElementById("adminPass").value = "";
+                alert("लाइव न्यूज़ सफलतापूर्वक अपडेट/हटा दी गई है!");
+            } catch(e) {
+                console.error(e);
+                alert("त्रुटि: " + e.message);
+            }
         }
 
         window.deleteVideoFromDB = async function(id, categoryName) {
@@ -283,22 +287,17 @@
                 </div>
                 <input type="text" id="adminTickerImgUrl" class="admin-input" placeholder="या टिकर फोटो का डायरेक्ट URL (Link) यहाँ डालें">
                 
-                <div style="font-size: 11px; color: #69f0ae; margin: 6px 0 2px 0;">🎥 वीडियो/मीडिया अपलोड (फाइल या लिंक):</div>
+                <div style="font-size: 11px; color: #69f0ae; margin: 6px 0 2px 0;">🎥 वीडियो/मीडिया अपलोड (लिंक द्वारा):</div>
                 <input type="text" id="mediaTitle" class="admin-input" placeholder="मीडिया का टाइटल (नाम)">
                 <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम (जैसे: वीडियो, न्यूज़)">
-                
-                <div class="camera-btn-wrapper">
-                    <label for="mediaFile">📂 गैलरी से फाइल चुनें:</label>
-                    <input type="file" id="mediaFile" accept="image/*,video/*" onchange="previewMediaFile(event)">
-                </div>
                 <input type="text" id="mediaUrlInput" class="admin-input" placeholder="या वीडियो/फोटो का डायरेक्ट URL (Link) यहाँ डालें">
 
                 <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 7px; font-size: 12px; margin-bottom: 5px;">🚀 अपडेट / अपलोड करें</button>
-                <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ डिलीट करें</button>
+                <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ एडिट/डिलीट करें</button>
             </div>
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
-            <div class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर do!</div>
+            <div class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो!</div>
 
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 Play Store से ऐप डाउनलोड करें</a>
             <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप पर शेयर करें</button>
@@ -368,24 +367,12 @@
             box.style.display = box.style.display === "block" ? "none" : "block";
         }
 
-        // Auto convert selected gallery file into a local Data URL (Base64 link) instantly so it works without storage error
         function previewTickerFile(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById("adminTickerImgUrl").value = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function previewMediaFile(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById("mediaUrlInput").value = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
