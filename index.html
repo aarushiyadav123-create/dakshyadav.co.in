@@ -11,14 +11,19 @@
         .container { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 480px; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: center; flex: 1; }
         .right-content-space { background: linear-gradient(145deg, #063124, #0b4232); width: 100%; max-width: 480px; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: left; flex: 1; }
         
-        /* Live News Ticker with Photo */
+        /* Live News Ticker with Smooth Continuous Animation */
         #liveNewsBoxContainer { display: flex; }
-        .live-news-box { background: rgba(0, 0, 0, 0.7); border: 1.5px solid #ffeb3b; border-radius: 10px; padding: 6px 10px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; width: 100%; }
-        .live-badge { background: #d32f2f; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; animation: blink 1.5s infinite; flex-shrink: 0; }
+        .live-news-box { background: rgba(0, 0, 0, 0.7); border: 1.5px solid #ffeb3b; border-radius: 10px; padding: 6px 10px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; width: 100%; overflow: hidden; }
+        .live-badge { background: #d32f2f; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; animation: blink 1.5s infinite; flex-shrink: 0; z-index: 2; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        .live-news-text { font-size: 13px; color: #fff; font-weight: 600; width: 100%; overflow: hidden; }
-        .ticker-content-wrapper { display: flex; align-items: center; gap: 8px; }
-        .ticker-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid #ffeb3b; flex-shrink: 0; }
+        
+        .live-news-ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; position: relative; }
+        .live-news-anim { display: inline-block; animation: tickerScroll 18s linear infinite; padding-left: 100%; }
+        @keyframes tickerScroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+
+        .ticker-content-wrapper { display: inline-flex; align-items: center; gap: 8px; }
+        .live-news-text { font-size: 13px; color: #fff; font-weight: 600; display: inline-block; }
+        .ticker-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid #ffeb3b; flex-shrink: 0; vertical-align: middle; }
 
         /* Profile & Header Admin Button */
         .profile-section { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; background: linear-gradient(120deg, #0e5843, #157356); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); }
@@ -65,7 +70,7 @@
     <!-- Firebase SDK & Database Integration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBcINeRD8Xr35T9MI80h56AfWAi-JdACio",
@@ -86,6 +91,49 @@
             { id: 'p2', name: 'photo2.jpg', url: 'images/photo2.jpg' },
             { id: 'p3', name: 'photo3.jpg', url: 'images/photo3.jpg' }
         ];
+
+        async function initCounters() {
+            try {
+                const statsRef = doc(db, "settings", "stats");
+                const statsSnap = await getDoc(statsRef);
+
+                if (!statsSnap.exists()) {
+                    await setDoc(statsRef, { visitors: 1, ramram: 0 });
+                    document.getElementById("autoVisitorCount").innerText = "1";
+                    document.getElementById("ramRamCount").innerText = "0";
+                } else {
+                    if (!sessionStorage.getItem("hasCountedVisitor")) {
+                        await updateDoc(statsRef, { visitors: increment(1) });
+                        sessionStorage.setItem("hasCountedVisitor", "true");
+                    }
+                    const updatedSnap = await getDoc(statsRef);
+                    let data = updatedSnap.data();
+                    document.getElementById("autoVisitorCount").innerText = data.visitors || 1;
+                    document.getElementById("ramRamCount").innerText = data.ramram || 0;
+                }
+            } catch (e) {
+                console.error("Counter Error:", e);
+            }
+        }
+
+        window.markAttendanceFromDB = async function() {
+            if (!localStorage.getItem("hasVotedRamRam")) {
+                try {
+                    const statsRef = doc(db, "settings", "stats");
+                    await updateDoc(statsRef, { ramram: increment(1) });
+                    
+                    const statsSnap = await getDoc(statsRef);
+                    document.getElementById("ramRamCount").innerText = statsSnap.data().ramram;
+                    
+                    localStorage.setItem("hasVotedRamRam", "true");
+                    alert("राम-राम सफलताપूर्वक दर्ज हो गई!");
+                } catch(e) {
+                    console.error("RamRam Error:", e);
+                }
+            } else {
+                alert("आप पहले ही राम-राम ठोक चुके हैं!");
+            }
+        }
 
         async function loadLiveNews() {
             try {
@@ -111,7 +159,11 @@
                 }
             } catch (e) { console.error("Error loading live news:", e); }
         }
-        window.addEventListener('DOMContentLoaded', loadLiveNews);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLiveNews();
+            initCounters();
+        });
 
         async function loadVideosFromFirebase() {
             try {
@@ -199,7 +251,7 @@
                 let currentText = docSnap.exists() ? (docSnap.data().text || "") : "";
                 
                 let editedText = prompt("मौजूदा न्यूज़ नीचे दी गई है। जो शब्द काटना/हटाना हो उसे हटाकर OK करें:", currentText);
-                if (editedText === null) return; // Cancelled
+                if (editedText === null) return;
                 
                 editedText = editedText.trim();
                 let finalSaveText = editedText !== "" ? (editedText.startsWith("🔥") ? editedText : "🔥 " + editedText) : "";
@@ -249,17 +301,17 @@
 
     <div class="page-wrapper">
         <div class="container">
-            <!-- Live News Box with Photo -->
+            <!-- Live News Box with Continuous Smooth Scroll -->
             <div id="liveNewsBoxContainer" style="display:none;">
                 <div class="live-news-box">
                     <div class="live-badge">LIVE</div>
-                    <div class="live-news-text">
-                        <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
+                    <div class="live-news-ticker-wrap">
+                        <div class="live-news-anim">
                             <div class="ticker-content-wrapper">
                                 <img id="tickerImage" class="ticker-img" src="" alt="" style="display:none;">
-                                <span id="liveNewsText"></span>
+                                <span id="liveNewsText" class="live-news-text"></span>
                             </div>
-                        </marquee>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -317,7 +369,7 @@
                 <audio id="welcomeAudio" src="ram-ram.mp3"></audio>
                 <button onclick="document.getElementById('welcomeAudio').play()" style="background: #00ff66; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 11px; margin-bottom: 8px;">▶ आवाज सुनें</button>
                 <div style="display: flex; gap: 6px; align-items: center; justify-content: center;">
-                    <button id="ramRamBtn" onclick="markAttendance()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 7px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px;">
+                    <button id="ramRamBtn" onclick="markAttendanceFromDB()" style="flex: 1; background: linear-gradient(135deg, #ff8f00, #ff6f00); color: #fff; border: 1px solid #ffd54f; padding: 7px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px;">
                         🔥 राम-राम ठोकें (<span id="ramRamCount">0</span>)
                     </button>
                     <div style="background: rgba(0,255,102,0.15); border: 1px solid #00ff66; padding: 6px 8px; border-radius: 6px; font-size: 10px; color: #00ff66; font-weight: bold;">
@@ -483,25 +535,6 @@
             const message = "रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो! https://dakshyadav.co.in";
             window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(message), '_blank');
         }
-
-        function markAttendance() {
-            if (!localStorage.getItem("hasVotedRamRam")) {
-                let ramCount = parseInt(localStorage.getItem("ramRamCountVal") || 0) + 1;
-                localStorage.setItem("ramRamCountVal", ramCount);
-                localStorage.setItem("hasVotedRamRam", "true");
-                document.getElementById("ramRamCount").innerText = ramCount;
-            }
-        }
-
-        window.addEventListener('load', function() {
-            if (!localStorage.getItem("hasVisitedUniqueDevice")) {
-                let totalVisits = parseInt(localStorage.getItem("siteTotalVisits") || 0) + 1;
-                localStorage.setItem("siteTotalVisits", totalVisits);
-                localStorage.setItem("hasVisitedUniqueDevice", "true");
-            }
-            document.getElementById("autoVisitorCount").innerText = localStorage.getItem("siteTotalVisits") || 1;
-            document.getElementById("ramRamCount").innerText = localStorage.getItem("ramRamCountVal") || 0;
-        });
 
         function triggerConfetti() {
             confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
