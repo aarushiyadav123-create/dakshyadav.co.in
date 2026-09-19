@@ -100,18 +100,18 @@
                     document.getElementById("liveNewsText").innerText = txt;
                     
                     const imgElem = document.getElementById("tickerImage");
-                    if(imgUrl.trim() !== "") {
+                    if(imgUrl && imgUrl.trim() !== "") {
                         imgElem.src = imgUrl;
                         imgElem.style.display = "inline-block";
                     } else {
                         imgElem.style.display = "none";
                     }
 
-                    document.getElementById("liveNewsBoxContainer").style.display = (txt.trim() === "" && imgUrl.trim() === "") ? "none" : "flex";
+                    document.getElementById("liveNewsBoxContainer").style.display = (txt.trim() === "" && (!imgUrl || imgUrl.trim() === "")) ? "none" : "flex";
                 } else {
                     document.getElementById("liveNewsBoxContainer").style.display = "none";
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Error loading live news:", e); }
         }
         window.addEventListener('DOMContentLoaded', loadLiveNews);
 
@@ -143,68 +143,78 @@
 
             const rawNewsText = document.getElementById("adminLiveNewsInput").value.trim();
             const tickerFile = document.getElementById("adminTickerImgFile").files[0];
+            const tickerUrlInput = document.getElementById("adminTickerImgUrl").value.trim();
+            
             const title = document.getElementById("mediaTitle").value;
             const category = document.getElementById("mediaCategory").value || "General";
             const fileInput = document.getElementById("mediaFile").files[0];
+            const mediaUrlInput = document.getElementById("mediaUrlInput").value.trim();
 
             try {
-                let tickerImgUrl = "";
-                if(tickerFile) {
-                    alert("टिकर फोटो अपलोड हो रही है...");
+                const existingDoc = await getDoc(doc(db, "settings", "linenews"));
+                let existingData = existingDoc.exists() ? existingDoc.data() : {};
+                
+                let finalNewsText = rawNewsText !== "" ? ("🔥 " + rawNewsText) : (existingData.text || "");
+                let finalImgUrl = existingData.imgUrl || "";
+
+                if (tickerUrlInput !== "") {
+                    finalImgUrl = tickerUrlInput;
+                } else if (tickerFile) {
                     const tickerStorageRef = ref(storage, 'ticker/' + Date.now() + '_' + tickerFile.name);
                     const tickerSnapshot = await uploadBytes(tickerStorageRef, tickerFile);
-                    tickerImgUrl = await getDownloadURL(tickerSnapshot.ref);
+                    finalImgUrl = await getDownloadURL(tickerSnapshot.ref);
                 }
 
-                if(rawNewsText !== "" || tickerImgUrl !== "") {
-                    let updateData = {};
-                    if(rawNewsText !== "") {
-                        // Nayi news ke aage automatic symbol/badge laga diya hai
-                        updateData.text = "🔥 " + rawNewsText;
-                    }
-                    if(tickerImgUrl !== "") {
-                        updateData.imgUrl = tickerImgUrl;
-                    }
+                if(rawNewsText !== "" || tickerFile || tickerUrlInput !== "" || finalImgUrl !== "") {
+                    let updateData = {
+                        text: finalNewsText,
+                        imgUrl: finalImgUrl
+                    };
                     
                     await setDoc(doc(db, "settings", "linenews"), updateData, { merge: true });
                     
-                    if(rawNewsText !== "") {
-                        document.getElementById("liveNewsText").innerText = "🔥 " + rawNewsText;
-                    }
-                    if(tickerImgUrl !== "") {
-                        const imgElem = document.getElementById("tickerImage");
-                        imgElem.src = tickerImgUrl;
+                    document.getElementById("liveNewsText").innerText = finalNewsText;
+                    
+                    const imgElem = document.getElementById("tickerImage");
+                    if(finalImgUrl && finalImgUrl.trim() !== "") {
+                        imgElem.src = finalImgUrl;
                         imgElem.style.display = "inline-block";
+                    } else {
+                        imgElem.style.display = "none";
                     }
                     document.getElementById("liveNewsBoxContainer").style.display = "flex";
                 }
 
-                if(title && fileInput) {
-                    alert("मीडिया फाइल अपलोड हो रही है...");
-                    const storageRef = ref(storage, 'uploads/' + Date.now() + '_' + fileInput.name);
-                    const snapshot = await uploadBytes(storageRef, fileInput);
-                    let finalUrl = await getDownloadURL(snapshot.ref);
+                if(title && (fileInput || mediaUrlInput)) {
+                    let finalMediaUrl = mediaUrlInput;
+                    if(fileInput) {
+                        const storageRef = ref(storage, 'uploads/' + Date.now() + '_' + fileInput.name);
+                        const snapshot = await uploadBytes(storageRef, fileInput);
+                        finalMediaUrl = await getDownloadURL(snapshot.ref);
+                    }
 
-                    await addDoc(collection(db, "videos"), { title: title, category: category, url: finalUrl, timestamp: new Date() });
-                    alert("मीडिया सफलतापूर्वक अपलोड हो गया!");
+                    await addDoc(collection(db, "videos"), { title: title, category: category, url: finalMediaUrl, timestamp: new Date() });
                     document.getElementById("mediaTitle").value = "";
                     document.getElementById("mediaFile").value = "";
+                    document.getElementById("mediaUrlInput").value = "";
                     loadVideosFromFirebase();
                 }
 
-                alert("अपडेट सफल रहा!");
+                alert("अपडेट सफलतापूर्वक हो गया है!");
                 document.getElementById("adminPass").value = "";
                 document.getElementById("adminLiveNewsInput").value = "";
                 document.getElementById("adminTickerImgFile").value = "";
-                document.getElementById("mediaFile").value = "";
-            } catch (error) { alert("त्रुटि: " + error.message); }
+                document.getElementById("adminTickerImgUrl").value = "";
+            } catch (error) { 
+                console.error("Upload Error:", error);
+                alert("त्रुटि: " + error.message); 
+            }
         }
 
         window.deleteLiveNews = async function() {
             const pass = document.getElementById("adminPass").value;
             if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
             
-            // Sirf live news text aur photo ko blank karenge, baki site data safe rahega
             await setDoc(doc(db, "settings", "linenews"), { text: "", imgUrl: "" }, { merge: true });
             document.getElementById("liveNewsBoxContainer").style.display = "none";
             document.getElementById("liveNewsText").innerText = "";
@@ -216,7 +226,7 @@
         window.deleteVideoFromDB = async function(id, categoryName) {
             const pass = prompt("एडमिन पासवर्ड दर्ज करें:");
             if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
-            if(confirm("डिलीट करना चाहते हैं?")) {
+            if(confirm("इस आइटम को डिलीट करना चाहते हैं?")) {
                 await deleteDoc(doc(db, "videos", id));
                 await loadVideosFromFirebase();
                 window.openCategoryVideos(categoryName);
@@ -271,26 +281,28 @@
                     <label for="adminTickerImgFile">🖼️ टिकर फोटो चुनें:</label>
                     <input type="file" id="adminTickerImgFile" accept="image/*">
                 </div>
+                <input type="text" id="adminTickerImgUrl" class="admin-input" placeholder="या टिकर फोटो का डायरेक्ट URL (Link) यहाँ डालें">
                 
-                <div style="font-size: 11px; color: #69f0ae; margin: 6px 0 2px 0;">🎥 वीडियो/फोटो अपलोड (गैलरी से):</div>
+                <div style="font-size: 11px; color: #69f0ae; margin: 6px 0 2px 0;">🎥 वीडियो/मीडिया अपलोड (फाइल या लिंक):</div>
                 <input type="text" id="mediaTitle" class="admin-input" placeholder="मीडिया का टाइटल (नाम)">
                 <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम (जैसे: वीडियो, न्यूज़)">
+                
                 <div class="camera-btn-wrapper">
                     <label for="mediaFile">📂 गैलरी से फाइल चुनें:</label>
                     <input type="file" id="mediaFile" accept="image/*,video/*">
                 </div>
+                <input type="text" id="mediaUrlInput" class="admin-input" placeholder="या वीडियो/फोटो का डायरेक्ट URL (Link) यहाँ डालें">
 
                 <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 7px; font-size: 12px; margin-bottom: 5px;">🚀 अपडेट / अपलोड करें</button>
                 <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ डिलीट करें</button>
             </div>
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
-            <div class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो!</div>
+            <div class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर do!</div>
 
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 Play Store से ऐप डाउनलोड करें</a>
             <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप पर शेयर करें</button>
             
-            <!-- Contact Us Button with Original Number 7015445900 -->
             <a href="https://api.whatsapp.com/send?phone=917015445900&text=Ramram%20bhai,%20mujhe%20apni%20news%20ya%20ad%20chalwani%20hai.%20Details%20batao." class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 अपनी न्यूज़ चलवायें (Contact Us)</a>
 
             <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 Photo Gallery</button>
