@@ -30,6 +30,12 @@
         .btn:hover { opacity: 0.9; }
         .section-title { font-size: 15px; color: #b9f6ca; margin: 14px 0 6px 0; text-align: left; border-bottom: 2px solid #1fa376; padding-bottom: 3px; font-weight: bold; }
         
+        /* Live News Ticker Box Styling */
+        .live-news-box { background: rgba(0, 0, 0, 0.5); border: 1.5px solid #ffeb3b; border-radius: 12px; padding: 10px 14px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .live-badge { background: #d32f2f; color: #fff; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 6px; animation: pulseBlink 1.5s infinite; flex-shrink: 0; }
+        @keyframes pulseBlink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .live-news-text { font-size: 13px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+
         /* Admin Panel Toggle Button & Box */
         .admin-toggle-btn { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffffe0; padding: 10px 14px; border-radius: 10px; font-weight: bold; font-size: 14px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); margin-bottom: 10px; }
         .admin-box { display: none; background: rgba(0, 0, 0, 0.4); border: 1.5px dashed #69f0ae; padding: 12px; border-radius: 12px; margin-top: 5px; margin-bottom: 15px; }
@@ -224,6 +230,12 @@
             <div class="badge">✨ MeraGaov Digital Platform</div>
             <div class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो!</div>
 
+            <!-- ऑटोमैटिक लाइव न्यूज टिकर (बिना यूजर के दखल वाला) -->
+            <div class="live-news-box">
+                <div class="live-badge">LIVE</div>
+                <div class="live-news-text" id="liveNewsTicker">हरियाणा की ताजा डिजिटल और ग्रामीण अपडेट लोड हो रही हैं...</div>
+            </div>
+
             <div class="btn-group">
                 <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 Play Store से ऐप डाउनलोड करें</a>
             </div>
@@ -323,6 +335,24 @@
         document.getElementById("profileTitle").innerText = myName;
         document.getElementById("profileSub").innerText = mySubTitle;
         document.getElementById("profileImg").src = myProfilePic;
+
+        // ऑटोमैटिक लाइव न्यूज रोटेशन लॉजिक (बिना यूजर के इनपुट के)
+        const autoNewsList = [
+            "हरियाणा डिजिटल अपडेट: MeraGaov ऐप के माध्यम से गांवों में डिजिटल सेवाएं और सूचनाएं सुलभ हो रही हैं।",
+            "स्थानीय सूचना: गांवों में स्वच्छता और सामुदायिक विकास कार्यों के लिए विशेष अभियान जारी है।",
+            "कृषि एवं पंचायत अपडेट: हरियाणा के ग्रामीण क्षेत्रों में आधुनिक तकनीकों से जुड़ रहे हैं युवा।",
+            "dakshyadav.co.in पर उपलब्ध डिजिटल सेवाओं और शॉपिंग लिंक्स का लाभ उठाएं।"
+        ];
+        
+        let currentNewsIndex = 0;
+        function rotateLiveNews() {
+            const ticker = document.getElementById("liveNewsTicker");
+            if(ticker) {
+                ticker.innerText = autoNewsList[currentNewsIndex];
+                currentNewsIndex = (currentNewsIndex + 1) % autoNewsList.length;
+            }
+        }
+        setInterval(rotateLiveNews, 4000); // हर 4 सेकंड में नई फ्रेश खबर ऑटोमैटिक आएगी
 
         function toggleAdminPanel() {
             const box = document.getElementById("adminPanelBox");
@@ -489,6 +519,9 @@
                 btn.style.opacity = "0.8";
                 btn.style.cursor = "not-allowed";
             }
+            
+            // Start news ticker
+            rotateLiveNews();
         });
 
         function triggerConfetti() {
