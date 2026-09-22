@@ -51,10 +51,10 @@
         .camera-btn-wrapper input[type="file"] { font-size: 11px; color: #fff; width: 55%; }
 
         /* Full Screen Translator Panel Styling */
-        #translatorSection { display: none; background: rgba(0, 0, 0, 0.6); border: 2px solid #69f0ae; padding: 12px; border-radius: 14px; margin-bottom: 15px; text-align: left; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-        .translator-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #69f0ae; padding-bottom: 5px; }
-        .translator-header h3 { color: #69f0ae; font-size: 14px; font-weight: bold; }
-        .close-translator { background: #d32f2f; color: #fff; border: none; padding: 3px 8px; border-radius: 5px; font-size: 11px; cursor: pointer; font-weight: bold; }
+        #translatorSection { display: none; background: rgba(0, 0, 0, 0.75); border: 2px solid #69f0ae; padding: 15px; border-radius: 14px; margin-bottom: 15px; text-align: left; box-shadow: 0 5px 25px rgba(0,0,0,0.7); }
+        .translator-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #69f0ae; padding-bottom: 6px; }
+        .translator-header h3 { color: #69f0ae; font-size: 15px; font-weight: bold; }
+        .close-translator { background: #d32f2f; color: #fff; border: none; padding: 4px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
         /* Gallery Modal & Lightbox */
         #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 15px; }
@@ -328,34 +328,28 @@
                     <input type="file" id="uploadLetterInput" accept="image/*" onchange="processImageForTranslation(event)">
                 </div>
 
-                <div id="translatorStatus" style="font-size: 12px; color: #ffeb3b; margin-bottom: 6px; font-weight: bold;"></div>
+                <div id="translatorStatus" style="font-size: 12px; color: #ffeb3b; margin-bottom: 8px; font-weight: bold;"></div>
                 
                 <!-- Language Direction Selector -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <span style="font-size: 11px; color: #a5d6a7; font-weight: bold;">भाषा चुनें / Language:</span>
-                    <select id="langDirection" class="admin-input" style="width: 55%; margin-bottom: 0; padding: 4px; font-size: 11px;">
+                    <select id="langDirection" class="admin-input" style="width: 55%; margin-bottom: 0; padding: 5px; font-size: 11px;">
                         <option value="en|hi">English to Hindi</option>
                         <option value="hi|en">Hindi to English</option>
                     </select>
                 </div>
 
-                <!-- Input Box Header with Voice Typing Button -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
-                    <span style="font-size: 11px; color: #a5d6a7; font-weight: bold;">लिखें या पेस्ट करें / Type or Paste:</span>
-                    <button onclick="startVoiceInput()" style="background: #00e676; color: #002111; border: none; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer;">🎙️ बोलकर लिखें (Mic)</button>
-                </div>
-
-                <textarea id="extractedText" class="admin-input" style="height: 90px; font-size: 13px; background: #032d22; color: #fff;" placeholder="यहाँ टाइप करें या पेस्ट करें..."></textarea>
+                <textarea id="extractedText" class="admin-input" style="height: 110px; font-size: 13px; background: #032d22; color: #fff;" placeholder="यहाँ टाइप करें या पेस्ट करें..."></textarea>
                 
-                <button onclick="translateManualText()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 8px; font-size: 13px; margin-bottom: 8px; font-weight: bold;">🔄 अनुवाद करें / Translate</button>
+                <button onclick="translateManualText()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 9px; font-size: 13px; margin-bottom: 10px; font-weight: bold;">🔄 अनुवाद करें / Translate</button>
 
-                <div style="font-size: 11px; color: #69f0ae; margin-bottom: 3px; font-weight: bold;">रिजल्ट / Output:</div>
-                <textarea id="translatedText" class="admin-input" style="height: 100px; font-size: 14px; background: #011611; color: #fff9c4; font-weight: 600;" placeholder="यहाँ अनुवाद दिखेगा..."></textarea>
+                <div style="font-size: 11px; color: #69f0ae; margin-bottom: 4px; font-weight: bold;">रिजल्ट / Output:</div>
+                <textarea id="translatedText" class="admin-input" style="height: 120px; font-size: 14px; background: #011611; color: #fff9c4; font-weight: 600;" placeholder="यहाँ अनुवाद दिखेगा..."></textarea>
 
                 <!-- Action Buttons for Translated Text (Print & WhatsApp Share) -->
-                <div style="display: flex; gap: 8px; margin-top: 6px;">
-                    <button onclick="printTranslatedText()" class="btn" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 7px; font-size: 11px; margin-bottom: 0;">🖨️ प्रिंट / PDF</button>
-                    <button onclick="shareTranslatedOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 7px; font-size: 11px; margin-bottom: 0;">📤 व्हाट्सएप भेजें</button>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <button onclick="printTranslatedText()" class="btn" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">🖨️ प्रिंट / PDF</button>
+                    <button onclick="shareTranslatedOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">📤 व्हाट्सएप भेजें</button>
                 </div>
             </div>
 
@@ -424,33 +418,6 @@
             }
         }
 
-        // Voice Typing / Speech-to-Text Feature
-        window.startVoiceInput = function() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("आपका ब्राउज़र बोलकर लिखने (Voice Typing) को सपोर्ट नहीं करता है।");
-                return;
-            }
-            const recognition = new SpeechRecognition();
-            const langPair = document.getElementById("langDirection").value;
-            recognition.lang = langPair.startsWith("hi") ? 'hi-IN' : 'en-US';
-            
-            const statusEl = document.getElementById("translatorStatus");
-            statusEl.innerText = "🎙️ बोलिए, सुन रहे हैं...";
-
-            recognition.onresult = function(event) {
-                const spokenText = event.results[0][0].transcript;
-                document.getElementById("extractedText").value = spokenText;
-                statusEl.innerText = "✅ आवाज़ दर्ज हो गई है!";
-            };
-
-            recognition.onerror = function() {
-                statusEl.innerText = "❌ आवाज़ पहचानने में त्रुटि हुई।";
-            };
-
-            recognition.start();
-        }
-
         window.processImageForTranslation = async function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -497,7 +464,7 @@
             const langPair = document.getElementById("langDirection").value;
 
             if(!text) {
-                alert("कृपया पहले टेक्स्ट लिखें या बोलें!");
+                alert("कृपया पहले टेक्स्ट लिखें या पेस्ट करें!");
                 return;
             }
 
