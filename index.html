@@ -51,10 +51,10 @@
         .camera-btn-wrapper input[type="file"] { font-size: 11px; color: #fff; width: 55%; }
 
         /* Full Screen Translator Panel Styling */
-        #translatorSection { display: none; background: rgba(0, 0, 0, 0.6); border: 2px solid #69f0ae; padding: 15px; border-radius: 14px; margin-bottom: 15px; text-align: left; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-        .translator-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #69f0ae; padding-bottom: 6px; }
-        .translator-header h3 { color: #69f0ae; font-size: 15px; font-weight: bold; }
-        .close-translator { background: #d32f2f; color: #fff; border: none; padding: 4px 10px; border-radius: 5px; font-size: 12px; cursor: pointer; font-weight: bold; }
+        #translatorSection { display: none; background: rgba(0, 0, 0, 0.6); border: 2px solid #69f0ae; padding: 12px; border-radius: 14px; margin-bottom: 15px; text-align: left; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        .translator-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #69f0ae; padding-bottom: 5px; }
+        .translator-header h3 { color: #69f0ae; font-size: 14px; font-weight: bold; }
+        .close-translator { background: #d32f2f; color: #fff; border: none; padding: 3px 8px; border-radius: 5px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
         /* Gallery Modal & Lightbox */
         #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 15px; }
@@ -308,50 +308,61 @@
             </div>
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
-            <div class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर दो!</div>
+            <div class="desc-text">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर do!</div>
 
-            <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 Play Store से ऐप डाउनलोड करें (Download App)</a>
-            <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप पर शेयर करें (Share on WhatsApp)</button>
+            <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 ऐप डाउनलोड / Download App</a>
+            <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप शेयर / WhatsApp Share</button>
             
             <!-- Full Screen Translator Section Toggle Button -->
-            <button onclick="toggleTranslatorSection()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; border: 1px solid #e1bee7;">📷 फॉर्म/लेटर रीडर & ट्रांसलेटर (Form/Letter Reader & Translator)</button>
+            <button onclick="toggleTranslatorSection()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; border: 1px solid #e1bee7;">📷 ट्रांसलेटर / Translator</button>
 
             <!-- FULL SCREEN INLINE TRANSLATOR PANEL -->
             <div id="translatorSection">
                 <div class="translator-header">
-                    <h3>📷 फॉर्म / लेटर ट्रांसलेटर (Reader & Translator)</h3>
+                    <h3>📷 ट्रांसलेटर / Translator</h3>
                     <button class="close-translator" onclick="toggleTranslatorSection()">बंद करें X</button>
                 </div>
                 
                 <div class="camera-btn-wrapper">
-                    <label for="uploadLetterInput">📁 फोटो/कैमरा चुनें (Upload Photo):</label>
+                    <label for="uploadLetterInput">📁 फोटो चुनें / Upload Photo:</label>
                     <input type="file" id="uploadLetterInput" accept="image/*" onchange="processImageForTranslation(event)">
                 </div>
 
-                <div id="translatorStatus" style="font-size: 12px; color: #ffeb3b; margin-bottom: 8px; font-weight: bold;"></div>
+                <div id="translatorStatus" style="font-size: 12px; color: #ffeb3b; margin-bottom: 6px; font-weight: bold;"></div>
                 
                 <!-- Language Direction Selector -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-size: 11px; color: #a5d6a7; font-weight: bold;">भाषा चुनें (Translation Mode):</span>
+                    <span style="font-size: 11px; color: #a5d6a7; font-weight: bold;">भाषा चुनें / Language:</span>
                     <select id="langDirection" class="admin-input" style="width: 55%; margin-bottom: 0; padding: 4px; font-size: 11px;">
-                        <option value="en|hi">English to Hindi (अंग्रेजी से हिंदी)</option>
-                        <option value="hi|en">Hindi to English (हिंदी से अंग्रेजी)</option>
+                        <option value="en|hi">English to Hindi</option>
+                        <option value="hi|en">Hindi to English</option>
                     </select>
                 </div>
 
-                <div style="font-size: 11px; color: #a5d6a7; margin-bottom: 3px; font-weight: bold;">यहाँ टेक्स्ट लिखें या पेस्ट करें (Type or Paste Text):</div>
-                <textarea id="extractedText" class="admin-input" style="height: 100px; font-size: 13px; background: #032d22; color: #fff;" placeholder="या यहाँ खुद लिखकर ट्रांसलेट बटन दबाएं..."></textarea>
-                
-                <button onclick="translateManualText()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 8px; font-size: 13px; margin-bottom: 10px; font-weight: bold;">🔄 अनुवाद करें (Translate Text)</button>
+                <!-- Input Box Header with Voice Typing Button -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+                    <span style="font-size: 11px; color: #a5d6a7; font-weight: bold;">लिखें या पेस्ट करें / Type or Paste:</span>
+                    <button onclick="startVoiceInput()" style="background: #00e676; color: #002111; border: none; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer;">🎙️ बोलकर लिखें (Mic)</button>
+                </div>
 
-                <div style="font-size: 11px; color: #69f0ae; margin-bottom: 3px; font-weight: bold;">अनुवाद परिणाम (Translated Output):</div>
-                <textarea id="translatedText" class="admin-input" style="height: 120px; font-size: 14px; background: #011611; color: #fff9c4; font-weight: 600;" readonly placeholder="यहाँ बड़ा और साफ़ अनुवाद दिखेगा..."></textarea>
+                <textarea id="extractedText" class="admin-input" style="height: 90px; font-size: 13px; background: #032d22; color: #fff;" placeholder="यहाँ टाइप करें या पेस्ट करें..."></textarea>
+                
+                <button onclick="translateManualText()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 8px; font-size: 13px; margin-bottom: 8px; font-weight: bold;">🔄 अनुवाद करें / Translate</button>
+
+                <div style="font-size: 11px; color: #69f0ae; margin-bottom: 3px; font-weight: bold;">रिजल्ट / Output:</div>
+                <textarea id="translatedText" class="admin-input" style="height: 100px; font-size: 14px; background: #011611; color: #fff9c4; font-weight: 600;" placeholder="यहाँ अनुवाद दिखेगा..."></textarea>
+
+                <!-- Action Buttons for Translated Text (Print & WhatsApp Share) -->
+                <div style="display: flex; gap: 8px; margin-top: 6px;">
+                    <button onclick="printTranslatedText()" class="btn" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 7px; font-size: 11px; margin-bottom: 0;">🖨️ प्रिंट / PDF</button>
+                    <button onclick="shareTranslatedOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 7px; font-size: 11px; margin-bottom: 0;">📤 व्हाट्सएप भेजें</button>
+                </div>
             </div>
 
-            <a href="https://api.whatsapp.com/send?phone=917015445900&text=Ramram%20bhai,%20mujhe%20apni%20news%20ya%20ad%20chalwani%20hai.%20Details%20batao." class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 अपनी न्यूज़ चलवायें / विज्ञापन (Contact Us)</a>
+            <a href="https://api.whatsapp.com/send?phone=917015445900&text=Ramram%20bhai,%20mujhe%20apni%20news%20ya%20ad%20chalwani%20hai.%20Details%20batao." class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 विज्ञापन / Contact Us</a>
 
-            <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 फोटो गैलरी (Photo Gallery)</button>
-            <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो फोल्डर (Video Folders)</button>
+            <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 फोटो गैलरी / Gallery</button>
+            <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो फोल्डर / Videos</button>
 
             <!-- Quick Links / Shopping Section Integrated Linearly -->
             <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग (Digital Store & Shopping)</div>
@@ -413,6 +424,33 @@
             }
         }
 
+        // Voice Typing / Speech-to-Text Feature
+        window.startVoiceInput = function() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("आपका ब्राउज़र बोलकर लिखने (Voice Typing) को सपोर्ट नहीं करता है।");
+                return;
+            }
+            const recognition = new SpeechRecognition();
+            const langPair = document.getElementById("langDirection").value;
+            recognition.lang = langPair.startsWith("hi") ? 'hi-IN' : 'en-US';
+            
+            const statusEl = document.getElementById("translatorStatus");
+            statusEl.innerText = "🎙️ बोलिए, सुन रहे हैं...";
+
+            recognition.onresult = function(event) {
+                const spokenText = event.results[0][0].transcript;
+                document.getElementById("extractedText").value = spokenText;
+                statusEl.innerText = "✅ आवाज़ दर्ज हो गई है!";
+            };
+
+            recognition.onerror = function() {
+                statusEl.innerText = "❌ आवाज़ पहचानने में त्रुटि हुई।";
+            };
+
+            recognition.start();
+        }
+
         window.processImageForTranslation = async function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -421,12 +459,11 @@
             const extractedEl = document.getElementById("extractedText");
             const translatedEl = document.getElementById("translatedText");
 
-            statusEl.innerText = "⏳ फोटो स्कैन हो रही है, प्रतीक्षा करें...";
+            statusEl.innerText = "⏳ फोटो स्कैन हो रही है...";
             extractedEl.value = "";
             translatedEl.value = "";
 
             try {
-                // Determine OCR language based on direction selection
                 const langPair = document.getElementById("langDirection").value;
                 const ocrLang = langPair.startsWith("hi") ? 'hin' : 'eng';
 
@@ -438,14 +475,13 @@
 
                 const cleanText = text ? text.trim() : "";
                 if(!cleanText) {
-                    statusEl.innerText = "❌ फोटो में कोई टेक्स्ट नहीं मिला। साफ फोटो अपलोड करें।";
+                    statusEl.innerText = "❌ फोटो में कोई टेक्स्ट नहीं मिला।";
                     return;
                 }
 
                 extractedEl.value = cleanText;
                 statusEl.innerText = "⏳ अनुवाद हो रहा है...";
 
-                // Translate extracted text with selected direction
                 await fetchAndApplyTranslation(cleanText, statusEl, translatedEl, langPair);
 
             } catch (err) {
@@ -461,11 +497,11 @@
             const langPair = document.getElementById("langDirection").value;
 
             if(!text) {
-                alert("कृपया पहले टेक्स्ट लिखें या फोटो अपलोड करें!");
+                alert("कृपया पहले टेक्स्ट लिखें या बोलें!");
                 return;
             }
 
-            statusEl.innerText = "⏳ अनुवाद किया जा रहा है...";
+            statusEl.innerText = "⏳ अनुवाद हो रहा है...";
             await fetchAndApplyTranslation(text, statusEl, translatedEl, langPair);
         }
 
@@ -476,7 +512,7 @@
                 
                 if(resJson && resJson.responseData && resJson.responseData.translatedText) {
                     targetElement.value = resJson.responseData.translatedText;
-                    statusElement.innerText = "✅ अनुवाद सफल! अब आसानी से पढ़ा जा सकता है।";
+                    statusElement.innerText = "✅ अनुवाद सफल!";
                 } else {
                     targetElement.value = "अनुवाद उपलब्ध नहीं हो सका।";
                     statusElement.innerText = "⚠️ केवल टेक्स्ट पढ़ा गया है।";
@@ -485,6 +521,37 @@
                 console.error(e);
                 statusElement.innerText = "❌ अनुवाद सर्वर त्रुटि!";
             }
+        }
+
+        // Print or Save as PDF Function
+        window.printTranslatedText = function() {
+            const translatedText = document.getElementById("translatedText").value.trim();
+            if(!translatedText) {
+                alert("प्रिंट करने के लिए कोई अनुवाद उपलब्ध नहीं है!");
+                return;
+            }
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Translated Letter - MeraGaov</title>');
+            printWindow.document.write('<style>body{font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; color: #000;} h2{color: #0c4a37; border-bottom: 2px solid #0c4a37; padding-bottom: 5px;}</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write('<h2>MeraGaov - Translated Text / Letter</h2>');
+            printWindow.document.write('<p style="white-space: pre-wrap; font-size: 16px;">' + translatedText + '</p>');
+            printWindow.document.write('<hr/><p style="font-size: 12px; color: #666;">Generated via dakshyadav.co.in</p>');
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => { printWindow.print(); }, 500);
+        }
+
+        // Share Translated Text on WhatsApp Function
+        window.shareTranslatedOnWhatsApp = function() {
+            const translatedText = document.getElementById("translatedText").value.trim();
+            if(!translatedText) {
+                alert("व्हाट्सएप पर भेजने के लिए कोई अनुवाद उपलब्ध नहीं है!");
+                return;
+            }
+            const shareMessage = "📝 *MeraGaov Translator Output*:\n\n" + translatedText + "\n\n---\n_Shared via dakshyadav.co.in_";
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(shareMessage), '_blank');
         }
 
         window.openPhotoGallery = function() {
