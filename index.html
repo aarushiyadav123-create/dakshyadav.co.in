@@ -323,7 +323,7 @@
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 ऐप डाउनलोड / Download App</a>
             <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप शेयर / WhatsApp Share</button>
             
-            <!-- Translator Button with English/Hindi Name (No Full Page Translation) -->
+            <!-- Translator Button with English/Hindi Name -->
             <button onclick="toggleTranslatorSection()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; border: 1px solid #e1bee7;">📷 ट्रांसलेटर / Translator</button>
 
             <!-- FULL SCREEN INLINE TRANSLATOR PANEL -->
@@ -484,7 +484,8 @@
 
         async function fetchAndApplyTranslation(textToTranslate, statusElement, targetElement, langPair) {
             try {
-                const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(textToTranslate.substring(0, 450))}&langpair=${langPair}`);
+                // Poora text bhejne ke liye character limit poori tarah hata di gayi hai
+                const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(textToTranslate)}&langpair=${langPair}`);
                 const resJson = await response.json();
                 
                 if(resJson && resJson.responseData && resJson.responseData.translatedText) {
