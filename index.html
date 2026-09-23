@@ -45,7 +45,9 @@
         }
         @keyframes glow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        .desc-text { font-size: 14px; color: #fff9c4; line-height: 1.5; margin-bottom: 12px; font-weight: 700; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px; border: 1px solid #ffeb3b; outline: none; }
+        .desc-text { font-size: 14px; color: #fff9c4; line-height: 1.5; margin-bottom: 12px; font-weight: 700; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px; border: 1.5px dashed #ffeb3b; outline: none; cursor: text; }
+        .desc-text:focus { border-color: #00e676; background: rgba(0, 0, 0, 0.5); }
+
         .badge { display: inline-block; background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: 700; margin-bottom: 8px; }
         
         .btn { background: linear-gradient(135deg, #00b0ff, #00e676); color: #002111; padding: 10px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; display: block; width: 100%; border: 1px solid #ffffff; margin-bottom: 8px; cursor: pointer; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
@@ -70,7 +72,6 @@
         .modal-content { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 420px; max-height: 80vh; border-radius: 12px; padding: 15px; border: 1px solid #69f0ae; overflow-y: auto; text-align: left; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px; }
         .modal-header h3 { color: #69f0ae; font-size: 15px; }
-        .close-modal { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
         .file-list { display: flex; flex-direction: column; gap: 6px; }
         .file-item { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #0c4a37, #13634b); border: 1px solid rgba(105, 240, 174, 0.4); padding: 8px 10px; border-radius: 8px; color: #fff; font-size: 12px; }
         .file-info { display: flex; align-items: center; gap: 6px; flex-grow: 1; cursor: pointer; overflow: hidden; }
@@ -109,7 +110,7 @@
 
         async function loadAppData() {
             try {
-                // Load Live News
+                // Load Live News Ticker
                 const docSnap = await getDoc(doc(db, "settings", "linenews"));
                 if (docSnap.exists()) {
                     let data = docSnap.data();
@@ -131,12 +132,14 @@
                     document.getElementById("liveNewsBoxContainer").style.display = "none";
                 }
 
-                // Load Main Announcement Line
+                // Load Main Announcement Line from Firebase
                 const mainTextSnap = await getDoc(doc(db, "settings", "mainAnnouncement"));
                 if (mainTextSnap.exists()) {
                     let mainData = mainTextSnap.data();
                     if(mainData.text) {
-                        document.getElementById("mainAnnouncementText").innerText = mainData.text;
+                        const mainBox = document.getElementById("mainAnnouncementText");
+                        mainBox.innerText = mainData.text;
+                        document.getElementById("adminMainInput").value = mainData.text;
                     }
                 }
             } catch (e) { console.error("Error loading app data:", e); }
@@ -172,7 +175,10 @@
             const rawNewsText = document.getElementById("adminLiveNewsInput").value.trim();
             const tickerUrlInput = document.getElementById("adminTickerImgUrl").value.trim();
             
-            const mainBoxText = document.getElementById("mainAnnouncementText").innerText.trim();
+            // Admin panel main text input or on-site editable box text
+            const adminMainInputVal = document.getElementById("adminMainInput").value.trim();
+            const onSiteMainText = document.getElementById("mainAnnouncementText").innerText.trim();
+            const finalMainTextToSave = adminMainInputVal !== "" ? adminMainInputVal : onSiteMainText;
 
             const title = document.getElementById("mediaTitle").value;
             const category = document.getElementById("mediaCategory").value || "General";
@@ -180,8 +186,9 @@
 
             try {
                 // Save Main Announcement Line to Firebase
-                if(mainBoxText !== "") {
-                    await setDoc(doc(db, "settings", "mainAnnouncement"), { text: mainBoxText }, { merge: true });
+                if(finalMainTextToSave !== "") {
+                    await setDoc(doc(db, "settings", "mainAnnouncement"), { text: finalMainTextToSave }, { merge: true });
+                    document.getElementById("mainAnnouncementText").innerText = finalMainTextToSave;
                 }
 
                 const existingDoc = await getDoc(doc(db, "settings", "linenews"));
@@ -309,7 +316,6 @@
                         <span class="sub-platform">dakshyadav.co.in</span>
                         <button class="header-admin-btn" onclick="toggleAdmin()">Admin</button>
                     </div>
-                    <!-- Yahan bina code ke direct site par click karke naam/location badal sakte hain -->
                     <h2 class="editable-title" contenteditable="true" title="Click here to edit directly on site">राजेश यादव मलकोषिया</h2>
                 </div>
             </div>
@@ -317,6 +323,11 @@
             <!-- Hidden Admin Panel -->
             <div class="admin-box" id="adminPanel">
                 <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें (336200)">
+                
+                <div style="font-size: 11px; color: #ffeb3b; margin: 4px 0 2px 0; font-weight: bold;">📝 मुख्य घोषणा लाइन (Main Text) बदलें:</div>
+                <textarea id="adminMainInput" class="admin-input" style="height: 55px;" placeholder="यहाँ नई मुख्य लाइन लिखें जो ऐप डाउनलोड के ऊपर दिखती है..."></textarea>
+
+                <div style="font-size: 11px; color: #ffeb3b; margin: 4px 0 2px 0; font-weight: bold;">🔥 लाइव न्यूज़ टिकर बदलें:</div>
                 <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
                 
                 <div class="camera-btn-wrapper">
@@ -335,7 +346,8 @@
             </div>
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
-            <!-- Yahan ab yeh line seedhe site par click karke edit ki ja sakti hai aur Admin panel se save ho jayegi -->
+            
+            <!-- Main Announcement Box: Yeh ab direct click karke ya admin panel se badal aur save ho sakti hai -->
             <div class="desc-text" id="mainAnnouncementText" contenteditable="true" title="यहाँ क्लिक करके डायरेक्ट लाइन बदल सकते हैं">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर do!</div>
 
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 ऐप डाउनलोड / Download App</a>
@@ -384,7 +396,7 @@
             <a href="https://api.whatsapp.com/send?phone=917015445900&text=Ramram%20bhai,%20mujhe%20apni%20news%20ya%20ad%20chalwani%20hai.%20Details%20batao." class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 विज्ञापन / Contact Us</a>
 
             <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 फोटो गैलरी / Gallery</button>
-            <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो फोल्डर / Videos</button>
+            <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0,ae;">🎥 वीडियो फोल्डर / Videos</button>
 
             <!-- Quick Links / Shopping Section Integrated Linearly -->
             <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग (Digital Store & Shopping)</div>
