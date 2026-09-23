@@ -107,8 +107,9 @@
             { id: 'p3', name: 'photo3.jpg', url: 'images/photo3.jpg' }
         ];
 
-        async function loadLiveNews() {
+        async function loadAppData() {
             try {
+                // Load Live News
                 const docSnap = await getDoc(doc(db, "settings", "linenews"));
                 if (docSnap.exists()) {
                     let data = docSnap.data();
@@ -129,9 +130,18 @@
                 } else {
                     document.getElementById("liveNewsBoxContainer").style.display = "none";
                 }
-            } catch (e) { console.error("Error loading live news:", e); }
+
+                // Load Main Announcement Line
+                const mainTextSnap = await getDoc(doc(db, "settings", "mainAnnouncement"));
+                if (mainTextSnap.exists()) {
+                    let mainData = mainTextSnap.data();
+                    if(mainData.text) {
+                        document.getElementById("mainAnnouncementText").innerText = mainData.text;
+                    }
+                }
+            } catch (e) { console.error("Error loading app data:", e); }
         }
-        window.addEventListener('DOMContentLoaded', loadLiveNews);
+        window.addEventListener('DOMContentLoaded', loadAppData);
 
         async function loadVideosFromFirebase() {
             try {
@@ -162,11 +172,18 @@
             const rawNewsText = document.getElementById("adminLiveNewsInput").value.trim();
             const tickerUrlInput = document.getElementById("adminTickerImgUrl").value.trim();
             
+            const mainBoxText = document.getElementById("mainAnnouncementText").innerText.trim();
+
             const title = document.getElementById("mediaTitle").value;
             const category = document.getElementById("mediaCategory").value || "General";
             const mediaUrlInput = document.getElementById("mediaUrlInput").value.trim();
 
             try {
+                // Save Main Announcement Line to Firebase
+                if(mainBoxText !== "") {
+                    await setDoc(doc(db, "settings", "mainAnnouncement"), { text: mainBoxText }, { merge: true });
+                }
+
                 const existingDoc = await getDoc(doc(db, "settings", "linenews"));
                 let existingData = existingDoc.exists() ? existingDoc.data() : {};
                 
@@ -200,7 +217,7 @@
                     loadVideosFromFirebase();
                 }
 
-                alert("अपडेट सफलतापूर्वक हो गया है!");
+                alert("अपडेट और सेव सफलतापूर्वक हो गया है!");
                 document.getElementById("adminPass").value = "";
                 document.getElementById("adminLiveNewsInput").value = "";
                 document.getElementById("adminTickerImgUrl").value = "";
@@ -299,7 +316,7 @@
 
             <!-- Hidden Admin Panel -->
             <div class="admin-box" id="adminPanel">
-                <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें">
+                <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें (336200)">
                 <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
                 
                 <div class="camera-btn-wrapper">
@@ -313,12 +330,13 @@
                 <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम (जैसे: वीडियो, न्यूज़)">
                 <input type="text" id="mediaUrlInput" class="admin-input" placeholder="या वीडियो/फोटो का डायरेक्ट URL यहाँ डालें">
 
-                <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 7px; font-size: 12px; margin-bottom: 5px;">🚀 अपडेट / अपलोड करें (Upload)</button>
+                <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 7px; font-size: 12px; margin-bottom: 5px;">🚀 अपडेट / सेव करें (Save All)</button>
                 <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ एडिट/डिलीट करें</button>
             </div>
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
-            <div class="desc-text" contenteditable="true">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर do!</div>
+            <!-- Yahan ab yeh line seedhe site par click karke edit ki ja sakti hai aur Admin panel se save ho jayegi -->
+            <div class="desc-text" id="mainAnnouncementText" contenteditable="true" title="यहाँ क्लिक करके डायरेक्ट लाइन बदल सकते हैं">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर do!</div>
 
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 ऐप डाउनलोड / Download App</a>
             <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप शेयर / WhatsApp Share</button>
@@ -482,10 +500,8 @@
             await fetchAndApplyTranslation(text, statusEl, translatedEl, langPair);
         }
 
-        // --- Naya Auto-Split Function jo bade text ko chote tukdo me baant kar API ki limit bypass karega ---
         async function fetchAndApplyTranslation(textToTranslate, statusElement, targetElement, langPair) {
             try {
-                // Text ko 400 characters ke tukdo me todna taaki API limit cross na ho
                 const chunkSize = 400;
                 let chunks = [];
                 for (let i = 0; i < textToTranslate.length; i += chunkSize) {
@@ -513,7 +529,6 @@
             }
         }
 
-        // Print or Save as PDF Function
         window.printTranslatedText = function() {
             const translatedText = document.getElementById("translatedText").value.trim();
             if(!translatedText) {
@@ -533,7 +548,6 @@
             setTimeout(() => { printWindow.print(); }, 500);
         }
 
-        // Share Translated Text on WhatsApp Function
         window.shareTranslatedOnWhatsApp = function() {
             const translatedText = document.getElementById("translatedText").value.trim();
             if(!translatedText) {
@@ -646,7 +660,8 @@
         }
 
         function openWhatsAppShare() {
-            const message = "रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो! https://dakshyadav.co.in";
+            const customMsg = document.getElementById("mainAnnouncementText").innerText.trim();
+            const message = customMsg + " https://dakshyadav.co.in";
             window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(message), '_blank');
         }
 
