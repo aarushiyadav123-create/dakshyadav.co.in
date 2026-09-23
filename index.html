@@ -175,7 +175,6 @@
             const rawNewsText = document.getElementById("adminLiveNewsInput").value.trim();
             const tickerUrlInput = document.getElementById("adminTickerImgUrl").value.trim();
             
-            // Admin panel main text input or on-site editable box text
             const adminMainInputVal = document.getElementById("adminMainInput").value.trim();
             const onSiteMainText = document.getElementById("mainAnnouncementText").innerText.trim();
             const finalMainTextToSave = adminMainInputVal !== "" ? adminMainInputVal : onSiteMainText;
@@ -185,7 +184,6 @@
             const mediaUrlInput = document.getElementById("mediaUrlInput").value.trim();
 
             try {
-                // Save Main Announcement Line to Firebase
                 if(finalMainTextToSave !== "") {
                     await setDoc(doc(db, "settings", "mainAnnouncement"), { text: finalMainTextToSave }, { merge: true });
                     document.getElementById("mainAnnouncementText").innerText = finalMainTextToSave;
@@ -320,12 +318,12 @@
                 </div>
             </div>
 
-            <!-- Hidden Admin Panel -->
+            <!-- Hidden Admin Panel (Password Hidden via type="password") -->
             <div class="admin-box" id="adminPanel">
-                <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें (336200)">
+                <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें">
                 
                 <div style="font-size: 11px; color: #ffeb3b; margin: 4px 0 2px 0; font-weight: bold;">📝 मुख्य घोषणा लाइन (Main Text) बदलें:</div>
-                <textarea id="adminMainInput" class="admin-input" style="height: 55px;" placeholder="यहाँ नई मुख्य लाइन लिखें जो ऐप डाउनलोड के ऊपर दिखती है..."></textarea>
+                <textarea id="adminMainInput" class="admin-input" style="height: 55px;" placeholder="यहाँ नई मुख्य लाइन लिखें..."></textarea>
 
                 <div style="font-size: 11px; color: #ffeb3b; margin: 4px 0 2px 0; font-weight: bold;">🔥 लाइव न्यूज़ टिकर बदलें:</div>
                 <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
@@ -347,19 +345,19 @@
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
             
-            <!-- Main Announcement Box: Yeh ab direct click karke ya admin panel se badal aur save ho sakti hai -->
-            <div class="desc-text" id="mainAnnouncementText" contenteditable="true" title="यहाँ क्लिक करके डायरेक्ट लाइन बदल सकते हैं">रै भाई, हमारे गाँव का MeraGaov ऐप आ लिया है, डाउनलोड कर लो और व्हाट्सएप पर शेयर कर do!</div>
+            <!-- Main Announcement Box -->
+            <div class="desc-text" id="mainAnnouncementText" contenteditable="true" title="यहाँ क्लिक करके डायरेक्ट लाइन बदल सकते हैं">गाँव की हर सेवा, हर दुकान और हर जरूरी जानकारी अब एक क्लिक पर। पीछे क्यों रहना? आज ही MeraGaov ऐप इंस्टॉल करें और शेयर करें! 🚀</div>
 
             <a href="https://play.google.com/store/apps/details?id=com.meragaov.haryana" class="btn" target="_blank">📥 ऐप डाउनलोड / Download App</a>
             <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप शेयर / WhatsApp Share</button>
             
-            <!-- Translator Button with English/Hindi Name -->
-            <button onclick="toggleTranslatorSection()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; border: 1px solid #e1bee7;">📷 ट्रांसलेटर / Translator</button>
+            <!-- Updated Translator Button Name -->
+            <button onclick="toggleTranslatorSection()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; border: 1px solid #e1bee7;">📷 Eng/Hindi ट्रांसलेटर</button>
 
             <!-- FULL SCREEN INLINE TRANSLATOR PANEL -->
             <div id="translatorSection">
                 <div class="translator-header">
-                    <h3>📷 ट्रांसलेटर / Translator</h3>
+                    <h3>📷 Eng/Hindi ट्रांसलेटर</h3>
                     <button class="close-translator" onclick="toggleTranslatorSection()">बंद करें X</button>
                 </div>
                 
@@ -393,10 +391,11 @@
                 </div>
             </div>
 
-            <a href="https://api.whatsapp.com/send?phone=917015445900&text=Ramram%20bhai,%20mujhe%20apni%20news%20ya%20ad%20chalwani%20hai.%20Details%20batao." class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 विज्ञापन / Contact Us</a>
+            <!-- Contact Us Button with Hindi Message -->
+            <a href="https://api.whatsapp.com/send?phone=917015445900&text=%E0%A4%B0%E0%A4%BE%E0%A4%AE-%E0%A4%B0%E0%A4%BE%E0%A4%AE%20%E0%A4%AD%E0%A4%BE%E0%A4%AF%E0%A5%8B%2C%20%E0%A4%AE%E0%A5%81%E0%A4%9D%E0%A5%87%20%E0%A4%85%E0%A4%AA%E0%A4%A8%E0%A5%80%20%E0%A4%96%E0%A4%AC%E0%A4%B0%20%E0%A4%AF%E0%A4%BE%20%E0%A4%B5%E0%A4%BF%E0%A4%9C%E0%A5%8D%E0%A4%9E%E0%A4%BE%E0%A4%AA%E0%A4%A8%20%E0%A4%9A%E0%A4%B2%E0%A4%B5%E0%A4%BE%E0%A4%A8%E0%A4%BE%20%E0%A4%B9%E0%A5%88%E0%A5%A4%20%E0%A4%A1%E0%A5%87%E0%A4%9F%E0%A4%BF%E0%A4%B2%E0%A5%8D%E0%A4%B8%20%E0%A4%AC%E0%A4%A4%E0%A4%BE%E0%A4%93%E0%A5%A4" class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 विज्ञापन / Contact Us</a>
 
             <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 फोटो गैलरी / Gallery</button>
-            <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0,ae;">🎥 वीडियो फोल्डर / Videos</button>
+            <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो फोल्डर / Videos</button>
 
             <!-- Quick Links / Shopping Section Integrated Linearly -->
             <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग (Digital Store & Shopping)</div>
