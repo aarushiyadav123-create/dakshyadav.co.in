@@ -150,7 +150,7 @@
             const playerContainer = document.getElementById("desiVibePlayerContainer");
             if (url.includes("youtube.com") || url.includes("youtu.be")) {
                 let videoId = url.includes("youtu.be/") ? url.split("youtu.be/")[1].split("?")[0] : url.split("watch?v=")[1].split("&")[0];
-                playerContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1" frameborder="0" allow="autoplay"></iframe>`;
+                playerContainer.innerHTML = `<iframe id="ytAudioFrame" width="0" height="0" src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&loop=1" frameborder="0" allow="autoplay"></iframe>`;
             } else {
                 playerContainer.innerHTML = `<audio id="folkAudio" loop><source id="folkAudioSource" src="${url}" type="audio/mpeg"></audio>`;
             }
@@ -189,7 +189,6 @@
             const onSiteMainText = document.getElementById("mainAnnouncementText").innerText.trim();
             const finalMainTextToSave = adminMainInputVal !== "" ? adminMainInputVal : onSiteMainText;
             
-            // New Desi Vibe Audio/YouTube Input URL
             const newAudioUrl = document.getElementById("adminAudioInput").value.trim();
 
             const title = document.getElementById("mediaTitle").value;
@@ -202,7 +201,6 @@
                     document.getElementById("mainAnnouncementText").innerText = finalMainTextToSave;
                 }
 
-                // Save or Update Desi Vibe Audio/YouTube URL in Firebase
                 if(newAudioUrl !== "") {
                     await setDoc(doc(db, "settings", "desivibeAudio"), { url: newAudioUrl }, { merge: true });
                     updateDesiVibePlayer(newAudioUrl);
@@ -326,7 +324,8 @@
                         <span class="sub-platform">dakshyadav.co.in</span>
                         <button class="header-admin-btn" onclick="toggleAdmin()">Admin</button>
                     </div>
-                    <div class="editable-title" contenteditable="true">राजेश यादव मलकोषिया</div>
+                    <!-- यहाँ 'माल्कोषिया' को पूरी तरह ठीक करके 'मालकोषिया' कर दिया गया है -->
+                    <div class="editable-title" contenteditable="true">राजेश यादव मालकोषिया</div>
                 </div>
             </div>
 
@@ -419,10 +418,10 @@
         </div>
     </div>
 
-    <!-- Haryanvi Desi Vibe Audio/YouTube Player Hidden/Visible Component -->
+    <!-- Haryanvi Desi Vibe Audio/YouTube Player Component -->
     <div style="position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.85); padding: 10px 18px; border-radius: 30px; display: flex; align-items: center; gap: 12px; z-index: 10000; border: 1px solid #d4af37; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
         <span style="color: #fff; font-size: 14px; font-weight: bold;">🎵 Desi Vibe</span>
-        <div id="desiVibePlayerContainer">
+        <div id="desiVibePlayerContainer" style="display:none;">
             <audio id="folkAudio" loop>
                 <source id="folkAudioSource" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
             </audio>
@@ -451,21 +450,32 @@
 
     <script>
         let isPlaying = false;
+
         function toggleAudio() {
-            let audio = document.getElementById("folkAudio");
             let btn = document.getElementById("audioBtn");
-            if (audio) {
+            let audioElem = document.getElementById("folkAudio");
+            let ytFrame = document.getElementById("ytAudioFrame");
+
+            if (ytFrame) {
                 if (isPlaying) {
-                    audio.pause();
+                    ytFrame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
                     btn.innerHTML = "▶";
                     isPlaying = false;
                 } else {
-                    audio.play();
+                    ytFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
                     btn.innerHTML = "⏸";
                     isPlaying = true;
                 }
-            } else {
-                alert("YouTube ऑडियो बैकग्राउंड में चल रहा है!");
+            } else if (audioElem) {
+                if (isPlaying) {
+                    audioElem.pause();
+                    btn.innerHTML = "▶";
+                    isPlaying = false;
+                } else {
+                    audioElem.play();
+                    btn.innerHTML = "⏸";
+                    isPlaying = true;
+                }
             }
         }
 
