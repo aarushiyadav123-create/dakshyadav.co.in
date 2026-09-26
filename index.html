@@ -71,6 +71,13 @@
         .translator-header h3 { color: #69f0ae; font-size: 15px; font-weight: bold; }
         .close-translator { background: #d32f2f; color: #fff; border: none; padding: 4px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
+        /* Dynamic Form Portal Panel */
+        #formPortalSection { display: none; background: rgba(0, 40, 30, 0.95); border: 2px solid #ffeb3b; padding: 15px; border-radius: 14px; margin-bottom: 15px; text-align: left; box-shadow: 0 5px 25px rgba(0,0,0,0.7); }
+        .form-portal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #ffeb3b; padding-bottom: 6px; }
+        .form-portal-header h3 { color: #ffeb3b; font-size: 15px; font-weight: bold; }
+        
+        .receipt-card { background: #fff; color: #000; padding: 15px; border-radius: 8px; margin-top: 10px; display: none; border: 2px dashed #0c4a37; }
+
         /* Gallery Modal & Lightbox */
         #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 15px; }
         .modal-content { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 420px; max-height: 80vh; border-radius: 12px; padding: 15px; border: 1px solid #69f0ae; overflow-y: auto; text-align: left; }
@@ -85,6 +92,13 @@
         #lightbox img, #lightbox video, #lightbox iframe { max-width: 100%; max-height: 85vh; border-radius: 10px; object-fit: contain; }
         #lightbox span { position: absolute; top: 12px; right: 18px; color: white; font-size: 30px; cursor: pointer; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .footer { font-size: 10px; color: #a5d6a7; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 8px; margin-top: 10px; text-align: center; }
+
+        @media print {
+            body * { visibility: hidden; }
+            .receipt-card, .receipt-card * { visibility: visible; }
+            .receipt-card { position: absolute; left: 0; top: 0; width: 100%; border: none; background: #fff !important; color: #000 !important; }
+            .no-print { display: none !important; }
+        }
     </style>
 
     <!-- Firebase SDK & Database Integration -->
@@ -151,7 +165,6 @@
                     }
                 }
 
-                // Check messages for notification badge
                 const msgSnap = await getDocs(collection(db, "messages"));
                 if(!msgSnap.empty) {
                     document.getElementById("adminNotifBadge").style.display = "inline-block";
@@ -193,7 +206,6 @@
         window.getVideoCategoriesData = () => videoCategories;
         window.getMyPhotosData = () => myPhotos;
 
-        // Visitor Message Submit Function
         window.sendVisitorMessage = async function() {
             const name = document.getElementById("visitorName").value.trim();
             const msg = document.getElementById("visitorMsgText").value.trim();
@@ -211,7 +223,6 @@
             }
         }
 
-        // Open Messages Modal for Admin with Reply feature
         window.openVisitorMessagesModal = async function() {
             const modal = document.getElementById("galleryModal");
             const title = document.getElementById("modalTitle");
@@ -276,7 +287,6 @@
             }
         }
 
-        // Check Password to Unlock Full Admin Panel
         window.checkAdminPassword = function() {
             const pass = document.getElementById("adminPass").value;
             if(pass === "336200") {
@@ -295,7 +305,6 @@
             const finalMainTextToSave = adminMainInputVal !== "" ? adminMainInputVal : onSiteMainText;
             
             const newAudioUrl = document.getElementById("adminAudioInput").value.trim();
-
             const title = document.getElementById("mediaTitle").value;
             const category = document.getElementById("mediaCategory").value || "General";
             const mediaUrlInput = document.getElementById("mediaUrlInput").value.trim();
@@ -431,7 +440,7 @@
                 </div>
             </div>
 
-            <!-- Hidden Admin Panel (Password First Protected) -->
+            <!-- Hidden Admin Panel -->
             <div class="admin-box" id="adminPanel">
                 <div style="font-size: 12px; color: #ffeb3b; margin-bottom: 6px; font-weight: bold;">🔒 एडमिन एक्सेस (पासवर्ड दर्ज करें):</div>
                 <div style="display: flex; gap: 6px; margin-bottom: 10px;">
@@ -439,7 +448,6 @@
                     <button onclick="checkAdminPassword()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 6px 12px; font-size: 11px; margin-bottom:0; width: auto; flex-shrink:0;">लॉगिन</button>
                 </div>
 
-                <!-- Protected Controls Hidden Initially -->
                 <div id="protectedAdminControls" style="display:none; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 10px; margin-top: 8px;">
                     <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">📝 मुख्य घोषणा लाइन बदलें:</div>
                     <textarea id="adminMainInput" class="admin-input" style="height: 45px;" placeholder="यहाँ नई मुख्य लाइन लिखें..."></textarea>
@@ -477,16 +485,63 @@
                 <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप शेयर</button>
             </div>
 
-            <!-- Two-in-One Row 2: Translator & Contact Us -->
+            <!-- Two-in-One Row 2: Digital Form Portal & Translator -->
             <div class="button-row">
+                <button onclick="toggleFormPortalSection()" class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffe0b2;">📋 डिजिटल फॉर्म / रसीद</button>
                 <button onclick="toggleTranslatorSection()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; border: 1px solid #e1bee7;">📷 ट्रांसलेटर</button>
-                <a href="https://api.whatsapp.com/send?phone=917015445900&text=%E0%A4%B0%E0%A4%BE%E0%A4%AE-%E0%A4%B0%E0%A4%BE%E0%A4%AE%20%E0%A4%AD%E0%A4%BE%E0%A4%AF%E0%A5%8B%2C%20%E0%A4%AE%E0%A5%81%E0%A4%9D%E0%A5%85%20%E0%A4%85%E0%A4%AA%E0%A4%A8%E0%A5%80%20%E0%A4%96%E0%A4%AC%E0%A4%B0%20%E0%A4%AF%E0%A4%BE%20%E0%A4%B5%E0%A4%BF%E0%A4%9C%E0%A5%8D%E0%A4%9C%E0%A4%BE%E0%A4%या%20%E0%A4%9A%E0%A4%B2%E0%A4%B5%E0%A4%BE%E0%A4%A8%E0%A4%BE%20%E0%A4%B9%E0%A5%88" class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 विज्ञापन / कांटेक्ट</a>
             </div>
 
             <!-- Two-in-One Row 3: Gallery & Video Folders -->
             <div class="button-row">
                 <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 फोटो गैलरी</button>
                 <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो फोल्डर</button>
+            </div>
+
+            <!-- DIGITAL FORM & RECEIPT GENERATOR PANEL -->
+            <div id="formPortalSection">
+                <div class="form-portal-header">
+                    <h3>📋 डिजिटल फॉर्म और रसीद जेनरेटर</h3>
+                    <button class="close-translator" onclick="toggleFormPortalSection()">बंद करें X</button>
+                </div>
+                
+                <!-- Input Form Section -->
+                <div id="formInputArea">
+                    <label style="font-size: 11px; color: #ffeb3b; font-weight: bold; display: block; text-align: left; margin-bottom: 2px;">फॉर्म का प्रकार चुनें:</label>
+                    <select id="selectedFormType" class="admin-input">
+                        <option value="Claim Form">Claim Form (दावा फॉर्म)</option>
+                        <option value="Nomination Form">Nomination Form (मनोनयन फॉर्म)</option>
+                        <option value="Nakal / Land Record Form">Nakal Form (नकल / ज़मीन रिकॉर्ड)</option>
+                        <option value="Cheque Request Form">Cheque Request (चेक अनुरोध)</option>
+                    </select>
+
+                    <label style="font-size: 11px; color: #ffeb3b; font-weight: bold; display: block; text-align: left; margin-bottom: 2px;">पूरा नाम (Full Name):</label>
+                    <input type="text" id="userFormName" class="admin-input" placeholder="अपना नाम लिखें">
+
+                    <label style="font-size: 11px; color: #ffeb3b; font-weight: bold; display: block; text-align: left; margin-bottom: 2px;">मोबाइल नंबर (Mobile):</label>
+                    <input type="text" id="userFormMobile" class="admin-input" placeholder="मोबाइल नंबर लिखें">
+
+                    <label style="font-size: 11px; color: #ffeb3b; font-weight: bold; display: block; text-align: left; margin-bottom: 2px;">विवरण / पता (Details / Address):</label>
+                    <textarea id="userFormDetails" class="admin-input" style="height: 60px;" placeholder="फॉर्म से संबंधित विवरण यहाँ लिखें..."></textarea>
+
+                    <button onclick="generateUserReceipt()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; font-weight: bold; margin-bottom: 0;">⚡ फॉर्म भरें और रसीद देखें</button>
+                </div>
+
+                <!-- Generated Auto-Filled Receipt Card (Print & Share Ready) -->
+                <div id="formReceiptArea" class="receipt-card">
+                    <h3 id="receiptTitleText" style="text-align: center; color: #0c4a37; margin-bottom: 8px; font-size: 16px;">MeraGaov Digital Receipt</h3>
+                    <hr style="border: 0.5px solid #ccc; margin-bottom: 8px;">
+                    <p style="font-size: 13px; margin-bottom: 4px; text-align: left;"><strong>फॉर्म प्रकार:</strong> <span id="outFormType"></span></p>
+                    <p style="font-size: 13px; margin-bottom: 4px; text-align: left;"><strong>नाम:</strong> <span id="outFormName"></span></p>
+                    <p style="font-size: 13px; margin-bottom: 4px; text-align: left;"><strong>मोबाइल:</strong> <span id="outFormMobile"></span></p>
+                    <p style="font-size: 13px; margin-bottom: 8px; text-align: left;"><strong>विवरण:</strong> <span id="outFormDetails"></span></p>
+                    <p style="font-size: 11px; color: #555; text-align: right; margin-top: 15px;">Authorized Signature / Verified</p>
+                    
+                    <div class="no-print" style="display: flex; gap: 6px; margin-top: 10px;">
+                        <button onclick="window.print()" class="btn" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">🖨️ प्रिंट / PDF</button>
+                        <button onclick="shareReceiptOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">📤 व्हाट्सएप भेजें</button>
+                    </div>
+                    <button onclick="resetUserForm()" class="no-print btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 11px; margin-top: 6px; margin-bottom: 0;">🔄 दूसरा फॉर्म भरें</button>
+                </div>
             </div>
 
             <!-- FULL SCREEN INLINE TRANSLATOR PANEL -->
@@ -636,6 +691,55 @@
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        window.toggleFormPortalSection = function() {
+            const sec = document.getElementById("formPortalSection");
+            if(sec.style.display === "block") {
+                sec.style.display = "none";
+            } else {
+                sec.style.display = "block";
+                sec.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        window.generateUserReceipt = function() {
+            let formType = document.getElementById("selectedFormType").value;
+            let name = document.getElementById("userFormName").value.trim();
+            let mobile = document.getElementById("userFormMobile").value.trim();
+            let details = document.getElementById("userFormDetails").value.trim();
+
+            if(!name || !mobile) {
+                alert("कृपया अपना नाम और मोबाइल नंबर अवश्य भरें!");
+                return;
+            }
+
+            document.getElementById("receiptTitleText").innerText = "MeraGaov - " + formType;
+            document.getElementById("outFormType").innerText = formType;
+            document.getElementById("outFormName").innerText = name;
+            document.getElementById("outFormMobile").innerText = mobile;
+            document.getElementById("outFormDetails").innerText = details || "लागू नहीं (N/A)";
+
+            document.getElementById("formInputArea").style.display = "none";
+            document.getElementById("formReceiptArea").style.display = "block";
+        }
+
+        window.resetUserForm = function() {
+            document.getElementById("formInputArea").style.display = "block";
+            document.getElementById("formReceiptArea").style.display = "none";
+            document.getElementById("userFormName").value = "";
+            document.getElementById("userFormMobile").value = "";
+            document.getElementById("userFormDetails").value = "";
+        }
+
+        window.shareReceiptOnWhatsApp = function() {
+            let formType = document.getElementById("outFormType").innerText;
+            let name = document.getElementById("outFormName").innerText;
+            let mobile = document.getElementById("outFormMobile").innerText;
+            let details = document.getElementById("outFormDetails").innerText;
+
+            let shareText = `📋 *MeraGaov ${formType}*:\n\n👤 *नाम:* ${name}\n📱 *मोबाइल:* ${mobile}\n📝 *विवरण:* ${details}\n\n---\n_Generated via dakshyadav.co.in_`;
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(shareText), '_blank');
         }
 
         window.toggleTranslatorSection = function() {
