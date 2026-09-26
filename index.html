@@ -61,23 +61,6 @@
         .translator-header h3 { color: #69f0ae; font-size: 15px; font-weight: bold; }
         .close-translator { background: #d32f2f; color: #fff; border: none; padding: 4px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
-        /* Sarkari Scheme Hub Overlay */
-        #formPortalSection { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 35, 28, 0.98); z-index: 9999; padding: 15px; overflow-y: auto; text-align: left; box-shadow: 0 5px 25px rgba(0,0,0,0.9); }
-        .form-portal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #ffeb3b; padding-bottom: 8px; }
-        .form-portal-header h3 { color: #ffeb3b; font-size: 16px; font-weight: bold; }
-        
-        .bank-form-box { background: #fff; color: #000; padding: 15px; border-radius: 8px; margin-top: 10px; border: 2px solid #000; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto; }
-        .bank-form-title { text-align: center; font-weight: bold; font-size: 13px; color: #000; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px; text-transform: uppercase; }
-        .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
-        .form-group { flex: 1; display: flex; flex-direction: column; }
-        .form-group label { font-size: 11px; font-weight: bold; color: #333; margin-bottom: 2px; }
-        .form-group input, .form-group select, .form-group textarea { padding: 6px 8px; border: 1px solid #444; border-radius: 3px; font-size: 12px; background: #fff; color: #000; width: 100%; }
-
-        .bank-output-box { display: none; background: #fff; color: #000; padding: 15px; border-radius: 8px; margin-top: 10px; border: 2px solid #000; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto; }
-        .bank-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
-        .bank-table th, .bank-table td { border: 1px solid #000; padding: 6px 8px; text-align: left; }
-        .bank-table th { background: #f0f0f0; color: #000; width: 38%; }
-
         /* Gallery Modal & Lightbox */
         #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 15px; }
         .modal-content { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; max-width: 420px; max-height: 80vh; border-radius: 12px; padding: 15px; border: 1px solid #69f0ae; overflow-y: auto; text-align: left; }
@@ -92,13 +75,6 @@
         #lightbox img, #lightbox video, #lightbox iframe { max-width: 100%; max-height: 85vh; border-radius: 10px; object-fit: contain; }
         #lightbox span { position: absolute; top: 12px; right: 18px; color: white; font-size: 30px; cursor: pointer; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .footer { font-size: 10px; color: #a5d6a7; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 8px; margin-top: 10px; text-align: center; }
-
-        @media print {
-            body * { visibility: hidden; }
-            .bank-output-box, .bank-output-box * { visibility: visible; }
-            .bank-output-box { position: absolute; left: 0; top: 0; width: 100%; border: none; background: #fff !important; color: #000 !important; }
-            .no-print { display: none !important; }
-        }
     </style>
 
     <!-- Firebase SDK & Database Integration -->
@@ -483,113 +459,13 @@
                 <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप शेयर</button>
             </div>
 
-            <!-- Two-in-One Row 2: Sarkari Scheme & Hindi/Eng Translator -->
-            <div class="button-row">
-                <button onclick="toggleFormPortalSection()" class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffe0b2;">🏛️ सरकारी योजनाएं (Schemes)</button>
-                <button onclick="toggleTranslatorSection()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; border: 1px solid #e1bee7;">🌐 Hindi/Eng</button>
-            </div>
+            <!-- Single Row: Hindi/Eng Translator Only -->
+            <button onclick="toggleTranslatorSection()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; border: 1px solid #e1bee7; margin-bottom: 8px;">🌐 Hindi/Eng</button>
 
-            <!-- Two-in-One Row 3: Gallery & Video Folders -->
+            <!-- Two-in-One Row: Gallery & Video Folders -->
             <div class="button-row">
                 <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 फोटो गैलरी</button>
                 <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो फोल्डर</button>
-            </div>
-
-            <!-- SARKARI SCHEME HUB PANEL -->
-            <div id="formPortalSection">
-                <div class="form-portal-header">
-                    <h3>🏛️ सरकारी योजनाएं और लाभ हब</h3>
-                    <button class="close-translator" onclick="toggleFormPortalSection()">बंद करें X</button>
-                </div>
-                
-                <!-- Input Form Selection Box -->
-                <div id="bankFormInputBox" class="bank-form-box">
-                    <div class="bank-form-title">योजना की जानकारी और आवेदन फॉर्म देखें</div>
-                    
-                    <div class="form-group" style="margin-bottom: 8px;">
-                        <label>योजना का प्रकार चुनें (Select Sarkari Scheme):</label>
-                        <select id="selectedFormType" class="form-group" style="padding: 7px; font-weight: bold; background: #e8f5e9;">
-                            <option value="Old Age Samman Allowance (बुढ़ापा पेंशन)">बुढ़ापा सम्मान भत्ता योजना (Old Age Pension)</option>
-                            <option value="PM Kisan Samman Nidhi (पीएम किसान योजना)">पीएम किसान सम्मान निधि योजना (PM Kisan)</option>
-                            <option value="Ayushman Bharat Health Card (आयुष्मान कार्ड)">आयुष्मान भारत गोल्डन कार्ड (Ayushman Card)</option>
-                            <option value="PMAY Housing Scheme (प्रधानमंत्री आवास योजना)">प्रधानमंत्री आवास योजना (PMAY Housing)</option>
-                            <option value="Family ID / Parivar Pehchan Patra (परिवार पहचान पत्र)">परिवार पहचान पत्र (Family ID Correction)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>लाभार्थी का पूरा नाम (Full Name):</label>
-                            <input type="text" id="bankName" placeholder="जैसे: राजेश यादव" value="राजेश यादव">
-                        </div>
-                        <div class="form-group">
-                            <label>मोबाइल नंबर (Mobile No):</label>
-                            <input type="text" id="bankMobile" placeholder="10 अंकों का नंबर" value="7000000000">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>आधार नंबर / परिवार पहचान पत्र आईडी:</label>
-                            <input type="text" id="bankAccNo" placeholder="Aadhaar / Family ID No.">
-                        </div>
-                        <div class="form-group">
-                            <label>योजना का लाभ / स्थिति:</label>
-                            <input type="text" id="bankAmount" placeholder="स्थिति या विवरण">
-                        </div>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 8px;">
-                        <label>ग्राम मालकोषिया पता व अन्य विवरण:</label>
-                        <textarea id="bankDetails" style="height: 45px;" placeholder="ग्राम मालकोषिया, तहसील, जिला..."></textarea>
-                    </div>
-
-                    <button onclick="generateCleanBankForm()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; font-weight: bold; margin-bottom: 0; margin-top: 6px;">⚡ योजना का विवरण व फॉर्म तैयार करें</button>
-                </div>
-
-                <!-- Rendered Official Output Form -->
-                <div id="bankFormOutputBox" class="bank-output-box">
-                    <div id="outBankFormTitle" class="bank-form-title" style="font-size: 13px; margin-bottom: 4px;">MERAGAOV SARKARI YOJNA PORTAL</div>
-                    <div style="font-size: 10px; text-align: right; margin-bottom: 6px;">दिनांक: <span id="outBankDate"></span></div>
-
-                    <table class="bank-table">
-                        <tr>
-                            <th>योजना का नाम</th>
-                            <td><span id="outBankType" style="font-weight: bold;"></span></td>
-                        </tr>
-                        <tr>
-                            <th>लाभार्थी का नाम</th>
-                            <td><span id="outBankName"></span></td>
-                        </tr>
-                        <tr>
-                            <th>मोबाइल नंबर</th>
-                            <td><span id="outBankMobile"></span></td>
-                        </tr>
-                        <tr>
-                            <th>आधार / परिवार पहचान पत्र</th>
-                            <td><span id="outBankAcc"></span></td>
-                        </tr>
-                        <tr>
-                            <th>लाभ / स्थिति</th>
-                            <td><span id="outBankAmt"></span></td>
-                        </tr>
-                        <tr>
-                            <th>गाँव व पता विवरण</th>
-                            <td><span id="outBankDetails"></span></td>
-                        </tr>
-                    </table>
-
-                    <div style="display: flex; justify-content: space-between; margin-top: 30px; font-size: 11px; font-weight: bold;">
-                        <span>आवेदक के हस्ताक्षर: _______________</span>
-                        <span>सत्यापित केंद्र / सीएससी</span>
-                    </div>
-                    
-                    <div class="no-print" style="display: flex; gap: 6px; margin-top: 15px;">
-                        <button onclick="window.print()" class="btn" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">🖨️ प्रिंट / PDF</button>
-                        <button onclick="shareCleanFormOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">📤 व्हाट्सएप भेजें</button>
-                    </div>
-                    <button onclick="resetCleanForm()" class="no-print btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 11px; margin-top: 6px; margin-bottom: 0;">🔄 दूसरी योजना देखें</button>
-                </div>
             </div>
 
             <!-- FULL SCREEN INLINE HINDI/ENG TRANSLATOR PANEL -->
@@ -686,6 +562,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@v2.1.1/dist/tesseract.min.js"></script>
     <script>
         let isPlaying = false;
 
@@ -739,58 +616,6 @@
                 };
                 reader.readAsDataURL(file);
             }
-        }
-
-        window.toggleFormPortalSection = function() {
-            const sec = document.getElementById("formPortalSection");
-            sec.style.display = (sec.style.display === "block") ? "none" : "block";
-        }
-
-        window.generateCleanBankForm = function() {
-            let formType = document.getElementById("selectedFormType").value;
-            let name = document.getElementById("bankName").value.trim();
-            let mobile = document.getElementById("bankMobile").value.trim();
-            let accNo = document.getElementById("bankAccNo").value.trim();
-            let amount = document.getElementById("bankAmount").value.trim();
-            let details = document.getElementById("bankDetails").value.trim();
-
-            if(!name || !mobile) {
-                alert("कृपया लाभार्थी का नाम और मोबाइल नंबर अवश्य भरें!");
-                return;
-            }
-
-            let currentDate = new Date().toLocaleDateString('hi-IN', { year: 'numeric', month: 'long', day: 'numeric' });
-
-            document.getElementById("outBankFormTitle").innerText = "MeraGaov SARKARI YOJNA PORTAL";
-            document.getElementById("outBankType").innerText = formType;
-            document.getElementById("outBankName").innerText = name;
-            document.getElementById("outBankMobile").innerText = mobile;
-            document.getElementById("outBankAcc").innerText = accNo || "लागू नहीं";
-            document.getElementById("outBankAmt").innerText = amount || "लागू नहीं";
-            document.getElementById("outBankDetails").innerText = details || "ग्राम मालकोषिया, हरियाणा";
-            document.getElementById("outBankDate").innerText = currentDate;
-
-            document.getElementById("bankFormInputBox").style.display = "none";
-            document.getElementById("bankFormOutputBox").style.display = "block";
-        }
-
-        window.resetCleanForm = function() {
-            document.getElementById("bankFormInputBox").style.display = "block";
-            document.getElementById("bankFormOutputBox").style.display = "none";
-            document.getElementById("bankAccNo").value = "";
-            document.getElementById("bankAmount").value = "";
-            document.getElementById("bankDetails").value = "";
-        }
-
-        window.shareCleanFormOnWhatsApp = function() {
-            let formType = document.getElementById("outBankType").innerText;
-            let name = document.getElementById("outBankName").innerText;
-            let mobile = document.getElementById("outBankMobile").innerText;
-            let amt = document.getElementById("outBankAmt").innerText;
-            let details = document.getElementById("outBankDetails").innerText;
-
-            let shareText = `🏛️ *MeraGaov सरकारी योजना विवरण (${formType})*:\n\n👤 *नाम:* ${name}\n📱 *मोबाइल:* ${mobile}\n📌 *स्थिति:* ${amt}\n📝 *विवरण:* ${details}\n\n---\n_Generated via dakshyadav.co.in_`;
-            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(shareText), '_blank');
         }
 
         window.toggleTranslatorSection = function() {
