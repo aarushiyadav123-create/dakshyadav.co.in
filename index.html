@@ -103,7 +103,6 @@
 
         async function loadAppData() {
             try {
-                // Load Live News Ticker
                 const docSnap = await getDoc(doc(db, "settings", "linenews"));
                 if (docSnap.exists()) {
                     let data = docSnap.data();
@@ -123,7 +122,6 @@
                     document.getElementById("liveNewsBoxContainer").style.display = "none";
                 }
 
-                // Load Main Announcement Line
                 const mainTextSnap = await getDoc(doc(db, "settings", "mainAnnouncement"));
                 if (mainTextSnap.exists()) {
                     let mainData = mainTextSnap.data();
@@ -133,7 +131,6 @@
                     }
                 }
 
-                // Load Desi Vibe YouTube/Audio URL from Firebase Settings
                 const audioSnap = await getDoc(doc(db, "settings", "desivibeAudio"));
                 if (audioSnap.exists()) {
                     let audioData = audioSnap.data();
@@ -324,7 +321,6 @@
                         <span class="sub-platform">dakshyadav.co.in</span>
                         <button class="header-admin-btn" onclick="toggleAdmin()">Admin</button>
                     </div>
-                    <!-- यहाँ 'माल्कोषिया' को पूरी तरह ठीक करके 'मालकोषिया' कर दिया गया है -->
                     <div class="editable-title" contenteditable="true">राजेश यादव मालकोषिया</div>
                 </div>
             </div>
@@ -405,6 +401,10 @@
 
             <button onclick="openPhotoGallery()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">📸 फोटो गैलरी / Gallery</button>
             <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो फोल्डर / Videos</button>
+
+            <!-- Zomato & Swiggy Buttons -->
+            <a href="https://www.zomato.com" class="btn" target="_blank" style="background: linear-gradient(135deg, #e23744, #cb202d); color: #fff; margin-top: 10px;">🍔 Zomato</a>
+            <a href="https://www.swiggy.com" class="btn" target="_blank" style="background: linear-gradient(135deg, #fc8019, #e46d00); color: #fff;">🍲 Swiggy</a>
 
             <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग (Digital Store & Shopping)</div>
             <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff;">🛒 Flipkart महा-स्टोर (Online Shopping)</a>
