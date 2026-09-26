@@ -45,8 +45,6 @@
         
         /* Standard & Grid Button Layouts */
         .btn { background: linear-gradient(135deg, #00b0ff, #00e676); color: #002111; padding: 10px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; display: block; width: 100%; border: 1px solid #ffffff; margin-bottom: 8px; cursor: pointer; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .section-title { font-size: 13px; color: #b9f6ca; margin: 10px 0 6px 0; font-weight: bold; text-align: left; }
-        
         .button-row { display: flex; gap: 8px; margin-bottom: 8px; width: 100%; }
         .button-row .btn { margin-bottom: 0; flex: 1; }
 
@@ -57,6 +55,10 @@
         .camera-btn-wrapper { display: flex; align-items: center; justify-content: space-between; background: #04241b; border: 1px solid #69f0ae; padding: 8px; border-radius: 6px; margin-bottom: 8px; }
         .camera-btn-wrapper label { font-size: 12px; color: #b9f6ca; font-weight: bold; cursor: pointer; }
         .camera-btn-wrapper input[type="file"] { font-size: 11px; color: #fff; width: 55%; }
+
+        /* Visitor Message Form Box */
+        .visitor-msg-box { background: rgba(0, 40, 30, 0.6); border: 1.5px solid #69f0ae; padding: 12px; border-radius: 10px; margin-bottom: 12px; text-align: left; }
+        .visitor-msg-box h4 { color: #69f0ae; font-size: 13px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
 
         /* Full Screen Translator Panel */
         #translatorSection { display: none; background: rgba(0, 0, 0, 0.75); border: 2px solid #69f0ae; padding: 15px; border-radius: 14px; margin-bottom: 15px; text-align: left; box-shadow: 0 5px 25px rgba(0,0,0,0.7); }
@@ -151,7 +153,7 @@
             const playerContainer = document.getElementById("desiVibePlayerContainer");
             if (url.includes("youtube.com") || url.includes("youtu.be")) {
                 let videoId = url.includes("youtu.be/") ? url.split("youtu.be/")[1].split("?")[0] : url.split("watch?v=")[1].split("&")[0];
-                playerContainer.innerHTML = `<iframe id="ytAudioFrame" width="0" height="0" src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&loop=1" frameborder="0" allow="autoplay"></iframe>`;
+                playerContainer.innerHTML = `<iframe id="ytAudioFrame" width="0" height="0" src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&loop=1" frameborder="0" allow="autoplay"></iframe>`;
             } else {
                 playerContainer.innerHTML = `<audio id="folkAudio" loop><source id="folkAudioSource" src="${url}" type="audio/mpeg"></audio>`;
             }
@@ -179,6 +181,70 @@
 
         window.getVideoCategoriesData = () => videoCategories;
         window.getMyPhotosData = () => myPhotos;
+
+        // Visitor Message Submit Function
+        window.sendVisitorMessage = async function() {
+            const name = document.getElementById("visitorName").value.trim();
+            const msg = document.getElementById("visitorMsgText").value.trim();
+            if(!name || !msg) { alert("कृपया अपना नाम और संदेश दोनों लिखें!"); return; }
+
+            try {
+                await addDoc(collection(db, "messages"), { name: name, message: msg, timestamp: new Date() });
+                alert("आपका संदेश सफलतापूर्वक भेज दिया गया है!");
+                document.getElementById("visitorName").value = "";
+                document.getElementById("visitorMsgText").value = "";
+            } catch(e) {
+                console.error(e);
+                alert("त्रुटि: संदेश भेजने में असफल।");
+            }
+        }
+
+        // Open Messages Modal for Admin
+        window.openVisitorMessagesModal = async function() {
+            const pass = document.getElementById("adminPass").value;
+            if(pass !== "336200") { alert("गलत एडमिन पासवर्ड!"); return; }
+
+            const modal = document.getElementById("galleryModal");
+            const title = document.getElementById("modalTitle");
+            const listContainer = document.getElementById("modalFileList");
+            title.innerText = "📥 मिले हुए संदेश (Visitor Messages)";
+            listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:10px;">लोड हो रहा है...</div>`;
+            modal.style.display = "flex";
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "messages"));
+                listContainer.innerHTML = "";
+                if(querySnapshot.empty) {
+                    listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:10px;">कोई संदेश नहीं मिला है।</div>`;
+                    return;
+                }
+                querySnapshot.forEach((docSnap) => {
+                    let d = docSnap.data();
+                    let item = document.createElement('div');
+                    item.className = 'file-item';
+                    item.style.flexDirection = "column";
+                    item.style.alignItems = "flex-start";
+                    item.innerHTML = `
+                        <div style="display:flex; justify-content:space-width; width:100%; margin-bottom:4px;">
+                            <b style="color:#ffeb3b;">👤 ${d.name}</b>
+                            <button class="delete-btn" onclick="deleteVisitorMsg('${docSnap.id}')">Delete</button>
+                        </div>
+                        <div style="font-size:13px; color:#fff9c4; word-break:break-all;">💬 ${d.message}</div>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            } catch(e) {
+                console.error(e);
+                listContainer.innerHTML = `<div style="text-align:center; color:#ff8a80; padding:10px;">संदेश लोड करने में त्रुटि।</div>`;
+            }
+        }
+
+        window.deleteVisitorMsg = async function(id) {
+            if(confirm("क्या आप इस संदेश को डिलीट करना चाहते हैं?")) {
+                await deleteDoc(doc(db, "messages", id));
+                window.openVisitorMessagesModal();
+            }
+        }
 
         window.verifyAdminAndUpload = async function() {
             const pass = document.getElementById("adminPass").value;
@@ -354,6 +420,7 @@
                 <input type="text" id="mediaUrlInput" class="admin-input" placeholder="वीडियो/फोटो का डायरेक्ट URL">
 
                 <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 8px; font-size: 12px; margin-bottom: 6px;">🚀 अपडेट / सेव करें</button>
+                <button onclick="openVisitorMessagesModal()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 6px;">📥 मिले हुए संदेश देखें (Messages)</button>
                 <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ एडिट/डिलीट करें</button>
             </div>
 
@@ -370,7 +437,7 @@
             <!-- Two-in-One Row 2: Translator & Contact Us -->
             <div class="button-row">
                 <button onclick="toggleTranslatorSection()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; border: 1px solid #e1bee7;">📷 ट्रांसलेटर</button>
-                <a href="https://api.whatsapp.com/send?phone=917015445900&text=%E0%A4%B0%E0%A4%BE%E0%A4%AE-%E0%A4%B0%E0%A4%BE%E0%A4%AE%20%E0%A4%AD%E0%A4%BE%E0%A4%AF%E0%A5%8B%2C%20%E0%A4%AE%E0%A5%81%E0%A4%9D%E0%A5%85%20%E0%A4%85%E0%A4%AA%E0%A4%A8%E0%A5%80%20%E0%A4%96%E0%A4%AC%E0%A4%B0%20%E0%A4%AF%E0%A4%BE%20%E0%A4%B5%E0%A4%BF%E0%A4%9C%E0%A5%8D%E0%A4%9C%E0%A4%BE%E0%A4%AA%E0%A4%A8%20%E0%A4%9A%E0%A4%B2%E0%A4%B5%E0%A4%BE%E0%A4%A8%E0%A4%BE%20%E0%A4%B9%E0%A5%88%2C%20%E0%A4%A1%E0%A5%87%E0%A4%9F%E0%A4%BF%E0%A4%B2%E0%A5%8D%E0%A4%B2%20%E0%A4%AC%E0%A4%A4%E0%A4%." class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 विज्ञापन / कांटेक्ट</a>
+                <a href="https://api.whatsapp.com/send?phone=917015445900&text=%E0%A4%B0%E0%A4%BE%E0%A4%AE-%E0%A4%B0%E0%A4%BE%E0%A4%AE%20%E0%A4%AD%E0%A4%BE%E0%A4%AF%E0%A5%8B%2C%20%E0%A4%AE%E0%A5%81%E0%A4%9D%E0%A5%85%20%E0%A4%85%E0%A4%AA%E0%A4%A8%E0%A5%80%20%E0%A4%96%E0%A4%AC%E0%A4%B0%20%E0%A4%AF%E0%A4%BE%20%E0%A4%B5%E0%A4%BF%E0%A4%9C%E0%A5%8D%E0%A4%9C%E0%A4%BE%E0%A4%या%20%E0%A4%9A%E0%A4%B2%E0%A4%B5%E0%A4%BE%E0%A4%A8%E0%A4%BE%20%E0%A4%B9%E0%A5%88" class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;" target="_blank">📢 विज्ञापन / कांटेक्ट</a>
             </div>
 
             <!-- Two-in-One Row 3: Gallery & Video Folders -->
@@ -414,17 +481,25 @@
                 </div>
             </div>
 
+            <!-- VISITOR MESSAGE BOX (Direct Site Reply/Feedback) -->
+            <div class="visitor-msg-box">
+                <h4>💬 अपनी बात या सुझाव सीधे यहाँ भेजें:</h4>
+                <input type="text" id="visitorName" class="admin-input" placeholder="आपका नाम (Your Name)" style="margin-bottom: 6px;">
+                <textarea id="visitorMsgText" class="admin-input" style="height: 60px; margin-bottom: 6px;" placeholder="यहाँ अपना संदेश लिखें..."></textarea>
+                <button onclick="sendVisitorMessage()" class="btn" style="background: linear-gradient(135deg, #00c853, #00796b); color: #fff; padding: 7px; font-size: 12px; margin-bottom: 0;">📤 संदेश भेजें (Send)</button>
+            </div>
+
             <!-- Food Links Combined Row -->
             <div class="button-row">
                 <a href="https://www.zomato.com" class="btn" target="_blank" style="background: linear-gradient(135deg, #e23744, #cb202d); color: #fff;">🍔 Zomato</a>
                 <a href="https://www.swiggy.com" class="btn" target="_blank" style="background: linear-gradient(135deg, #fc8019, #e46d00); color: #fff;">🍲 Swiggy</a>
             </div>
 
-            <div class="section-title">🛍️ डिजिटल स्टोर & शॉपिंग</div>
-            <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff;">🛒 Flipkart महा-स्टोर</a>
-
-            <div class="section-title">🚆 ट्रेन, बस & फ्लाइट बुकिंग</div>
-            <a href="https://bitli.in/FRHcUAK" class="btn" target="_blank" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff;">✈️ MakeMyTrip बुकिंग सेंटर</a>
+            <!-- Flipkart & MakeMyTrip Combined Row -->
+            <div class="button-row">
+                <a href="https://fktr.in/mzXQfii" class="btn" target="_blank" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff;">🛒 Flipkart महा-स्टोर</a>
+                <a href="https://bitli.in/FRHcUAK" class="btn" target="_blank" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff;">✈️ MakeMyTrip बुकिंग</a>
+            </div>
 
             <button onclick="triggerConfetti()" style="background: linear-gradient(135deg, #ff007f, #7f00ff); color: #fff; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; width: 100%; margin-top: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">🎉 कॉन्फेटी मैजिक देखें</button>
 
@@ -432,7 +507,7 @@
         </div>
     </div>
 
-    <!-- Desi Vibe Audio/YouTube Player Component (Low Volume 0.05) -->
+    <!-- Desi Vibe Audio/YouTube Player Component -->
     <div style="position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.85); padding: 10px 18px; border-radius: 30px; display: flex; align-items: center; gap: 12px; z-index: 10000; border: 1px solid #d4af37; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
         <span style="color: #fff; font-size: 14px; font-weight: bold;">🎵 Desi Vibe</span>
         <div id="desiVibePlayerContainer" style="display:none;">
@@ -470,9 +545,7 @@
             let audioElem = document.getElementById("folkAudio");
             let ytFrame = document.getElementById("ytAudioFrame");
 
-            if (audioElem) {
-                audioElem.volume = 0.05; // Low volume set permanently
-            }
+            if (audioElem) { audioElem.volume = 0.05; }
 
             if (ytFrame) {
                 if (isPlaying) {
