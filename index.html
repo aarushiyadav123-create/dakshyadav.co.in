@@ -71,20 +71,24 @@
         .translator-header h3 { color: #69f0ae; font-size: 15px; font-weight: bold; }
         .close-translator { background: #d32f2f; color: #fff; border: none; padding: 4px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
-        /* Official Blank Form Portal Panel */
+        /* Bank/Official Form Portal Panel */
         #formPortalSection { display: none; background: rgba(0, 40, 30, 0.95); border: 2px solid #ffeb3b; padding: 15px; border-radius: 14px; margin-bottom: 15px; text-align: left; box-shadow: 0 5px 25px rgba(0,0,0,0.7); }
         .form-portal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #ffeb3b; padding-bottom: 6px; }
         .form-portal-header h3 { color: #ffeb3b; font-size: 15px; font-weight: bold; }
         
-        /* Official Formal Blank Form Layout */
-        .official-form-box { background: #fff; color: #000; padding: 15px; border-radius: 6px; margin-top: 10px; border: 1.5px solid #333; text-align: left; }
-        .form-header-title { text-align: center; font-weight: bold; font-size: 15px; color: #0c4a37; border-bottom: 2px solid #0c4a37; padding-bottom: 6px; margin-bottom: 10px; text-transform: uppercase; }
-        .form-field-group { margin-bottom: 8px; font-size: 13px; }
-        .form-field-group label { font-weight: bold; display: block; margin-bottom: 2px; color: #222; }
-        .form-field-group input, .form-field-group textarea { width: 100%; padding: 6px 8px; border: 1px solid #777; border-radius: 4px; font-size: 13px; background: #fafafa; }
-        
-        /* Rendered Filled Form Box */
-        .rendered-output-box { display: none; background: #fff; color: #000; padding: 15px; border-radius: 6px; margin-top: 10px; border: 2px solid #0c4a37; text-align: left; }
+        /* Official Bank/Government Form Layout (Blank Input Form) */
+        .bank-form-box { background: #fff; color: #000; padding: 15px; border-radius: 6px; margin-top: 10px; border: 2px solid #000; text-align: left; }
+        .bank-form-title { text-align: center; font-weight: bold; font-size: 14px; color: #000; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px; text-transform: uppercase; }
+        .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .form-group { flex: 1; display: flex; flex-direction: column; }
+        .form-group label { font-size: 11px; font-weight: bold; color: #333; margin-bottom: 2px; }
+        .form-group input, .form-group select, .form-group textarea { padding: 5px 8px; border: 1px solid #444; border-radius: 3px; font-size: 12px; background: #fff; color: #000; width: 100%; }
+
+        /* Rendered Bank Form Output (Filled & Official Looking) */
+        .bank-output-box { display: none; background: #fff; color: #000; padding: 15px; border-radius: 6px; margin-top: 10px; border: 2px solid #000; text-align: left; }
+        .bank-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+        .bank-table th, .bank-table td { border: 1px solid #000; padding: 6px 8px; text-align: left; }
+        .bank-table th { background: #f0f0f0; color: #000; }
 
         /* Gallery Modal & Lightbox */
         #galleryModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 9998; padding: 15px; }
@@ -103,8 +107,8 @@
 
         @media print {
             body * { visibility: hidden; }
-            .rendered-output-box, .rendered-output-box * { visibility: visible; }
-            .rendered-output-box { position: absolute; left: 0; top: 0; width: 100%; border: none; background: #fff !important; color: #000 !important; }
+            .bank-output-box, .bank-output-box * { visibility: visible; }
+            .bank-output-box { position: absolute; left: 0; top: 0; width: 100%; border: none; background: #fff !important; color: #000 !important; }
             .no-print { display: none !important; }
         }
     </style>
@@ -493,9 +497,9 @@
                 <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप शेयर</button>
             </div>
 
-            <!-- Two-in-One Row 2: Official Form Portal & Translator -->
+            <!-- Two-in-One Row 2: Bank Form Portal & Translator -->
             <div class="button-row">
-                <button onclick="toggleFormPortalSection()" class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffe0b2;">📋 डिजिटल फॉर्म / रसीद</button>
+                <button onclick="toggleFormPortalSection()" class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffe0b2;">📋 बैंक / फॉर्म पोर्टल</button>
                 <button onclick="toggleTranslatorSection()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; border: 1px solid #e1bee7;">📷 ट्रांसलेटर</button>
             </div>
 
@@ -505,69 +509,99 @@
                 <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो फोल्डर</button>
             </div>
 
-            <!-- OFFICIAL BLANK FORM PORTAL PANEL -->
+            <!-- BANK / OFFICIAL FORM PORTAL PANEL -->
             <div id="formPortalSection">
                 <div class="form-portal-header">
-                    <h3>📋 ऑफिशियल फॉर्म और रसीद जेनरेटर</h3>
+                    <h3>📋 बैंक / कार्यालय फॉर्म जेनरेटर</h3>
                     <button class="close-translator" onclick="toggleFormPortalSection()">बंद करें X</button>
                 </div>
                 
-                <!-- 1. Original Blank Form (User fills details here) -->
-                <div id="blankFormInputBox" class="official-form-box">
-                    <div class="form-header-title">MeraGaov Official Form</div>
+                <!-- 1. Bank Style Blank Input Form -->
+                <div id="bankFormInputBox" class="bank-form-box">
+                    <div class="bank-form-title">MERAGAOV DIGITAL BANK FORM</div>
                     
-                    <div class="form-field-group">
+                    <div class="form-group" style="margin-bottom: 8px;">
                         <label>फॉर्म का प्रकार (Form Type):</label>
-                        <select id="selectedFormType" class="admin-input" style="background:#fff; color:#000; border:1px solid #333;">
-                            <option value="Claim Form">Claim Form (दावा प्रपत्र)</option>
-                            <option value="Nomination Form">Nomination Form (मनोनयन फॉर्म)</option>
-                            <option value="Nakal / Land Record Form">Nakal Form (नकल / ज़मीन रिकॉर्ड)</option>
-                            <option value="Cheque Request Form">Cheque Request Form (चेक अनुरोध)</option>
+                        <select id="bankFormType">
+                            <option value="Account Opening / Claim Form">Account Opening / Claim Form (खाता / दावा प्रपत्र)</option>
+                            <option value="Nomination Application">Nomination Application (मनोनयन फॉर्म)</option>
+                            <option value="Land Record / Nakal Form">Land Record / Nakal Form (नकल फॉर्म)</option>
+                            <option value="Cheque / Withdrawal Request">Cheque / Withdrawal Request (चेक / निकासी फॉर्म)</option>
                         </select>
                     </div>
 
-                    <div class="form-field-group">
-                        <label>आवेदक का पूरा नाम (Full Name):</label>
-                        <input type="text" id="userFormName" placeholder="अपना पूरा नाम दर्ज करें">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>आवेदक का नाम (Full Name):</label>
+                            <input type="text" id="bankName" placeholder="पूरा नाम दर्ज करें">
+                        </div>
+                        <div class="form-group">
+                            <label>मोबाइल नंबर (Mobile):</label>
+                            <input type="text" id="bankMobile" placeholder="10 अंकों का नंबर">
+                        </div>
                     </div>
 
-                    <div class="form-field-group">
-                        <label>मोबाइल नंबर (Mobile Number):</label>
-                        <input type="text" id="userFormMobile" placeholder="10 अंकों का मोबाइल नंबर">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>खाता संख्या / आईडी (A/C No. / ID):</label>
+                            <input type="text" id="bankAccNo" placeholder="यदि हो तो लिखें">
+                        </div>
+                        <div class="form-group">
+                            <label>राशि / विवरण (Amount / Ref):</label>
+                            <input type="text" id="bankAmount" placeholder="राशि या विवरण">
+                        </div>
                     </div>
 
-                    <div class="form-field-group">
-                        <label>विवरण / कारण / पता (Details / Address):</label>
-                        <textarea id="userFormDetails" style="height: 55px;" placeholder="फॉर्म से संबंधित पूरी बात या विवरण यहाँ लिखें..."></textarea>
+                    <div class="form-group" style="margin-bottom: 8px;">
+                        <label>पूरा पता / अन्य विवरण (Address / Details):</label>
+                        <textarea id="bankDetails" style="height: 45px;" placeholder="गाँव, पोस्ट, तहसील या अन्य विवरण..."></textarea>
                     </div>
 
-                    <button onclick="generateOfficialFilledForm()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; font-weight: bold; margin-bottom: 0; margin-top: 10px;">⚡ फॉर्म भरें और फाइनल देखें</button>
+                    <button onclick="generateBankFilledForm()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; font-weight: bold; margin-bottom: 0; margin-top: 6px;">⚡ फॉर्म भरकर फाइनल देखें</button>
                 </div>
 
-                <!-- 2. Rendered Official Form (Auto-Filled & Print/Share Ready) -->
-                <div id="renderedFilledFormBox" class="rendered-output-box">
-                    <div id="renderedFormTitle" class="form-header-title">MeraGaov Claim Form</div>
-                    
-                    <div style="font-size: 13px; line-height: 1.8; margin-bottom: 10px;">
-                        <p><strong>प्रमाणित किया जाता है कि निम्नलिखित विवरण के साथ फॉर्म विधिवत भर दिया गया है:</strong></p>
-                        <hr style="border: 0.5px solid #ccc; margin: 6px 0;">
-                        <p><strong>1. फॉर्म का प्रकार:</strong> <span id="outFormType" style="color: #0c4a37; font-weight: bold;"></span></p>
-                        <p><strong>2. आवेदक का नाम:</strong> <span id="outFormName" style="font-weight: bold;"></span></p>
-                        <p><strong>3. मोबाइल नंबर:</strong> <span id="outFormMobile" style="font-weight: bold;"></span></p>
-                        <p><strong>4. विवरण / पता:</strong> <span id="outFormDetails"></span></p>
-                        <p><strong>5. दिनांक:</strong> <span id="outFormDate"></span></p>
-                    </div>
+                <!-- 2. Official Rendered Bank Form (Auto-Filled Table Layout) -->
+                <div id="bankFormOutputBox" class="bank-output-box">
+                    <div id="outBankFormTitle" class="bank-form-title" style="font-size: 13px; margin-bottom: 6px;">MERAGAOV DIGITAL BANK FORM</div>
+                    <div style="font-size: 10px; text-align: right; margin-bottom: 6px;">दिनांक: <span id="outBankDate"></span></div>
 
-                    <div style="display: flex; justify-content: space-between; margin-top: 25px; font-size: 12px; font-weight: bold;">
-                        <span>आवेदक के हस्ताक्षर: ________________</span>
-                        <span>सत्यापित / अधिकृत हस्ताक्षर</span>
+                    <table class="bank-table">
+                        <tr>
+                            <th>फॉर्म का प्रकार</th>
+                            <td><span id="outBankType" style="font-weight: bold;"></span></td>
+                        </tr>
+                        <tr>
+                            <th>आवेदक का नाम</th>
+                            <td><span id="outBankName"></span></td>
+                        </tr>
+                        <tr>
+                            <th>मोबाइल नंबर</th>
+                            <td><span id="outBankMobile"></span></td>
+                        </tr>
+                        <tr>
+                            <th>खाता संख्या / आईडी</th>
+                            <td><span id="outBankAcc"></span></td>
+                        </tr>
+                        <tr>
+                            <th>राशि / विवरण</th>
+                            <td><span id="outBankAmt"></span></td>
+                        </tr>
+                        <tr>
+                            <th>पता एवं अन्य विवरण</th>
+                            <td><span id="outBankDetails"></span></td>
+                        </tr>
+                    </table>
+
+                    <div style="display: flex; justify-content: space-between; margin-top: 30px; font-size: 11px; font-weight: bold;">
+                        <span>आवेदक के हस्ताक्षर: _______________</span>
+                        <span>बैंक अधिकारी / सत्यापित हस्ताक्षर</span>
                     </div>
                     
                     <div class="no-print" style="display: flex; gap: 6px; margin-top: 15px;">
                         <button onclick="window.print()" class="btn" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">🖨️ प्रिंट / PDF</button>
-                        <button onclick="shareFilledFormOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">📤 व्हाट्सएप भेजें</button>
+                        <button onclick="shareBankFormOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">📤 व्हाट्सएप भेजें</button>
                     </div>
-                    <button onclick="resetOfficialForm()" class="no-print btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 11px; margin-top: 6px; margin-bottom: 0;">🔄 नया खाली फॉर्म भरें</button>
+                    <button onclick="resetBankForm()" class="no-print btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 11px; margin-top: 6px; margin-bottom: 0;">🔄 नया फॉर्म भरें</button>
                 </div>
             </div>
 
@@ -730,46 +764,54 @@
             }
         }
 
-        window.generateOfficialFilledForm = function() {
-            let formType = document.getElementById("selectedFormType").value;
-            let name = document.getElementById("userFormName").value.trim();
-            let mobile = document.getElementById("userFormMobile").value.trim();
-            let details = document.getElementById("userFormDetails").value.trim();
+        window.generateBankFilledForm = function() {
+            let formType = document.getElementById("bankFormType").value;
+            let name = document.getElementById("bankName").value.trim();
+            let mobile = document.getElementById("bankMobile").value.trim();
+            let accNo = document.getElementById("bankAccNo").value.trim();
+            let amount = document.getElementById("bankAmount").value.trim();
+            let details = document.getElementById("bankDetails").value.trim();
 
             if(!name || !mobile) {
-                alert("कृपया अपना नाम और मोबाइल नंबर अवश्य भरें!");
+                alert("कृपया आवेदक का नाम और मोबाइल नंबर अवश्य भरें!");
                 return;
             }
 
             let currentDate = new Date().toLocaleDateString('hi-IN', { year: 'numeric', month: 'long', day: 'numeric' });
 
-            document.getElementById("renderedFormTitle").innerText = "MeraGaov - " + formType;
-            document.getElementById("outFormType").innerText = formType;
-            document.getElementById("outFormName").innerText = name;
-            document.getElementById("outFormMobile").innerText = mobile;
-            document.getElementById("outFormDetails").innerText = details || "कोई अतिरिक्त विवरण नहीं";
-            document.getElementById("outFormDate").innerText = currentDate;
+            document.getElementById("outBankFormTitle").innerText = "MERAGAOV DIGITAL " + formType.toUpperCase();
+            document.getElementById("outBankType").innerText = formType;
+            document.getElementById("outBankName").innerText = name;
+            document.getElementById("outBankMobile").innerText = mobile;
+            document.getElementById("outBankAcc").innerText = accNo || "उपलब्ध नहीं / लागू नहीं";
+            document.getElementById("outBankAmt").innerText = amount || "लागू नहीं";
+            document.getElementById("outBankDetails").innerText = details || "कोई अन्य विवरण नहीं";
+            document.getElementById("outBankDate").innerText = currentDate;
 
-            document.getElementById("blankFormInputBox").style.display = "none";
-            document.getElementById("renderedFilledFormBox").style.display = "block";
+            document.getElementById("bankFormInputBox").style.display = "none";
+            document.getElementById("bankFormOutputBox").style.display = "block";
         }
 
-        window.resetOfficialForm = function() {
-            document.getElementById("blankFormInputBox").style.display = "block";
-            document.getElementById("renderedFilledFormBox").style.display = "none";
-            document.getElementById("userFormName").value = "";
-            document.getElementById("userFormMobile").value = "";
-            document.getElementById("userFormDetails").value = "";
+        window.resetBankForm = function() {
+            document.getElementById("bankFormInputBox").style.display = "block";
+            document.getElementById("bankFormOutputBox").style.display = "none";
+            document.getElementById("bankName").value = "";
+            document.getElementById("bankMobile").value = "";
+            document.getElementById("bankAccNo").value = "";
+            document.getElementById("bankAmount").value = "";
+            document.getElementById("bankDetails").value = "";
         }
 
-        window.shareFilledFormOnWhatsApp = function() {
-            let formType = document.getElementById("outFormType").innerText;
-            let name = document.getElementById("outFormName").innerText;
-            let mobile = document.getElementById("outFormMobile").innerText;
-            let details = document.getElementById("outFormDetails").innerText;
-            let date = document.getElementById("outFormDate").innerText;
+        window.shareBankFormOnWhatsApp = function() {
+            let formType = document.getElementById("outBankType").innerText;
+            let name = document.getElementById("outBankName").innerText;
+            let mobile = document.getElementById("outBankMobile").innerText;
+            let accNo = document.getElementById("outBankAcc").innerText;
+            let amount = document.getElementById("outBankAmt").innerText;
+            let details = document.getElementById("outBankDetails").innerText;
+            let date = document.getElementById("outBankDate").innerText;
 
-            let shareText = `📋 *MeraGaov ऑफिशियल प्रपत्र (${formType})*:\n\n👤 *नाम:* ${name}\n📱 *मोबाइल:* ${mobile}\n📝 *विवरण:* ${details}\n📅 *दिनांक:* ${date}\n\n---\n_Generated via dakshyadav.co.in_`;
+            let shareText = `📋 *MeraGaov ऑफिशियल प्रपत्र (${formType})*:\n\n👤 *नाम:* ${name}\n📱 *मोबाइल:* ${mobile}\n🔢 *खाता/आईडी:* ${accNo}\n💰 *राशि/विवरण:* ${amount}\n📝 *पता/विवरण:* ${details}\n📅 *दिनांक:* ${date}\n\n---\n_Generated via dakshyadav.co.in_`;
             window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(shareText), '_blank');
         }
 
