@@ -56,9 +56,9 @@
         .camera-btn-wrapper label { font-size: 12px; color: #b9f6ca; font-weight: bold; cursor: pointer; }
         .camera-btn-wrapper input[type="file"] { font-size: 11px; color: #fff; width: 55%; }
 
-        /* Visitor Message Form Box */
-        .visitor-msg-box { background: rgba(0, 40, 30, 0.6); border: 1.5px solid #69f0ae; padding: 12px; border-radius: 10px; margin-bottom: 12px; text-align: left; }
-        .visitor-msg-box h4 { color: #69f0ae; font-size: 13px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+        /* Compact Visitor Message Box */
+        .visitor-msg-box { background: rgba(0, 40, 30, 0.6); border: 1.5px solid #69f0ae; padding: 10px; border-radius: 10px; margin-bottom: 12px; text-align: left; }
+        .visitor-msg-box h4 { color: #69f0ae; font-size: 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
 
         /* Full Screen Translator Panel */
         #translatorSection { display: none; background: rgba(0, 0, 0, 0.75); border: 2px solid #69f0ae; padding: 15px; border-radius: 14px; margin-bottom: 15px; text-align: left; box-shadow: 0 5px 25px rgba(0,0,0,0.7); }
@@ -85,7 +85,7 @@
     <!-- Firebase SDK & Database Integration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBcINeRD8Xr35T9MI80h56AfWAi-JdACio",
@@ -189,7 +189,7 @@
             if(!name || !msg) { alert("कृपया अपना नाम और संदेश दोनों लिखें!"); return; }
 
             try {
-                await addDoc(collection(db, "messages"), { name: name, message: msg, timestamp: new Date() });
+                await addDoc(collection(db, "messages"), { name: name, message: msg, reply: "", timestamp: new Date() });
                 alert("आपका संदेश सफलतापूर्वक भेज दिया गया है!");
                 document.getElementById("visitorName").value = "";
                 document.getElementById("visitorMsgText").value = "";
@@ -199,7 +199,7 @@
             }
         }
 
-        // Open Messages Modal for Admin
+        // Open Messages Modal for Admin with Reply feature
         window.openVisitorMessagesModal = async function() {
             const pass = document.getElementById("adminPass").value;
             if(pass !== "336200") { alert("गलत एडमिन पासवर्ड!"); return; }
@@ -224,18 +224,39 @@
                     item.className = 'file-item';
                     item.style.flexDirection = "column";
                     item.style.alignItems = "flex-start";
+                    
+                    let replyHtml = d.reply ? `<div style="font-size:12px; color:#69f0ae; margin-top:4px; background:rgba(0,100,50,0.4); padding:5px; border-radius:5px; width:100%;"><b>Admin Reply:</b> ${d.reply}</div>` : '';
+
                     item.innerHTML = `
-                        <div style="display:flex; justify-content:space-width; width:100%; margin-bottom:4px;">
+                        <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:4px;">
                             <b style="color:#ffeb3b;">👤 ${d.name}</b>
                             <button class="delete-btn" onclick="deleteVisitorMsg('${docSnap.id}')">Delete</button>
                         </div>
-                        <div style="font-size:13px; color:#fff9c4; word-break:break-all;">💬 ${d.message}</div>
+                        <div style="font-size:13px; color:#fff9c4; word-break:break-all; margin-bottom:4px;">💬 ${d.message}</div>
+                        ${replyHtml}
+                        <div style="display:flex; gap:5px; width:100%; margin-top:6px;">
+                            <input type="text" id="reply_${docSnap.id}" class="admin-input" placeholder="यहाँ जवाब (Reply) लिखें..." style="margin-bottom:0; font-size:11px; padding:4px;" value="${d.reply || ''}">
+                            <button onclick="sendAdminReply('${docSnap.id}')" style="background:#00c853; color:#00220c; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:11px; cursor:pointer; flex-shrink:0;">जवाब भेजें</button>
+                        </div>
                     `;
                     listContainer.appendChild(item);
                 });
             } catch(e) {
                 console.error(e);
                 listContainer.innerHTML = `<div style="text-align:center; color:#ff8a80; padding:10px;">संदेश लोड करने में त्रुटि।</div>`;
+            }
+        }
+
+        window.sendAdminReply = async function(id) {
+            const replyText = document.getElementById(`reply_${id}`).value.trim();
+            if(!replyText) { alert("कृपया जवाब में कुछ लिखें!"); return; }
+            try {
+                await updateDoc(doc(db, "messages", id), { reply: replyText });
+                alert("जवाब सफलताપूर्वक सेव हो गया है!");
+                window.openVisitorMessagesModal();
+            } catch(e) {
+                console.error(e);
+                alert("त्रुटि: जवाब भेजने में असफल।");
             }
         }
 
@@ -420,7 +441,7 @@
                 <input type="text" id="mediaUrlInput" class="admin-input" placeholder="वीडियो/फोटो का डायरेक्ट URL">
 
                 <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 8px; font-size: 12px; margin-bottom: 6px;">🚀 अपडेट / सेव करें</button>
-                <button onclick="openVisitorMessagesModal()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 6px;">📥 मिले हुए संदेश देखें (Messages)</button>
+                <button onclick="openVisitorMessagesModal()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 6px;">📥 मिले हुए संदेश देखें (Messages & Reply)</button>
                 <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ एडिट/डिलीट करें</button>
             </div>
 
@@ -481,12 +502,12 @@
                 </div>
             </div>
 
-            <!-- VISITOR MESSAGE BOX (Direct Site Reply/Feedback) -->
+            <!-- COMPACT VISITOR MESSAGE BOX -->
             <div class="visitor-msg-box">
                 <h4>💬 अपनी बात या सुझाव सीधे यहाँ भेजें:</h4>
-                <input type="text" id="visitorName" class="admin-input" placeholder="आपका नाम (Your Name)" style="margin-bottom: 6px;">
-                <textarea id="visitorMsgText" class="admin-input" style="height: 60px; margin-bottom: 6px;" placeholder="यहाँ अपना संदेश लिखें..."></textarea>
-                <button onclick="sendVisitorMessage()" class="btn" style="background: linear-gradient(135deg, #00c853, #00796b); color: #fff; padding: 7px; font-size: 12px; margin-bottom: 0;">📤 संदेश भेजें (Send)</button>
+                <input type="text" id="visitorName" class="admin-input" placeholder="आपका नाम (Your Name)" style="margin-bottom: 4px; font-size: 11px; padding: 6px;">
+                <textarea id="visitorMsgText" class="admin-input" style="height: 45px; margin-bottom: 4px; font-size: 11px; padding: 6px;" placeholder="यहाँ अपना संदेश लिखें..."></textarea>
+                <button onclick="sendVisitorMessage()" class="btn" style="background: linear-gradient(135deg, #00c853, #00796b); color: #fff; padding: 6px; font-size: 11px; margin-bottom: 0;">📤 संदेश भेजें (Send)</button>
             </div>
 
             <!-- Food Links Combined Row -->
