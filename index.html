@@ -63,7 +63,7 @@
         .translator-header h3 { color: #69f0ae; font-size: 15px; font-weight: bold; }
         .close-translator { background: #d32f2f; color: #fff; border: none; padding: 4px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
-        /* Universal Form Hub Overlay */
+        /* AI Form Scanner & Filler Overlay */
         #formPortalSection { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 35, 28, 0.98); z-index: 9999; padding: 15px; overflow-y: auto; text-align: left; box-shadow: 0 5px 25px rgba(0,0,0,0.9); }
         .form-portal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #ffeb3b; padding-bottom: 8px; }
         .form-portal-header h3 { color: #ffeb3b; font-size: 16px; font-weight: bold; }
@@ -485,9 +485,9 @@
                 <button onclick="openWhatsAppShare()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;">📤 व्हाट्सएप शेयर</button>
             </div>
 
-            <!-- Two-in-One Row 2: Universal Form Hub & Translator -->
+            <!-- Two-in-One Row 2: AI Form Scanner & Translator -->
             <div class="button-row">
-                <button onclick="toggleFormPortalSection()" class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffe0b2;">📋 सभी बैंक / सरकारी फॉर्म Hub</button>
+                <button onclick="toggleFormPortalSection()" class="btn" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffe0b2;">📸 बैंक फॉर्म स्कैन करके भरें</button>
                 <button onclick="toggleTranslatorSection()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; border: 1px solid #e1bee7;">📷 ट्रांसलेटर</button>
             </div>
 
@@ -497,26 +497,29 @@
                 <button onclick="openVideoCategoriesFromDB()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae;">🎥 वीडियो फोल्डर</button>
             </div>
 
-            <!-- UNIVERSAL FORM HUB PANEL -->
+            <!-- AI BANK FORM SCANNER & SMART FILLER PANEL -->
             <div id="formPortalSection">
                 <div class="form-portal-header">
-                    <h3>📋 यूनिवर्सल फॉर्म हब (सभी बैंक व सेवा फॉर्म)</h3>
+                    <h3>📸 AI बैंक फॉर्म स्कैनर और स्मार्ट फिलर</h3>
                     <button class="close-translator" onclick="toggleFormPortalSection()">बंद करें X</button>
                 </div>
                 
-                <!-- Input Form -->
+                <!-- Input Form & Scanner -->
                 <div id="bankFormInputBox" class="bank-form-box">
-                    <div class="bank-form-title">MeraGaov Official Form Generator</div>
+                    <div class="bank-form-title">Upload & Fill Bank/Official Form</div>
                     
+                    <div style="background: #e8f5e9; border: 2px dashed #2e7d32; padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: center;">
+                        <label style="font-size: 12px; font-weight: bold; color: #1b5e20; cursor: pointer; display: block;">
+                            📁 बैंक से लाए गए फॉर्म की फोटो यहाँ अपलोड करें:<br>
+                            <input type="file" accept="image/*" onchange="scanUploadedBankForm(event)" style="margin-top: 6px; font-size: 11px;">
+                        </label>
+                    </div>
+
+                    <div id="scanStatus" style="font-size: 11px; color: #d32f2f; font-weight: bold; margin-bottom: 8px; text-align: center;"></div>
+
                     <div class="form-group" style="margin-bottom: 8px;">
-                        <label>फॉर्म का प्रकार चुनें (Select Form Type):</label>
-                        <select id="bankFormType" onchange="updateFormFields()">
-                            <option value="Account Opening / Claim Form">Account Opening / Claim Form (खाता या दावा प्रपत्र)</option>
-                            <option value="Nomination Application (Form DA 1)">Nomination Application (मनोनयन फॉर्म - Form DA 1)</option>
-                            <option value="Cash Deposit / Withdrawal Slip">Cash Deposit / Withdrawal Slip (नकद जमा / निकासी पर्ची)</option>
-                            <option value="Land Record / Jamabandi / Nakal Request">Land Record / Jamabandi / Nakal Form (जमाबंदी / नकल फॉर्म)</option>
-                            <option value="Loan / Subsidy Application">Loan / Subsidy Application (ऋण / सब्सिडी फॉर्म)</option>
-                        </select>
+                        <label>फॉर्म का नाम / बैंक का नाम (Form Title):</label>
+                        <input type="text" id="scannedFormTitle" placeholder="जैसे: Cash Deposit / Account Opening / KYC Form">
                     </div>
 
                     <div class="form-row">
@@ -532,21 +535,21 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>खाता संख्या / आईडी / खसरा नं (A/C No. / ID / Khasra):</label>
+                            <label>खाता संख्या / आईडी / खसरा नं (A/C No. / ID):</label>
                             <input type="text" id="bankAccNo" placeholder="खाता या खसरा नंबर">
                         </div>
                         <div class="form-group">
-                            <label id="dynamicLabel">राशि / विवरण (Amount / Details):</label>
+                            <label>राशि या विवरण (Amount / Ref):</label>
                             <input type="text" id="bankAmount" placeholder="राशि या विवरण लिखें">
                         </div>
                     </div>
 
                     <div class="form-group" style="margin-bottom: 8px;">
-                        <label>पूरा पता / अन्य विशेष विवरण (Address / Remarks):</label>
-                        <textarea id="bankDetails" style="height: 45px;" placeholder="गाँव, पोस्ट, तहसील, जिला (जैसे: मलकोषिया)..."></textarea>
+                        <label>स्कैन किया गया या अन्य विवरण (Extracted / Remarks):</label>
+                        <textarea id="bankDetails" style="height: 45px;" placeholder="फॉर्म की खास बातें या पता..."></textarea>
                     </div>
 
-                    <button onclick="generateUniversalFilledForm()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; font-weight: bold; margin-bottom: 0; margin-top: 6px;">⚡ फॉर्म भरकर फाइनल देखें और प्रिंट करें</button>
+                    <button onclick="generateScannedFilledForm()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; font-weight: bold; margin-bottom: 0; margin-top: 6px;">⚡ फॉर्म भरकर फाइनल देखें और प्रिंट करें</button>
                 </div>
 
                 <!-- Rendered Official Output Form -->
@@ -556,7 +559,7 @@
 
                     <table class="bank-table">
                         <tr>
-                            <th>फॉर्म का प्रकार</th>
+                            <th>फॉर्म का नाम</th>
                             <td><span id="outBankType" style="font-weight: bold;"></span></td>
                         </tr>
                         <tr>
@@ -572,11 +575,11 @@
                             <td><span id="outBankAcc"></span></td>
                         </tr>
                         <tr>
-                            <th id="outDynamicHeader">राशि / विवरण</th>
+                            <th>राशि / विवरण</th>
                             <td><span id="outBankAmt"></span></td>
                         </tr>
                         <tr>
-                            <th>पता एवं अन्य विवरण</th>
+                            <th>अन्य विवरण / पता</th>
                             <td><span id="outBankDetails"></span></td>
                         </tr>
                     </table>
@@ -588,9 +591,9 @@
                     
                     <div class="no-print" style="display: flex; gap: 6px; margin-top: 15px;">
                         <button onclick="window.print()" class="btn" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">🖨️ प्रिंट / PDF</button>
-                        <button onclick="shareUniversalFormOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">📤 व्हाट्सएप भेजें</button>
+                        <button onclick="shareScannedFormOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">📤 व्हाट्सएप भेजें</button>
                     </div>
-                    <button onclick="resetUniversalForm()" class="no-print btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 11px; margin-top: 6px; margin-bottom: 0;">🔄 नया फॉर्म भरें</button>
+                    <button onclick="resetScannedForm()" class="no-print btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 7px; font-size: 11px; margin-top: 6px; margin-bottom: 0;">🔄 नया फॉर्म स्कैन करें</button>
                 </div>
             </div>
 
@@ -748,20 +751,37 @@
             sec.style.display = (sec.style.display === "block") ? "none" : "block";
         }
 
-        window.updateFormFields = function() {
-            let fType = document.getElementById("bankFormType").value;
-            let label = document.getElementById("dynamicLabel");
-            if(fType.includes("Nomination")) {
-                label.innerText = "नॉमिनी का नाम व रिश्ता (Nominee Name/Relation):";
-            } else if(fType.includes("Land Record")) {
-                label.innerText = "खेवट / मुरब्बा नंबर (Khewat / Murabba):";
-            } else {
-                label.innerText = "राशि / विवरण (Amount / Ref):";
+        window.scanUploadedBankForm = async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const statusEl = document.getElementById("scanStatus");
+            const titleInput = document.getElementById("scannedFormTitle");
+            const detailsInput = document.getElementById("bankDetails");
+
+            statusEl.innerText = "⏳ AI फॉर्म स्कैन और रीड कर रहा है...";
+
+            try {
+                const { data: { text } } = await Tesseract.recognize(file, 'eng+hin', {
+                    logger: m => {
+                        if(m.status === 'recognizing text') {
+                            statusEl.innerText = `⏳ स्कैनिंग प्रगति: ${Math.round(m.progress * 100)}%`;
+                        }
+                    }
+                });
+
+                const cleanText = text ? text.trim() : "";
+                statusEl.innerText = "✅ फॉर्म सफलतापूर्वक स्कैन हो गया!";
+                titleInput.value = "Scanned Bank / Official Form";
+                detailsInput.value = cleanText.substring(0, 200) + "...";
+            } catch (err) {
+                console.error(err);
+                statusEl.innerText = "❌ त्रुटि: फॉर्म स्कैन नहीं हो पाया। मैन्युअल भरें।";
             }
         }
 
-        window.generateUniversalFilledForm = function() {
-            let formType = document.getElementById("bankFormType").value;
+        window.generateScannedFilledForm = function() {
+            let formTitle = document.getElementById("scannedFormTitle").value.trim() || "Bank Form";
             let name = document.getElementById("bankName").value.trim();
             let mobile = document.getElementById("bankMobile").value.trim();
             let accNo = document.getElementById("bankAccNo").value.trim();
@@ -775,8 +795,8 @@
 
             let currentDate = new Date().toLocaleDateString('hi-IN', { year: 'numeric', month: 'long', day: 'numeric' });
 
-            document.getElementById("outBankFormTitle").innerText = "MeraGaov OFFICIAL " + formType.toUpperCase();
-            document.getElementById("outBankType").innerText = formType;
+            document.getElementById("outBankFormTitle").innerText = "MERAGAOV " + formTitle.toUpperCase();
+            document.getElementById("outBankType").innerText = formTitle;
             document.getElementById("outBankName").innerText = name;
             document.getElementById("outBankMobile").innerText = mobile;
             document.getElementById("outBankAcc").innerText = accNo || "लागू नहीं";
@@ -788,23 +808,25 @@
             document.getElementById("bankFormOutputBox").style.display = "block";
         }
 
-        window.resetUniversalForm = function() {
+        window.resetScannedForm = function() {
             document.getElementById("bankFormInputBox").style.display = "block";
             document.getElementById("bankFormOutputBox").style.display = "none";
+            document.getElementById("scannedFormTitle").value = "";
             document.getElementById("bankName").value = "";
             document.getElementById("bankMobile").value = "";
             document.getElementById("bankAccNo").value = "";
             document.getElementById("bankAmount").value = "";
             document.getElementById("bankDetails").value = "";
+            document.getElementById("scanStatus").innerText = "";
         }
 
-        window.shareUniversalFormOnWhatsApp = function() {
-            let formType = document.getElementById("outBankType").innerText;
+        window.shareScannedFormOnWhatsApp = function() {
+            let formTitle = document.getElementById("outBankType").innerText;
             let name = document.getElementById("outBankName").innerText;
             let mobile = document.getElementById("outBankMobile").innerText;
             let details = document.getElementById("outBankDetails").innerText;
 
-            let shareText = `📋 *MeraGaov ऑफिशियल प्रपत्र (${formType})*:\n\n👤 *नाम:* ${name}\n📱 *मोबाइल:* ${mobile}\n📝 *विवरण:* ${details}\n\n---\n_Generated via dakshyadav.co.in_`;
+            let shareText = `📋 *MeraGaov स्कैन किया गया प्रपत्र (${formTitle})*:\n\n👤 *नाम:* ${name}\n📱 *मोबाइल:* ${mobile}\n📝 *विवरण:* ${details}\n\n---\n_Generated via dakshyadav.co.in_`;
             window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(shareText), '_blank');
         }
 
