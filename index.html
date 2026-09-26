@@ -32,7 +32,11 @@
         .profile-info { text-align: left; width: 100%; }
         .profile-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 4px; }
         .sub-platform { font-size: 12px; color: #a5d6a7; font-weight: 700; }
-        .header-admin-btn { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffffe0; padding: 2px 7px; border-radius: 5px; font-weight: bold; font-size: 10px; cursor: pointer; }
+        
+        /* Admin Button with Notification Badge */
+        .admin-btn-wrapper { position: relative; display: inline-block; }
+        .header-admin-btn { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffffe0; padding: 3px 9px; border-radius: 5px; font-weight: bold; font-size: 11px; cursor: pointer; }
+        .notif-badge { position: absolute; top: -4px; right: -4px; width: 10px; height: 10px; background-color: #ff1744; border-radius: 50%; border: 1.5px solid #fff; display: none; }
         
         .editable-title { 
             font-size: 17px; font-weight: 800; color: #ffeb3b;
@@ -48,7 +52,7 @@
         .button-row { display: flex; gap: 8px; margin-bottom: 8px; width: 100%; }
         .button-row .btn { margin-bottom: 0; flex: 1; }
 
-        /* Hidden Admin Panel */
+        /* Hidden Admin Panel & Protected Fields */
         .admin-box { display: none; background: rgba(0, 0, 0, 0.5); border: 1.5px dashed #69f0ae; padding: 12px; border-radius: 10px; margin-bottom: 12px; text-align: left; }
         .admin-input { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 5px; border: 1px solid #69f0ae; background: #04241b; color: #fff; font-size: 12px; }
         .admin-input:focus { outline: none; border-color: #00e676; }
@@ -56,8 +60,9 @@
         .camera-btn-wrapper label { font-size: 12px; color: #b9f6ca; font-weight: bold; cursor: pointer; }
         .camera-btn-wrapper input[type="file"] { font-size: 11px; color: #fff; width: 55%; }
 
-        /* Compact Visitor Message Box */
-        .visitor-msg-box { background: rgba(0, 40, 30, 0.6); border: 1.5px solid #69f0ae; padding: 10px; border-radius: 10px; margin-bottom: 12px; text-align: left; }
+        /* Collapsible Visitor Message Box Inside a Button */
+        .visitor-msg-container { margin-bottom: 8px; width: 100%; }
+        .visitor-msg-box { display: none; background: rgba(0, 40, 30, 0.95); border: 1.5px solid #69f0ae; padding: 10px; border-radius: 8px; margin-top: 6px; text-align: left; }
         .visitor-msg-box h4 { color: #69f0ae; font-size: 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
 
         /* Full Screen Translator Panel */
@@ -145,6 +150,12 @@
                         document.getElementById("adminAudioInput").value = audioData.url;
                     }
                 }
+
+                // Check messages for notification badge
+                const msgSnap = await getDocs(collection(db, "messages"));
+                if(!msgSnap.empty) {
+                    document.getElementById("adminNotifBadge").style.display = "inline-block";
+                }
             } catch (e) { console.error("Error loading app data:", e); }
         }
         window.addEventListener('DOMContentLoaded', loadAppData);
@@ -193,6 +204,7 @@
                 alert("आपका संदेश सफलतापूर्वक भेज दिया गया है!");
                 document.getElementById("visitorName").value = "";
                 document.getElementById("visitorMsgText").value = "";
+                document.getElementById("visitorMsgBox").style.display = "none";
             } catch(e) {
                 console.error(e);
                 alert("त्रुटि: संदेश भेजने में असफल।");
@@ -201,9 +213,6 @@
 
         // Open Messages Modal for Admin with Reply feature
         window.openVisitorMessagesModal = async function() {
-            const pass = document.getElementById("adminPass").value;
-            if(pass !== "336200") { alert("गलत एडमिन पासवर्ड!"); return; }
-
             const modal = document.getElementById("galleryModal");
             const title = document.getElementById("modalTitle");
             const listContainer = document.getElementById("modalFileList");
@@ -252,7 +261,7 @@
             if(!replyText) { alert("कृपया जवाब में कुछ लिखें!"); return; }
             try {
                 await updateDoc(doc(db, "messages", id), { reply: replyText });
-                alert("जवाब सफलताપूर्वक सेव हो गया है!");
+                alert("जवाब सफलतापूर्वक सेव हो गया है!");
                 window.openVisitorMessagesModal();
             } catch(e) {
                 console.error(e);
@@ -267,10 +276,18 @@
             }
         }
 
-        window.verifyAdminAndUpload = async function() {
+        // Check Password to Unlock Full Admin Panel
+        window.checkAdminPassword = function() {
             const pass = document.getElementById("adminPass").value;
-            if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
+            if(pass === "336200") {
+                document.getElementById("protectedAdminControls").style.display = "block";
+                alert("एडमिन पैनल अनलॉक हो गया है!");
+            } else {
+                alert("गलत पासवर्ड!");
+            }
+        }
 
+        window.verifyAdminAndUpload = async function() {
             const rawNewsText = document.getElementById("adminLiveNewsInput").value.trim();
             const tickerUrlInput = document.getElementById("adminTickerImgUrl").value.trim();
             const adminMainInputVal = document.getElementById("adminMainInput").value.trim();
@@ -323,7 +340,6 @@
                 }
 
                 alert("अपडेट और सेव सफलतापूर्वक हो गया है!");
-                document.getElementById("adminPass").value = "";
                 document.getElementById("adminLiveNewsInput").value = "";
                 document.getElementById("adminTickerImgUrl").value = "";
             } catch (error) { 
@@ -333,9 +349,6 @@
         }
 
         window.deleteLiveNews = async function() {
-            const pass = document.getElementById("adminPass").value;
-            if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
-            
             try {
                 const docSnap = await getDoc(doc(db, "settings", "linenews"));
                 let currentText = docSnap.exists() ? (docSnap.data().text || "") : "";
@@ -359,7 +372,6 @@
                     document.getElementById("liveNewsText").innerText = finalSaveText;
                 }
                 
-                document.getElementById("adminPass").value = "";
                 alert("लाइव न्यूज़ सफलतापूर्वक अपडेट/हटा दी गई है!");
             } catch(e) {
                 console.error(e);
@@ -410,39 +422,49 @@
                 <div class="profile-info">
                     <div class="profile-header-row">
                         <span class="sub-platform">dakshyadav.co.in</span>
-                        <button class="header-admin-btn" onclick="toggleAdmin()">Admin</button>
+                        <div class="admin-btn-wrapper">
+                            <button class="header-admin-btn" onclick="toggleAdmin()">Admin</button>
+                            <span id="adminNotifBadge" class="notif-badge"></span>
+                        </div>
                     </div>
                     <div class="editable-title" contenteditable="true">राजेश यादव मलकोषिया</div>
                 </div>
             </div>
 
-            <!-- Hidden Admin Panel -->
+            <!-- Hidden Admin Panel (Password First Protected) -->
             <div class="admin-box" id="adminPanel">
-                <input type="password" id="adminPass" class="admin-input" placeholder="एडमिन पासवर्ड दर्ज करें">
-                
-                <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">📝 मुख्य घोषणा लाइन बदलें:</div>
-                <textarea id="adminMainInput" class="admin-input" style="height: 45px;" placeholder="यहाँ नई मुख्य लाइन लिखें..."></textarea>
-
-                <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🎵 Desi Vibe लिंक (YouTube या MP3 URL):</div>
-                <input type="text" id="adminAudioInput" class="admin-input" placeholder="यहाँ YouTube लिंक (youtu.be) या MP3 लिंक डालें">
-
-                <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🔥 लाइव न्यूज़ टिकर बदलें:</div>
-                <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
-                
-                <div class="camera-btn-wrapper">
-                    <label for="adminTickerImgFile">🖼️ टिकर फोटो चुनें:</label>
-                    <input type="file" id="adminTickerImgFile" accept="image/*" onchange="previewTickerFile(event)">
+                <div style="font-size: 12px; color: #ffeb3b; margin-bottom: 6px; font-weight: bold;">🔒 एडमिन एक्सेस (पासवर्ड दर्ज करें):</div>
+                <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+                    <input type="password" id="adminPass" class="admin-input" placeholder="पासवर्ड लिखें" style="margin-bottom:0;">
+                    <button onclick="checkAdminPassword()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 6px 12px; font-size: 11px; margin-bottom:0; width: auto; flex-shrink:0;">लॉगिन</button>
                 </div>
-                <input type="text" id="adminTickerImgUrl" class="admin-input" placeholder="या टिकर फोटो का डायरेक्ट URL यहाँ डालें">
-                
-                <div style="font-size: 11px; color: #69f0ae; margin: 4px 0 2px 0;">🎥 वीडियो/मीडिया अपलोड:</div>
-                <input type="text" id="mediaTitle" class="admin-input" placeholder="मीडिया का टाइटल (नाम)">
-                <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम">
-                <input type="text" id="mediaUrlInput" class="admin-input" placeholder="वीडियो/फोटो का डायरेक्ट URL">
 
-                <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 8px; font-size: 12px; margin-bottom: 6px;">🚀 अपडेट / सेव करें</button>
-                <button onclick="openVisitorMessagesModal()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 6px;">📥 मिले हुए संदेश देखें (Messages & Reply)</button>
-                <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ एडिट/डिलीट करें</button>
+                <!-- Protected Controls Hidden Initially -->
+                <div id="protectedAdminControls" style="display:none; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 10px; margin-top: 8px;">
+                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">📝 मुख्य घोषणा लाइन बदलें:</div>
+                    <textarea id="adminMainInput" class="admin-input" style="height: 45px;" placeholder="यहाँ नई मुख्य लाइन लिखें..."></textarea>
+
+                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🎵 Desi Vibe लिंक (YouTube या MP3 URL):</div>
+                    <input type="text" id="adminAudioInput" class="admin-input" placeholder="यहाँ YouTube लिंक (youtu.be) या MP3 लिंक डालें">
+
+                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🔥 लाइव न्यूज़ टिकर बदलें:</div>
+                    <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
+                    
+                    <div class="camera-btn-wrapper">
+                        <label for="adminTickerImgFile">🖼️ टिकर फोटो चुनें:</label>
+                        <input type="file" id="adminTickerImgFile" accept="image/*" onchange="previewTickerFile(event)">
+                    </div>
+                    <input type="text" id="adminTickerImgUrl" class="admin-input" placeholder="या टिकर फोटो का डायरेक्ट URL यहाँ डालें">
+                    
+                    <div style="font-size: 11px; color: #69f0ae; margin: 4px 0 2px 0;">🎥 वीडियो/मीडिया अपलोड:</div>
+                    <input type="text" id="mediaTitle" class="admin-input" placeholder="मीडिया का टाइटल (नाम)">
+                    <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम">
+                    <input type="text" id="mediaUrlInput" class="admin-input" placeholder="वीडियो/फोटो का डायरेक्ट URL">
+
+                    <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 8px; font-size: 12px; margin-bottom: 6px;">🚀 अपडेट / सेव करें</button>
+                    <button onclick="openVisitorMessagesModal()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 6px;">📥 मिले हुए संदेश देखें (Messages & Reply)</button>
+                    <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ एडिट/डिलीट करें</button>
+                </div>
             </div>
 
             <div class="badge">✨ MeraGaov Digital Platform</div>
@@ -502,12 +524,15 @@
                 </div>
             </div>
 
-            <!-- COMPACT VISITOR MESSAGE BOX -->
-            <div class="visitor-msg-box">
-                <h4>💬 अपनी बात या सुझाव सीधे यहाँ भेजें:</h4>
-                <input type="text" id="visitorName" class="admin-input" placeholder="आपका नाम (Your Name)" style="margin-bottom: 4px; font-size: 11px; padding: 6px;">
-                <textarea id="visitorMsgText" class="admin-input" style="height: 45px; margin-bottom: 4px; font-size: 11px; padding: 6px;" placeholder="यहाँ अपना संदेश लिखें..."></textarea>
-                <button onclick="sendVisitorMessage()" class="btn" style="background: linear-gradient(135deg, #00c853, #00796b); color: #fff; padding: 6px; font-size: 11px; margin-bottom: 0;">📤 संदेश भेजें (Send)</button>
+            <!-- FEEDBACK / MESSAGE BUTTON WRAPPER -->
+            <div class="visitor-msg-container">
+                <button onclick="toggleVisitorMsgBox()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae; margin-bottom: 0;">💬 फीडबैक / सुझाव भेजें</button>
+                <div id="visitorMsgBox" class="visitor-msg-box">
+                    <h4>💬 अपनी बात या सुझाव सीधे यहाँ भेजें:</h4>
+                    <input type="text" id="visitorName" class="admin-input" placeholder="आपका नाम (Your Name)" style="margin-bottom: 4px; font-size: 11px; padding: 6px;">
+                    <textarea id="visitorMsgText" class="admin-input" style="height: 45px; margin-bottom: 4px; font-size: 11px; padding: 6px;" placeholder="यहाँ अपना संदेश लिखें..."></textarea>
+                    <button onclick="sendVisitorMessage()" class="btn" style="background: linear-gradient(135deg, #00c853, #00796b); color: #fff; padding: 6px; font-size: 11px; margin-bottom: 0;">📤 संदेश भेजें (Send)</button>
+                </div>
             </div>
 
             <!-- Food Links Combined Row -->
@@ -594,6 +619,11 @@
 
         function toggleAdmin() {
             const box = document.getElementById("adminPanel");
+            box.style.display = box.style.display === "block" ? "none" : "block";
+        }
+
+        function toggleVisitorMsgBox() {
+            const box = document.getElementById("visitorMsgBox");
             box.style.display = box.style.display === "block" ? "none" : "block";
         }
 
