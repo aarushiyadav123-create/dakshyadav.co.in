@@ -27,7 +27,7 @@
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
         
         .live-news-ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; position: relative; }
-        .live-news-anim { display: inline-block; animation: tickerScroll 22s linear infinite; padding-left: 100%; }
+        .live-news-anim { display: inline-block; animation: tickerScroll 25s linear infinite; padding-left: 100%; }
         @keyframes tickerScroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
         .ticker-content-wrapper { display: inline-flex; align-items: center; gap: 8px; }
@@ -127,29 +127,53 @@
             }
         }
 
-        // Fetch Live RSS News from Amar Ujala
+        // Reliable Fetch Live RSS News from Amar Ujala with Fallback
         async function fetchAmarUjalaRSS() {
+            const rssUrl = "https://www.amarujala.com/rss/breaking-news.xml";
+            
+            // Primary Attempt via rss2json API
             try {
-                const rssUrl = "https://www.amarujala.com/rss/breaking-news.xml";
                 const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
                 const data = await res.json();
                 
                 if (data && data.items && data.items.length > 0) {
                     let headlines = data.items.slice(0, 6).map(item => "🗞️ " + item.title).join("   |   ");
-                    document.getElementById("liveNewsText").innerText = "🔥 अमर उजाला (लाइव ब्रेकिंग): " + headlines;
+                    document.getElementById("liveNewsText").innerText = "🔥 अमर उजाला (लाइव): " + headlines;
                     document.getElementById("liveNewsBoxContainer").style.display = "flex";
+                    return;
                 }
             } catch (e) {
-                console.error("RSS Error:", e);
+                console.warn("Primary RSS API failed, attempting fallback...", e);
+            }
+
+            // Secondary Fallback via Allorigins CORS Proxy
+            try {
+                const fallbackRes = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`);
+                const fallbackData = await fallbackRes.json();
+                if (fallbackData && fallbackData.contents) {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(fallbackData.contents, "text/xml");
+                    const items = xmlDoc.querySelectorAll("item");
+                    let titles = [];
+                    for(let i=0; i<Math.min(items.length, 6); i++) {
+                        let t = items[i].querySelector("title") ? items[i].querySelector("title").textContent : "";
+                        if(t) titles.push("🗞️ " + t);
+                    }
+                    if(titles.length > 0) {
+                        document.getElementById("liveNewsText").innerText = "🔥 अमर उजाला (लाइव): " + titles.join("   |   ");
+                        document.getElementById("liveNewsBoxContainer").style.display = "flex";
+                    }
+                }
+            } catch(e) {
+                console.error("All RSS proxies failed:", e);
             }
         }
 
         async function loadAppData() {
             await trackVisitor();
             try {
-                // Check if Admin selected Auto RSS or Manual News
                 const rssSettingSnap = await getDoc(doc(db, "settings", "rssAuto"));
-                let isRssAuto = rssSettingSnap.exists() ? rssSettingSnap.data().enabled : true;
+                let isRssAuto = rssSettingSnap.exists() ? rssSettingSnap.data().enabled : false;
 
                 if (isRssAuto) {
                     await fetchAmarUjalaRSS();
@@ -339,7 +363,7 @@
                 document.getElementById("protectedAdminControls").style.display = "block";
                 const rssSnap = await getDoc(doc(db, "settings", "rssAuto"));
                 if(rssSnap.exists()) {
-                    document.getElementById("rssToggleCheckbox").checked = rssSnap.data().enabled !== false;
+                    document.getElementById("rssToggleCheckbox").checked = rssSnap.data().enabled === true;
                 }
                 alert("एडमिन पैनल अनलॉक हो गया है!");
             } else {
@@ -503,7 +527,7 @@
                     <div style="background: rgba(0,200,83,0.2); padding: 8px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #00c853; display: flex; align-items: center; justify-content: space-between;">
                         <span style="font-size: 11px; color: #ffeb3b; font-weight: bold;">🗞️ अमर उजाला ऑटो RSS न्यूज़</span>
                         <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 11px; color: #fff;">
-                            <input type="checkbox" id="rssToggleCheckbox" onchange="toggleRSSFeedMode()" checked style="width: 16px; height: 16px;"> ON / OFF
+                            <input type="checkbox" id="rssToggleCheckbox" onchange="toggleRSSFeedMode()" style="width: 16px; height: 16px;"> ON / OFF
                         </label>
                     </div>
 
@@ -566,7 +590,7 @@
 
                 <div id="translatorStatus" style="font-size: 12px; color: #ffeb3b; margin-bottom: 8px; font-weight: bold;"></div>
                 
-                <div style="display: flex; justify-content: space-between; align- items: center; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <span style="font-size: 11px; color: #a5d6a7; font-weight: bold;">भाषा चुनें:</span>
                     <select id="langDirection" class="admin-input" style="width: 55%; margin-bottom: 0; padding: 5px; font-size: 11px;">
                         <option value="en|hi">English to Hindi</option>
