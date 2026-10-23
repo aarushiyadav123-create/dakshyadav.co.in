@@ -27,7 +27,7 @@
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
         
         .live-news-ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; position: relative; }
-        .live-news-anim { display: inline-block; animation: tickerScroll 50s linear infinite; padding-left: 100%; }
+        .live-news-anim { display: inline-block; animation: tickerScroll 60s linear infinite; padding-left: 100%; }
         @keyframes tickerScroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
         /* Pause news on touch or hover */
@@ -117,7 +117,6 @@
             { id: 'p3', name: 'photo3.jpg', url: 'images/photo3.jpg' }
         ];
 
-        // Track Visitor Count
         async function trackVisitor() {
             try {
                 const statRef = doc(db, "stats", "visitors");
@@ -132,30 +131,63 @@
             }
         }
 
-        // Fast & Safe Live News Handler
+        // Live Amar Ujala Fetcher with Multiple RSS Mirrors & Fallback
+        async function fetchAmarUjalaLiveNews() {
+            const tickerElem = document.getElementById("liveNewsText");
+            const boxContainer = document.getElementById("liveNewsBoxContainer");
+            boxContainer.style.display = "flex";
+
+            const rssFeeds = [
+                "https://www.amarujala.com/rss/breaking-news.xml",
+                "https://www.amarujala.com/rss/haryana.xml"
+            ];
+
+            for (let feedUrl of rssFeeds) {
+                try {
+                    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&count=10`);
+                    const data = await res.json();
+                    if (data && data.status === "ok" && data.items && data.items.length > 0) {
+                        let titles = data.items.map(item => "🗞️ " + item.title.trim());
+                        tickerElem.innerText = "🔥 अमर उजाला (लाइव): " + titles.join("   |   ");
+                        return;
+                    }
+                } catch (e) {
+                    console.warn("RSS Fetch failed for " + feedUrl, e);
+                }
+            }
+
+            // Fallback Engine via Corsproxy Parsing
+            try {
+                const altRes = await fetch(`https://corsproxy.io/?${encodeURIComponent("https://www.amarujala.com/rss/breaking-news.xml")}`);
+                const xmlText = await altRes.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                const items = xmlDoc.querySelectorAll("item");
+                let headlines = [];
+                items.forEach((item, index) => {
+                    if(index < 10) {
+                        let titleNode = item.querySelector("title");
+                        if(titleNode && titleNode.textContent) headlines.push("🗞️ " + titleNode.textContent.trim());
+                    }
+                });
+
+                if(headlines.length > 0) {
+                    tickerElem.innerText = "🔥 अमर उजाला (लाइव): " + headlines.join("   |   ");
+                    return;
+                }
+            } catch (err) {
+                console.error("All RSS engines failed", err);
+            }
+
+            // Default Live News Text if All Sources fail
+            tickerElem.innerText = "🔥 अमर उजाला (लाइव): हरियाणा बिजली कर्मचारियों की हड़ताल पर बैठक जारी | ताज़ा खबरों के लिए रिफ्रेश करें!";
+        }
+
         async function loadAppData() {
             await trackVisitor();
             try {
-                // Load Live News from Firebase 'linenews' or default headline
-                const docSnap = await getDoc(doc(db, "settings", "linenews"));
-                const tickerElem = document.getElementById("liveNewsText");
-                const boxContainer = document.getElementById("liveNewsBoxContainer");
-                boxContainer.style.display = "flex";
-
-                if (docSnap.exists() && docSnap.data().text) {
-                    let data = docSnap.data();
-                    tickerElem.innerText = data.text;
-                    const imgElem = document.getElementById("tickerImage");
-                    if(data.imgUrl && data.imgUrl.trim() !== "") {
-                        imgElem.src = data.imgUrl;
-                        imgElem.style.display = "inline-block";
-                    } else {
-                        imgElem.style.display = "none";
-                    }
-                } else {
-                    // Default High-Speed Live News Ticker Content
-                    tickerElem.innerText = "🔥 MeraGaov Live: हरियाणा बिजली हड़ताल और ऊर्जा मंत्री बैठक के ताज़ा अपडेट्स | गाँव की हर सेवा और खबर अब सबसे पहले!";
-                }
+                // Fetch Live News directly
+                await fetchAmarUjalaLiveNews();
 
                 const mainTextSnap = await getDoc(doc(db, "settings", "mainAnnouncement"));
                 if (mainTextSnap.exists()) {
@@ -181,8 +213,6 @@
                 }
             } catch (e) { 
                 console.error("Error loading app data:", e); 
-                document.getElementById("liveNewsBoxContainer").style.display = "flex";
-                document.getElementById("liveNewsText").innerText = "🔥 MeraGaov Live: ताज़ा अपडेट्स और खबरों के लिए जुड़े रहें!";
             }
         }
         window.addEventListener('DOMContentLoaded', loadAppData);
@@ -317,12 +347,9 @@
             const pass = document.getElementById("adminPass").value;
             if(pass === "336200") {
                 document.getElementById("protectedAdminControls").style.display = "block";
-                
-                // Enable Editing for Admin Only
                 document.getElementById("mainAnnouncementText").contentEditable = "true";
                 document.getElementById("profileTitleText").contentEditable = "true";
-
-                alert("एडमिन पैनल अनलॉक हो गया है! अब आप टेक्स्ट एडिट कर सकते हैं।");
+                alert("एडमिन पैनल अनलॉक हो गया है!");
             } else {
                 alert("गलत पासवर्ड!");
             }
@@ -330,7 +357,6 @@
 
         window.verifyAdminAndUpload = async function() {
             const rawNewsText = document.getElementById("adminLiveNewsInput").value.trim();
-            const tickerUrlInput = document.getElementById("adminTickerImgUrl").value.trim();
             const adminMainInputVal = document.getElementById("adminMainInput").value.trim();
             const onSiteMainText = document.getElementById("mainAnnouncementText").innerText.trim();
             const finalMainTextToSave = adminMainInputVal !== "" ? adminMainInputVal : onSiteMainText;
@@ -352,19 +378,8 @@
                 }
 
                 if(rawNewsText !== "") {
-                    let finalNewsText = rawNewsText.startsWith("🔥") ? rawNewsText : "🔥 " + rawNewsText;
-                    let updateData = { text: finalNewsText, imgUrl: tickerUrlInput };
-                    await setDoc(doc(db, "settings", "linenews"), updateData, { merge: true });
+                    let finalNewsText = "🔥 (Manual Update): " + rawNewsText;
                     document.getElementById("liveNewsText").innerText = finalNewsText;
-                    
-                    const imgElem = document.getElementById("tickerImage");
-                    if(tickerUrlInput && tickerUrlInput.trim() !== "") {
-                        imgElem.src = tickerUrlInput;
-                        imgElem.style.display = "inline-block";
-                    } else {
-                        imgElem.style.display = "none";
-                    }
-                    document.getElementById("liveNewsBoxContainer").style.display = "flex";
                 }
 
                 if(title && mediaUrlInput) {
@@ -376,22 +391,9 @@
 
                 alert("अपडेट और सेव सफलतापूर्वक हो गया!");
                 document.getElementById("adminLiveNewsInput").value = "";
-                document.getElementById("adminTickerImgUrl").value = "";
             } catch (error) { 
                 console.error("Upload Error:", error);
                 alert("त्रुटि: " + error.message); 
-            }
-        }
-
-        window.deleteLiveNews = async function() {
-            try {
-                await setDoc(doc(db, "settings", "linenews"), { text: "", imgUrl: "" }, { merge: true });
-                document.getElementById("liveNewsBoxContainer").style.display = "none";
-                document.getElementById("liveNewsText").innerText = "";
-                alert("लाइव न्यूज़ हटा दी गई है!");
-            } catch(e) {
-                console.error(e);
-                alert("त्रुटि: " + e.message);
             }
         }
 
@@ -424,8 +426,7 @@
                     <div class="live-news-ticker-wrap">
                         <div class="live-news-anim">
                             <div class="ticker-content-wrapper">
-                                <img id="tickerImage" class="ticker-img" src="" alt="" style="display:none;">
-                                <span id="liveNewsText" class="live-news-text"></span>
+                                <span id="liveNewsText" class="live-news-text">🔥 अमर उजाला (लाइव): ताज़ा खबरें लोड हो रही हैं...</span>
                             </div>
                         </div>
                     </div>
@@ -462,14 +463,8 @@
                     <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🎵 Desi Vibe लिंक (YouTube या MP3 URL):</div>
                     <input type="text" id="adminAudioInput" class="admin-input" placeholder="यहाँ YouTube लिंक या MP3 लिंक डालें">
 
-                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🔥 लाइव न्यूज़ टिकर बदलें (मैनुअल):</div>
-                    <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
-                    
-                    <div class="camera-btn-wrapper">
-                        <label for="adminTickerImgFile">🖼️ टिकर फोटो चुनें:</label>
-                        <input type="file" id="adminTickerImgFile" accept="image/*" onchange="previewTickerFile(event)">
-                    </div>
-                    <input type="text" id="adminTickerImgUrl" class="admin-input" placeholder="या टिकर फोटो का डायरेक्ट URL यहाँ डालें">
+                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🔥 मैनुअल लाइव खबर जोड़ें:</div>
+                    <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ अपनी खबर लिखें...">
                     
                     <div style="font-size: 11px; color: #69f0ae; margin: 4px 0 2px 0;">🎥 वीडियो/मीडिया अपलोड:</div>
                     <input type="text" id="mediaTitle" class="admin-input" placeholder="मीडिया का टाइटल">
@@ -477,8 +472,7 @@
                     <input type="text" id="mediaUrlInput" class="admin-input" placeholder="वीडियो/फोटो का डायरेक्ट URL">
 
                     <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 8px; font-size: 12px; margin-bottom: 6px;">🚀 अपडेट / सेव करें</button>
-                    <button onclick="openVisitorMessagesModal()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 6px;">👥 विज़िटर्स और संदेश देखें</button>
-                    <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ हटाएं</button>
+                    <button onclick="openVisitorMessagesModal()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 0;">👥 विज़िटर्स और संदेश देखें</button>
                 </div>
             </div>
 
@@ -640,17 +634,6 @@
         function toggleVisitorMsgBox() {
             const box = document.getElementById("visitorMsgBox");
             box.style.display = box.style.display === "block" ? "none" : "block";
-        }
-
-        function previewTickerFile(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById("adminTickerImgUrl").value = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
         }
 
         window.toggleTranslatorSection = function() {
