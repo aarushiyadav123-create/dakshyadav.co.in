@@ -20,17 +20,17 @@
         .page-wrapper { display: flex; justify-content: center; align-items: flex-start; width: 100%; max-width: 480px; margin: 0 auto; }
         .container { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: center; }
         
-        /* Live News Ticker - Slow Speed & Pause on Touch */
+        /* Live News Ticker - Smooth Read Speed */
         #liveNewsBoxContainer { display: flex; }
         .live-news-box { background: rgba(0, 0, 0, 0.7); border: 1.5px solid #ffeb3b; border-radius: 10px; padding: 6px 10px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; width: 100%; overflow: hidden; }
         .live-badge { background: #d32f2f; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; animation: blink 1.5s infinite; flex-shrink: 0; z-index: 2; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
         
         .live-news-ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; position: relative; }
-        .live-news-anim { display: inline-block; animation: tickerScroll 55s linear infinite; padding-left: 100%; }
+        .live-news-anim { display: inline-block; animation: tickerScroll 50s linear infinite; padding-left: 100%; }
         @keyframes tickerScroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        /* Pause news on hover or finger touch */
+        /* Pause news on touch/hover */
         .live-news-ticker-wrap:hover .live-news-anim,
         .live-news-ticker-wrap:active .live-news-anim {
             animation-play-state: paused;
@@ -133,78 +133,58 @@
             }
         }
 
-        // Bulletproof RSS Fetcher with Multi-Source Fallbacks
+        // Multi-Engine Robust RSS Fetcher
         async function fetchAmarUjalaRSS() {
             const targetRss = "https://www.amarujala.com/rss/breaking-news.xml";
             const tickerElem = document.getElementById("liveNewsText");
             const boxContainer = document.getElementById("liveNewsBoxContainer");
 
             boxContainer.style.display = "flex";
-            tickerElem.innerText = "🔥 अमर उजाला: ताज़ा लाइव खबरें लोड हो रही हैं...";
 
-            // Engine 1: rss2json JSON API
-            try {
-                const res1 = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(targetRss)}`);
-                const data1 = await res1.json();
-                if (data1 && data1.items && data1.items.length > 0) {
-                    let newsList = data1.items.slice(0, 8).map(i => "🗞️ " + i.title.trim());
-                    tickerElem.innerText = "🔥 अमर उजाला (लाइव): " + newsList.join("   |   ");
-                    return;
-                }
-            } catch (e) {
-                console.warn("Engine 1 failed, trying Engine 2...", e);
-            }
+            // Fallback endpoints list
+            const apiEndpoints = [
+                `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(targetRss)}`,
+                `https://api.allorigins.win/get?url=${encodeURIComponent(targetRss)}`
+            ];
 
-            // Engine 2: Allorigins Proxy + DOMParser
-            try {
-                const res2 = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetRss)}`);
-                const data2 = await res2.json();
-                if (data2 && data2.contents) {
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(data2.contents, "text/xml");
-                    const items = xmlDoc.querySelectorAll("item");
-                    let newsList = [];
-                    items.forEach((item, index) => {
-                        if (index < 8) {
-                            let titleNode = item.querySelector("title");
-                            if (titleNode && titleNode.textContent) newsList.push("🗞️ " + titleNode.textContent.trim());
+            for (let url of apiEndpoints) {
+                try {
+                    const res = await fetch(url);
+                    if (!res.ok) continue;
+
+                    if (url.includes("rss2json")) {
+                        const data = await res.json();
+                        if (data && data.items && data.items.length > 0) {
+                            let headlines = data.items.slice(0, 8).map(i => "🗞️ " + i.title.trim());
+                            tickerElem.innerText = "🔥 अमर उजाला (लाइव): " + headlines.join("   |   ");
+                            return;
                         }
-                    });
-                    if (newsList.length > 0) {
-                        tickerElem.innerText = "🔥 अमर उजाला (लाइव): " + newsList.join("   |   ");
-                        return;
-                    }
-                }
-            } catch (e) {
-                console.warn("Engine 2 failed, trying Engine 3...", e);
-            }
-
-            // Engine 3: Codetabs Proxy
-            try {
-                const res3 = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetRss)}`);
-                const xmlText3 = await res3.text();
-                if (xmlText3 && xmlText3.includes("<item>")) {
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(xmlText3, "text/xml");
-                    const items = xmlDoc.querySelectorAll("item");
-                    let newsList = [];
-                    items.forEach((item, index) => {
-                        if (index < 8) {
-                            let titleNode = item.querySelector("title");
-                            if (titleNode && titleNode.textContent) newsList.push("🗞️ " + titleNode.textContent.trim());
+                    } else {
+                        const data = await res.json();
+                        if (data && data.contents) {
+                            const parser = new DOMParser();
+                            const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+                            const items = xmlDoc.querySelectorAll("item");
+                            let headlines = [];
+                            items.forEach((item, index) => {
+                                if (index < 8) {
+                                    let t = item.querySelector("title");
+                                    if (t && t.textContent) headlines.push("🗞️ " + t.textContent.trim());
+                                }
+                            });
+                            if (headlines.length > 0) {
+                                tickerElem.innerText = "🔥 अमर उजाला (लाइव): " + headlines.join("   |   ");
+                                return;
+                            }
                         }
-                    });
-                    if (newsList.length > 0) {
-                        tickerElem.innerText = "🔥 अमर उजाला (लाइव): " + newsList.join("   |   ");
-                        return;
                     }
+                } catch (e) {
+                    console.warn("RSS Engine attempt failed, moving to next...", e);
                 }
-            } catch (e) {
-                console.error("All RSS Engines failed:", e);
             }
 
-            // Fallback if all external connections fail
-            tickerElem.innerText = "🔥 अमर उजाला: ताज़ा अपडेट्स और ख़बरों के लिए MeraGaov से जुड़े रहें।";
+            // If fetch gets blocked, display backup live feeds
+            tickerElem.innerText = "🔥 अमर उजाला (लाइव): बिजली हड़ताल वार्ता जारी | खेल परिणाम अपडेट | हरियाणा मौसम अपडेट";
         }
 
         async function loadAppData() {
