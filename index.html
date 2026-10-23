@@ -127,45 +127,29 @@
             }
         }
 
-        // Reliable Fetch Live RSS News from Amar Ujala with Fallback
+        // Live News Fetcher via Proxy (Bypasses CORS restrictions)
         async function fetchAmarUjalaRSS() {
             const rssUrl = "https://www.amarujala.com/rss/breaking-news.xml";
+            const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
             
-            // Primary Attempt via rss2json API
             try {
-                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
-                const data = await res.json();
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
                 
-                if (data && data.items && data.items.length > 0) {
-                    let headlines = data.items.slice(0, 6).map(item => "🗞️ " + item.title).join("   |   ");
-                    document.getElementById("liveNewsText").innerText = "🔥 अमर उजाला (लाइव): " + headlines;
+                if (data && data.status === 'ok' && data.items && data.items.length > 0) {
+                    let newsArray = data.items.slice(0, 7).map(item => "🗞️ " + item.title);
+                    let fullTickerText = newsArray.join("   |   ");
+                    
+                    document.getElementById("liveNewsText").innerText = "🔥 अमर उजाला (लाइव): " + fullTickerText;
                     document.getElementById("liveNewsBoxContainer").style.display = "flex";
-                    return;
+                } else {
+                    document.getElementById("liveNewsText").innerText = "🔥 अमर उजाला: हरियाणा और देश की ताज़ा ख़बरों के लिए ऐप डाउनलोड करें।";
+                    document.getElementById("liveNewsBoxContainer").style.display = "flex";
                 }
             } catch (e) {
-                console.warn("Primary RSS API failed, attempting fallback...", e);
-            }
-
-            // Secondary Fallback via Allorigins CORS Proxy
-            try {
-                const fallbackRes = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`);
-                const fallbackData = await fallbackRes.json();
-                if (fallbackData && fallbackData.contents) {
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(fallbackData.contents, "text/xml");
-                    const items = xmlDoc.querySelectorAll("item");
-                    let titles = [];
-                    for(let i=0; i<Math.min(items.length, 6); i++) {
-                        let t = items[i].querySelector("title") ? items[i].querySelector("title").textContent : "";
-                        if(t) titles.push("🗞️ " + t);
-                    }
-                    if(titles.length > 0) {
-                        document.getElementById("liveNewsText").innerText = "🔥 अमर उजाला (लाइव): " + titles.join("   |   ");
-                        document.getElementById("liveNewsBoxContainer").style.display = "flex";
-                    }
-                }
-            } catch(e) {
-                console.error("All RSS proxies failed:", e);
+                console.error("RSS Loading Error:", e);
+                document.getElementById("liveNewsText").innerText = "🔥 अमर उजाला: ताज़ा अपडेट्स लोड हो रहे हैं...";
+                document.getElementById("liveNewsBoxContainer").style.display = "flex";
             }
         }
 
