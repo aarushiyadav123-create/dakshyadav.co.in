@@ -27,7 +27,7 @@
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
         
         .live-news-ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; position: relative; }
-        .live-news-anim { display: inline-block; animation: tickerScroll 18s linear infinite; padding-left: 100%; }
+        .live-news-anim { display: inline-block; animation: tickerScroll 22s linear infinite; padding-left: 100%; }
         @keyframes tickerScroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
         .ticker-content-wrapper { display: inline-flex; align-items: center; gap: 8px; }
@@ -112,7 +112,7 @@
             { id: 'p3', name: 'photo3.jpg', url: 'images/photo3.jpg' }
         ];
 
-        // Track Page View (Visitor Counter) automatically on load
+        // Track Visitor Count
         async function trackVisitor() {
             try {
                 const statRef = doc(db, "stats", "visitors");
@@ -123,28 +123,53 @@
                     await updateDoc(statRef, { count: increment(1) });
                 }
             } catch (e) {
-                console.error("Visitor count error:", e);
+                console.error("Visitor error:", e);
+            }
+        }
+
+        // Fetch Live RSS News from Amar Ujala
+        async function fetchAmarUjalaRSS() {
+            try {
+                const rssUrl = "https://www.amarujala.com/rss/breaking-news.xml";
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
+                const data = await res.json();
+                
+                if (data && data.items && data.items.length > 0) {
+                    let headlines = data.items.slice(0, 6).map(item => "🗞️ " + item.title).join("   |   ");
+                    document.getElementById("liveNewsText").innerText = "🔥 अमर उजाला (लाइव ब्रेकिंग): " + headlines;
+                    document.getElementById("liveNewsBoxContainer").style.display = "flex";
+                }
+            } catch (e) {
+                console.error("RSS Error:", e);
             }
         }
 
         async function loadAppData() {
             await trackVisitor();
             try {
-                const docSnap = await getDoc(doc(db, "settings", "linenews"));
-                if (docSnap.exists()) {
-                    let data = docSnap.data();
-                    let txt = data.text || "";
-                    let imgUrl = data.imgUrl || "";
+                // Check if Admin selected Auto RSS or Manual News
+                const rssSettingSnap = await getDoc(doc(db, "settings", "rssAuto"));
+                let isRssAuto = rssSettingSnap.exists() ? rssSettingSnap.data().enabled : true;
 
-                    document.getElementById("liveNewsText").innerText = txt;
-                    const imgElem = document.getElementById("tickerImage");
-                    if(imgUrl && imgUrl.trim() !== "") {
-                        imgElem.src = imgUrl;
-                        imgElem.style.display = "inline-block";
-                    } else {
-                        imgElem.style.display = "none";
+                if (isRssAuto) {
+                    await fetchAmarUjalaRSS();
+                } else {
+                    const docSnap = await getDoc(doc(db, "settings", "linenews"));
+                    if (docSnap.exists()) {
+                        let data = docSnap.data();
+                        let txt = data.text || "";
+                        let imgUrl = data.imgUrl || "";
+
+                        document.getElementById("liveNewsText").innerText = txt;
+                        const imgElem = document.getElementById("tickerImage");
+                        if(imgUrl && imgUrl.trim() !== "") {
+                            imgElem.src = imgUrl;
+                            imgElem.style.display = "inline-block";
+                        } else {
+                            imgElem.style.display = "none";
+                        }
+                        document.getElementById("liveNewsBoxContainer").style.display = (txt.trim() === "" && (!imgUrl || imgUrl.trim() === "")) ? "none" : "flex";
                     }
-                    document.getElementById("liveNewsBoxContainer").style.display = (txt.trim() === "" && (!imgUrl || imgUrl.trim() === "")) ? "none" : "flex";
                 }
 
                 const mainTextSnap = await getDoc(doc(db, "settings", "mainAnnouncement"));
@@ -172,6 +197,15 @@
             } catch (e) { console.error("Error loading app data:", e); }
         }
         window.addEventListener('DOMContentLoaded', loadAppData);
+
+        window.toggleRSSFeedMode = async function() {
+            const isChecked = document.getElementById("rssToggleCheckbox").checked;
+            try {
+                await setDoc(doc(db, "settings", "rssAuto"), { enabled: isChecked }, { merge: true });
+                alert(isChecked ? "अमर उजाला ऑटो लाइव न्यूज़ ऑन कर दी गई है!" : "मैनुअल न्यूज़ मोड ऑन कर दिया गया है!");
+                location.reload();
+            } catch(e) { console.error(e); }
+        }
 
         function updateDesiVibePlayer(url) {
             const playerContainer = document.getElementById("desiVibePlayerContainer");
@@ -232,7 +266,6 @@
             modal.style.display = "flex";
 
             try {
-                // Fetch Total Visitor Count
                 let visitorCount = 0;
                 const statSnap = await getDoc(doc(db, "stats", "visitors"));
                 if(statSnap.exists()) {
@@ -300,10 +333,14 @@
             }
         }
 
-        window.checkAdminPassword = function() {
+        window.checkAdminPassword = async function() {
             const pass = document.getElementById("adminPass").value;
             if(pass === "336200") {
                 document.getElementById("protectedAdminControls").style.display = "block";
+                const rssSnap = await getDoc(doc(db, "settings", "rssAuto"));
+                if(rssSnap.exists()) {
+                    document.getElementById("rssToggleCheckbox").checked = rssSnap.data().enabled !== false;
+                }
                 alert("एडमिन पैनल अनलॉक हो गया है!");
             } else {
                 alert("गलत पासवर्ड!");
@@ -462,13 +499,21 @@
                 </div>
 
                 <div id="protectedAdminControls" style="display:none; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 10px; margin-top: 8px;">
+                    <!-- Auto RSS Toggle Option -->
+                    <div style="background: rgba(0,200,83,0.2); padding: 8px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #00c853; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 11px; color: #ffeb3b; font-weight: bold;">🗞️ अमर उजाला ऑटो RSS न्यूज़</span>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 11px; color: #fff;">
+                            <input type="checkbox" id="rssToggleCheckbox" onchange="toggleRSSFeedMode()" checked style="width: 16px; height: 16px;"> ON / OFF
+                        </label>
+                    </div>
+
                     <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">📝 मुख्य घोषणा लाइन बदलें:</div>
                     <textarea id="adminMainInput" class="admin-input" style="height: 45px;" placeholder="यहाँ नई मुख्य लाइन लिखें..."></textarea>
 
                     <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🎵 Desi Vibe लिंक (YouTube या MP3 URL):</div>
                     <input type="text" id="adminAudioInput" class="admin-input" placeholder="यहाँ YouTube लिंक (youtu.be) या MP3 लिंक डालें">
 
-                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🔥 लाइव न्यूज़ टिकर बदलें:</div>
+                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🔥 लाइव न्यूज़ टिकर बदलें (मैनुअल):</div>
                     <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
                     
                     <div class="camera-btn-wrapper">
@@ -521,7 +566,7 @@
 
                 <div id="translatorStatus" style="font-size: 12px; color: #ffeb3b; margin-bottom: 8px; font-weight: bold;"></div>
                 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align- items: center; margin-bottom: 8px;">
                     <span style="font-size: 11px; color: #a5d6a7; font-weight: bold;">भाषा चुनें:</span>
                     <select id="langDirection" class="admin-input" style="width: 55%; margin-bottom: 0; padding: 5px; font-size: 11px;">
                         <option value="en|hi">English to Hindi</option>
