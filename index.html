@@ -127,54 +127,52 @@
             }
         }
 
-        // Guaranteed Live News Fetcher with Dual Proxies & XML Parser
+        // Guaranteed Multi-Proxy Live News Fetcher
         async function fetchAmarUjalaRSS() {
-            const rssUrl = "https://www.amarujala.com/rss/breaking-news.xml";
-            const tickerTextElem = document.getElementById("liveNewsText");
-            const tickerBox = document.getElementById("liveNewsBoxContainer");
+            const targetRss = "https://www.amarujala.com/rss/breaking-news.xml";
+            const tickerElem = document.getElementById("liveNewsText");
+            const boxContainer = document.getElementById("liveNewsBoxContainer");
 
-            tickerTextElem.innerText = "🔥 अमर उजाला: ताज़ा ख़बरें लोड हो रही हैं...";
-            tickerBox.style.display = "flex";
+            boxContainer.style.display = "flex";
+            tickerElem.innerText = "🔥 अमर उजाला: ताज़ा लाइव खबरें लोड की जा रही हैं...";
 
-            // Method 1: Direct XML Fetch via CORS Proxy
-            try {
-                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`);
-                const data = await res.json();
-                if (data && data.contents) {
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-                    const items = xmlDoc.querySelectorAll("item");
-                    let titles = [];
-                    items.forEach((item, index) => {
-                        if (index < 7) {
-                            let titleText = item.querySelector("title") ? item.querySelector("title").textContent : "";
-                            if (titleText) titles.push("🗞️ " + titleText.trim());
+            const proxies = [
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetRss)}`,
+                `https://corsproxy.io/?${encodeURIComponent(targetRss)}`
+            ];
+
+            for (let proxy of proxies) {
+                try {
+                    const res = await fetch(proxy);
+                    const xmlText = await res.text();
+                    
+                    if (xmlText && xmlText.includes("<item>")) {
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                        const items = xmlDoc.querySelectorAll("item");
+                        let newsList = [];
+
+                        items.forEach((item, index) => {
+                            if (index < 8) {
+                                let titleNode = item.querySelector("title");
+                                if (titleNode && titleNode.textContent) {
+                                    newsList.push("🗞️ " + titleNode.textContent.trim());
+                                }
+                            }
+                        });
+
+                        if (newsList.length > 0) {
+                            tickerElem.innerText = "🔥 अमर उजाला (लाइव): " + newsList.join("   |   ");
+                            return; // Successfully fetched & displayed
                         }
-                    });
-                    if (titles.length > 0) {
-                        tickerTextElem.innerText = "🔥 अमर उजाला (लाइव): " + titles.join("   |   ");
-                        return;
                     }
+                } catch (err) {
+                    console.warn("Proxy failed, trying next...", err);
                 }
-            } catch (e) {
-                console.warn("Proxy 1 failed, trying Backup Proxy...", e);
             }
 
-            // Method 2: Backup rss2json Parser
-            try {
-                const backupRes = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
-                const backupData = await backupRes.json();
-                if (backupData && backupData.items && backupData.items.length > 0) {
-                    let newsArray = backupData.items.slice(0, 7).map(item => "🗞️ " + item.title);
-                    tickerTextElem.innerText = "🔥 अमर उजाला (लाइव): " + newsArray.join("   |   ");
-                    return;
-                }
-            } catch (e) {
-                console.error("Proxy 2 failed:", e);
-            }
-
-            // Fallback Text if network blocks both
-            tickerTextElem.innerText = "🔥 अमर उजाला: हरियाणा व देश की ताज़ा ख़बरों के लिए MeraGaov से जुड़े रहें।";
+            // Fallback if all proxies fail
+            tickerElem.innerText = "🔥 अमर उजाला: ताज़ा अपडेट्स और खबरों के लिए पेज को रिफ्रेश करें।";
         }
 
         async function loadAppData() {
