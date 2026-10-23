@@ -11,7 +11,6 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-KT9C1L4ZMN');
     </script>
 
@@ -91,7 +90,7 @@
     <!-- Firebase SDK & Database Integration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBcINeRD8Xr35T9MI80h56AfWAi-JdACio",
@@ -113,7 +112,23 @@
             { id: 'p3', name: 'photo3.jpg', url: 'images/photo3.jpg' }
         ];
 
+        // Track Page View (Visitor Counter) automatically on load
+        async function trackVisitor() {
+            try {
+                const statRef = doc(db, "stats", "visitors");
+                const statSnap = await getDoc(statRef);
+                if (!statSnap.exists()) {
+                    await setDoc(statRef, { count: 1 });
+                } else {
+                    await updateDoc(statRef, { count: increment(1) });
+                }
+            } catch (e) {
+                console.error("Visitor count error:", e);
+            }
+        }
+
         async function loadAppData() {
+            await trackVisitor();
             try {
                 const docSnap = await getDoc(doc(db, "settings", "linenews"));
                 if (docSnap.exists()) {
@@ -212,17 +227,30 @@
             const modal = document.getElementById("galleryModal");
             const title = document.getElementById("modalTitle");
             const listContainer = document.getElementById("modalFileList");
-            title.innerText = "📥 मिले हुए संदेश (Visitor Messages)";
+            title.innerText = "📥 मिले हुए संदेश & विज़िटर (Visitors & Messages)";
             listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:10px;">लोड हो रहा है...</div>`;
             modal.style.display = "flex";
 
             try {
+                // Fetch Total Visitor Count
+                let visitorCount = 0;
+                const statSnap = await getDoc(doc(db, "stats", "visitors"));
+                if(statSnap.exists()) {
+                    visitorCount = statSnap.data().count || 0;
+                }
+
                 const querySnapshot = await getDocs(collection(db, "messages"));
-                listContainer.innerHTML = "";
+                listContainer.innerHTML = `
+                    <div style="background:rgba(0,100,60,0.6); padding:10px; border-radius:8px; margin-bottom:10px; text-align:center; border:1px solid #69f0ae;">
+                        <span style="font-size:14px; color:#ffeb3b; font-weight:bold;">👥 कुल वेबसाइट विज़िटर्स (Total Visitors): ${visitorCount}</span>
+                    </div>
+                `;
+
                 if(querySnapshot.empty) {
-                    listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:10px;">कोई संदेश नहीं मिला है।</div>`;
+                    listContainer.innerHTML += `<div style="text-align:center; color:#b9f6ca; padding:10px;">कोई संदेश नहीं मिला है।</div>`;
                     return;
                 }
+
                 querySnapshot.forEach((docSnap) => {
                     let d = docSnap.data();
                     let item = document.createElement('div');
@@ -248,7 +276,7 @@
                 });
             } catch(e) {
                 console.error(e);
-                listContainer.innerHTML = `<div style="text-align:center; color:#ff8a80; padding:10px;">संदेश लोड करने में त्रुटि।</div>`;
+                listContainer.innerHTML = `<div style="text-align:center; color:#ff8a80; padding:10px;">डेटा लोड करने में त्रुटि।</div>`;
             }
         }
 
@@ -455,7 +483,7 @@
                     <input type="text" id="mediaUrlInput" class="admin-input" placeholder="वीडियो/फोटो का डायरेक्ट URL">
 
                     <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 8px; font-size: 12px; margin-bottom: 6px;">🚀 अपडेट / सेव करें</button>
-                    <button onclick="openVisitorMessagesModal()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 6px;">📥 मिले हुए संदेश देखें (Messages & Reply)</button>
+                    <button onclick="openVisitorMessagesModal()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 6px;">👥 विज़िटर्स और संदेश देखें (Visitors & Messages)</button>
                     <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ एडिट/डिलीट करें</button>
                 </div>
             </div>
@@ -572,7 +600,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@v2.1.1/dist/tesseract.min.js"></script>
     <script>
         let isPlaying = false;
