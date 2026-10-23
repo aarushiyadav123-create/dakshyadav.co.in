@@ -20,7 +20,7 @@
         .page-wrapper { display: flex; justify-content: center; align-items: flex-start; width: 100%; max-width: 480px; margin: 0 auto; }
         .container { background: linear-gradient(145deg, #083c2d, #0f523f); width: 100%; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(130, 240, 180, 0.4); text-align: center; }
         
-        /* Live News Ticker - Readability Speed */
+        /* Live News Ticker - Smooth Speed & Pause on Touch */
         #liveNewsBoxContainer { display: flex; }
         .live-news-box { background: rgba(0, 0, 0, 0.7); border: 1.5px solid #ffeb3b; border-radius: 10px; padding: 6px 10px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; width: 100%; overflow: hidden; }
         .live-badge { background: #d32f2f; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; animation: blink 1.5s infinite; flex-shrink: 0; z-index: 2; }
@@ -51,10 +51,7 @@
         .header-admin-btn { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; border: 1px solid #ffffe0; padding: 3px 9px; border-radius: 5px; font-weight: bold; font-size: 11px; cursor: pointer; }
         .notif-badge { position: absolute; top: -4px; right: -4px; width: 10px; height: 10px; background-color: #ff1744; border-radius: 50%; border: 1.5px solid #fff; display: none; }
         
-        /* Non-editable by visitors */
         .editable-title { font-size: 17px; font-weight: 800; color: #ffeb3b; outline: none; border: none; background: transparent; display: inline-block; width: 100%; }
-
-        /* Non-editable by visitors */
         .desc-text { font-size: 14px; color: #fff9c4; line-height: 1.5; margin-bottom: 12px; font-weight: 700; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px; border: 1.5px dashed #ffeb3b; outline: none; }
         .badge { display: inline-block; background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: 700; margin-bottom: 8px; }
         
@@ -135,103 +132,29 @@
             }
         }
 
-        // Live RSS Fetcher with Direct Fallbacks
-        async function fetchAmarUjalaRSS() {
-            const targetRss = "https://www.amarujala.com/rss/breaking-news.xml";
-            const tickerElem = document.getElementById("liveNewsText");
-            const boxContainer = document.getElementById("liveNewsBoxContainer");
-
-            boxContainer.style.display = "flex";
-            tickerElem.innerText = "🔥 Amar Ujala: Taaza live khabrein load ho rahi hain...";
-
-            const proxies = [
-                `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(targetRss)}`,
-                `https://api.allorigins.win/get?url=${encodeURIComponent(targetRss)}`,
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetRss)}`
-            ];
-
-            for (let proxyUrl of proxies) {
-                try {
-                    const res = await fetch(proxyUrl);
-                    if (!res.ok) continue;
-
-                    if (proxyUrl.includes("rss2json")) {
-                        const data = await res.json();
-                        if (data && data.items && data.items.length > 0) {
-                            let newsList = data.items.slice(0, 8).map(i => "🗞️ " + i.title.trim());
-                            tickerElem.innerText = "🔥 Amar Ujala (Live): " + newsList.join("   |   ");
-                            return;
-                        }
-                    } else if (proxyUrl.includes("allorigins")) {
-                        const data = await res.json();
-                        if (data && data.contents) {
-                            const parser = new DOMParser();
-                            const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-                            const items = xmlDoc.querySelectorAll("item");
-                            let newsList = [];
-                            items.forEach((item, index) => {
-                                if (index < 8) {
-                                    let t = item.querySelector("title");
-                                    if (t && t.textContent) newsList.push("🗞️ " + t.textContent.trim());
-                                }
-                            });
-                            if (newsList.length > 0) {
-                                tickerElem.innerText = "🔥 Amar Ujala (Live): " + newsList.join("   |   ");
-                                return;
-                            }
-                        }
-                    } else {
-                        const xmlText = await res.text();
-                        if (xmlText && xmlText.includes("<item>")) {
-                            const parser = new DOMParser();
-                            const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-                            const items = xmlDoc.querySelectorAll("item");
-                            let newsList = [];
-                            items.forEach((item, index) => {
-                                if (index < 8) {
-                                    let t = item.querySelector("title");
-                                    if (t && t.textContent) newsList.push("🗞️ " + t.textContent.trim());
-                                }
-                            });
-                            if (newsList.length > 0) {
-                                tickerElem.innerText = "🔥 Amar Ujala (Live): " + newsList.join("   |   ");
-                                return;
-                            }
-                        }
-                    }
-                } catch (e) {
-                    console.warn("Proxy attempt failed, trying next...", e);
-                }
-            }
-
-            tickerElem.innerText = "🔥 Amar Ujala (Live): Haryana mein Bijli Hartal Par Charcha Jari | Sports & Weather Updates";
-        }
-
+        // Fast & Safe Live News Handler
         async function loadAppData() {
             await trackVisitor();
             try {
-                const rssSettingSnap = await getDoc(doc(db, "settings", "rssAuto"));
-                let isRssAuto = rssSettingSnap.exists() ? rssSettingSnap.data().enabled : false;
+                // Load Live News from Firebase 'linenews' or default headline
+                const docSnap = await getDoc(doc(db, "settings", "linenews"));
+                const tickerElem = document.getElementById("liveNewsText");
+                const boxContainer = document.getElementById("liveNewsBoxContainer");
+                boxContainer.style.display = "flex";
 
-                if (isRssAuto) {
-                    await fetchAmarUjalaRSS();
-                } else {
-                    const docSnap = await getDoc(doc(db, "settings", "linenews"));
-                    if (docSnap.exists()) {
-                        let data = docSnap.data();
-                        let txt = data.text || "";
-                        let imgUrl = data.imgUrl || "";
-
-                        document.getElementById("liveNewsText").innerText = txt;
-                        const imgElem = document.getElementById("tickerImage");
-                        if(imgUrl && imgUrl.trim() !== "") {
-                            imgElem.src = imgUrl;
-                            imgElem.style.display = "inline-block";
-                        } else {
-                            imgElem.style.display = "none";
-                        }
-                        document.getElementById("liveNewsBoxContainer").style.display = (txt.trim() === "" && (!imgUrl || imgUrl.trim() === "")) ? "none" : "flex";
+                if (docSnap.exists() && docSnap.data().text) {
+                    let data = docSnap.data();
+                    tickerElem.innerText = data.text;
+                    const imgElem = document.getElementById("tickerImage");
+                    if(data.imgUrl && data.imgUrl.trim() !== "") {
+                        imgElem.src = data.imgUrl;
+                        imgElem.style.display = "inline-block";
+                    } else {
+                        imgElem.style.display = "none";
                     }
+                } else {
+                    // Default High-Speed Live News Ticker Content
+                    tickerElem.innerText = "🔥 MeraGaov Live: हरियाणा बिजली हड़ताल और ऊर्जा मंत्री बैठक के ताज़ा अपडेट्स | गाँव की हर सेवा और खबर अब सबसे पहले!";
                 }
 
                 const mainTextSnap = await getDoc(doc(db, "settings", "mainAnnouncement"));
@@ -256,18 +179,13 @@
                 if(!msgSnap.empty) {
                     document.getElementById("adminNotifBadge").style.display = "inline-block";
                 }
-            } catch (e) { console.error("Error loading app data:", e); }
+            } catch (e) { 
+                console.error("Error loading app data:", e); 
+                document.getElementById("liveNewsBoxContainer").style.display = "flex";
+                document.getElementById("liveNewsText").innerText = "🔥 MeraGaov Live: ताज़ा अपडेट्स और खबरों के लिए जुड़े रहें!";
+            }
         }
         window.addEventListener('DOMContentLoaded', loadAppData);
-
-        window.toggleRSSFeedMode = async function() {
-            const isChecked = document.getElementById("rssToggleCheckbox").checked;
-            try {
-                await setDoc(doc(db, "settings", "rssAuto"), { enabled: isChecked }, { merge: true });
-                alert(isChecked ? "Amar Ujala Auto Live News On Ho Gayi Hai!" : "Manual News Mode On Ho Gaya Hai!");
-                location.reload();
-            } catch(e) { console.error(e); }
-        }
 
         function updateDesiVibePlayer(url) {
             const playerContainer = document.getElementById("desiVibePlayerContainer");
@@ -286,10 +204,10 @@
                 videoCategories = {};
                 querySnapshot.forEach((documentSnap) => {
                     let data = documentSnap.data();
-                    let cat = data.category || " अन्य फोल्डर (Other)";
+                    let cat = data.category || "अन्य फोल्डर (Other)";
                     let url = data.url || "";
                     if (!videoCategories[cat]) videoCategories[cat] = [];
-                    if(url) videoCategories[cat].push({ id: documentSnap.id, name: data.title || "Video", url: url });
+                    if(url) videoCategories[cat].push({ id: documentSnap.id, name: data.title || "वीडियो", url: url });
                 });
             } catch (e) { console.error(e); }
         }
@@ -305,17 +223,17 @@
         window.sendVisitorMessage = async function() {
             const name = document.getElementById("visitorName").value.trim();
             const msg = document.getElementById("visitorMsgText").value.trim();
-            if(!name || !msg) { alert("Kripya apna naam aur sandesh dono likhein!"); return; }
+            if(!name || !msg) { alert("कृपया अपना नाम और संदेश दोनों लिखें!"); return; }
 
             try {
                 await addDoc(collection(db, "messages"), { name: name, message: msg, reply: "", timestamp: new Date() });
-                alert("Aapka sandesh safaltapoorvak bhej diya gaya hai!");
+                alert("आपका संदेश सफलतापूर्वक भेज दिया गया है!");
                 document.getElementById("visitorName").value = "";
                 document.getElementById("visitorMsgText").value = "";
                 document.getElementById("visitorMsgBox").style.display = "none";
             } catch(e) {
                 console.error(e);
-                alert("Truti: Sandesh bhejne mein asafal.");
+                alert("त्रुटि: संदेश भेजने में असफल।");
             }
         }
 
@@ -323,8 +241,8 @@
             const modal = document.getElementById("galleryModal");
             const title = document.getElementById("modalTitle");
             const listContainer = document.getElementById("modalFileList");
-            title.innerText = "📥 Mile Hue Sandesh & Visitors";
-            listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:10px;">Load ho raha hai...</div>`;
+            title.innerText = "📥 मिले हुए संदेश & विज़िटर";
+            listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:10px;">लोड हो रहा है...</div>`;
             modal.style.display = "flex";
 
             try {
@@ -337,12 +255,12 @@
                 const querySnapshot = await getDocs(collection(db, "messages"));
                 listContainer.innerHTML = `
                     <div style="background:rgba(0,100,60,0.6); padding:10px; border-radius:8px; margin-bottom:10px; text-align:center; border:1px solid #69f0ae;">
-                        <span style="font-size:14px; color:#ffeb3b; font-weight:bold;">👥 Kul Website Visitors: ${visitorCount}</span>
+                        <span style="font-size:14px; color:#ffeb3b; font-weight:bold;">👥 कुल वेबसाइट विज़िटर्स: ${visitorCount}</span>
                     </div>
                 `;
 
                 if(querySnapshot.empty) {
-                    listContainer.innerHTML += `<div style="text-align:center; color:#b9f6ca; padding:10px;">Koi sandesh nahi mila.</div>`;
+                    listContainer.innerHTML += `<div style="text-align:center; color:#b9f6ca; padding:10px;">कोई संदेश नहीं मिला।</div>`;
                     return;
                 }
 
@@ -363,33 +281,33 @@
                         <div style="font-size:13px; color:#fff9c4; word-break:break-all; margin-bottom:4px;">💬 ${d.message}</div>
                         ${replyHtml}
                         <div style="display:flex; gap:5px; width:100%; margin-top:6px;">
-                            <input type="text" id="reply_${docSnap.id}" class="admin-input" placeholder="Yahan Jawab Likhne..." style="margin-bottom:0; font-size:11px; padding:4px;" value="${d.reply || ''}">
-                            <button onclick="sendAdminReply('${docSnap.id}')" style="background:#00c853; color:#00220c; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:11px; cursor:pointer; flex-shrink:0;">Jawab Bhejein</button>
+                            <input type="text" id="reply_${docSnap.id}" class="admin-input" placeholder="यहाँ जवाब लिखें..." style="margin-bottom:0; font-size:11px; padding:4px;" value="${d.reply || ''}">
+                            <button onclick="sendAdminReply('${docSnap.id}')" style="background:#00c853; color:#00220c; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:11px; cursor:pointer; flex-shrink:0;">जवाब भेजें</button>
                         </div>
                     `;
                     listContainer.appendChild(item);
                 });
             } catch(e) {
                 console.error(e);
-                listContainer.innerHTML = `<div style="text-align:center; color:#ff8a80; padding:10px;">Data load karne mein truti.</div>`;
+                listContainer.innerHTML = `<div style="text-align:center; color:#ff8a80; padding:10px;">डेटा लोड करने में त्रुटि।</div>`;
             }
         }
 
         window.sendAdminReply = async function(id) {
             const replyText = document.getElementById(`reply_${id}`).value.trim();
-            if(!replyText) { alert("Kripya jawab mein kuch likhein!"); return; }
+            if(!replyText) { alert("कृपया जवाब में कुछ लिखें!"); return; }
             try {
                 await updateDoc(doc(db, "messages", id), { reply: replyText });
-                alert("Jawab safaltapoorvak save ho gaya hai!");
+                alert("जवाब सफलतापूर्वक सेव हो गया है!");
                 window.openVisitorMessagesModal();
             } catch(e) {
                 console.error(e);
-                alert("Truti: Jawab bhejne mein asafal.");
+                alert("त्रुटि: जवाब भेजने में असफल।");
             }
         }
 
         window.deleteVisitorMsg = async function(id) {
-            if(confirm("Kya aap is sandesh ko delete karna chahte hain?")) {
+            if(confirm("क्या आप इस संदेश को डिलीट करना चाहते हैं?")) {
                 await deleteDoc(doc(db, "messages", id));
                 window.openVisitorMessagesModal();
             }
@@ -404,13 +322,9 @@
                 document.getElementById("mainAnnouncementText").contentEditable = "true";
                 document.getElementById("profileTitleText").contentEditable = "true";
 
-                const rssSnap = await getDoc(doc(db, "settings", "rssAuto"));
-                if(rssSnap.exists()) {
-                    document.getElementById("rssToggleCheckbox").checked = rssSnap.data().enabled === true;
-                }
-                alert("Admin Panel Unlock Ho Gaya Hai! Ab aap Dashboard par directly edit kar sakte hain.");
+                alert("एडमिन पैनल अनलॉक हो गया है! अब आप टेक्स्ट एडिट कर सकते हैं।");
             } else {
-                alert("Galat Password!");
+                alert("गलत पासवर्ड!");
             }
         }
 
@@ -437,20 +351,15 @@
                     updateDesiVibePlayer(newAudioUrl);
                 }
 
-                const existingDoc = await getDoc(doc(db, "settings", "linenews"));
-                let existingData = existingDoc.exists() ? existingDoc.data() : {};
-                
-                let finalNewsText = rawNewsText !== "" ? ("🔥 " + rawNewsText) : (existingData.text || "");
-                let finalImgUrl = tickerUrlInput !== "" ? tickerUrlInput : (existingData.imgUrl || "");
-
-                if(rawNewsText !== "" || tickerUrlInput !== "") {
-                    let updateData = { text: finalNewsText, imgUrl: finalImgUrl };
+                if(rawNewsText !== "") {
+                    let finalNewsText = rawNewsText.startsWith("🔥") ? rawNewsText : "🔥 " + rawNewsText;
+                    let updateData = { text: finalNewsText, imgUrl: tickerUrlInput };
                     await setDoc(doc(db, "settings", "linenews"), updateData, { merge: true });
                     document.getElementById("liveNewsText").innerText = finalNewsText;
                     
                     const imgElem = document.getElementById("tickerImage");
-                    if(finalImgUrl && finalImgUrl.trim() !== "") {
-                        imgElem.src = finalImgUrl;
+                    if(tickerUrlInput && tickerUrlInput.trim() !== "") {
+                        imgElem.src = tickerUrlInput;
                         imgElem.style.display = "inline-block";
                     } else {
                         imgElem.style.display = "none";
@@ -465,50 +374,31 @@
                     loadVideosFromFirebase();
                 }
 
-                alert("Update aur Save safaltapoorvak ho gaya!");
+                alert("अपडेट और सेव सफलतापूर्वक हो गया!");
                 document.getElementById("adminLiveNewsInput").value = "";
                 document.getElementById("adminTickerImgUrl").value = "";
             } catch (error) { 
                 console.error("Upload Error:", error);
-                alert("Truti: " + error.message); 
+                alert("त्रुटि: " + error.message); 
             }
         }
 
         window.deleteLiveNews = async function() {
             try {
-                const docSnap = await getDoc(doc(db, "settings", "linenews"));
-                let currentText = docSnap.exists() ? (docSnap.data().text || "") : "";
-                
-                let editedText = prompt("Moujooda news neeche di gayi hai. Jo shabd hatana ho use hata kar OK karein:", currentText);
-                if (editedText === null) return;
-                
-                editedText = editedText.trim();
-                let finalSaveText = editedText !== "" ? (editedText.startsWith("🔥") ? editedText : "🔥 " + editedText) : "";
-                
-                let updatePayload = { text: finalSaveText };
-                if(finalSaveText === "") updatePayload.imgUrl = "";
-
-                await setDoc(doc(db, "settings", "linenews"), updatePayload, { merge: true });
-                
-                if(finalSaveText === "") {
-                    document.getElementById("liveNewsBoxContainer").style.display = "none";
-                    document.getElementById("liveNewsText").innerText = "";
-                    document.getElementById("tickerImage").style.display = "none";
-                } else {
-                    document.getElementById("liveNewsText").innerText = finalSaveText;
-                }
-                
-                alert("Live news safaltapoorvak update/delete ho gayi hai!");
+                await setDoc(doc(db, "settings", "linenews"), { text: "", imgUrl: "" }, { merge: true });
+                document.getElementById("liveNewsBoxContainer").style.display = "none";
+                document.getElementById("liveNewsText").innerText = "";
+                alert("लाइव न्यूज़ हटा दी गई है!");
             } catch(e) {
                 console.error(e);
-                alert("Truti: " + e.message);
+                alert("त्रुटि: " + e.message);
             }
         }
 
         window.deleteVideoFromDB = async function(id, categoryName) {
-            const pass = prompt("Admin Password Darj Karein:");
-            if(pass !== "336200") { alert("Galat Password!"); return; }
-            if(confirm("Is item ko delete karna chahte hain?")) {
+            const pass = prompt("एडमिन पासवर्ड दर्ज करें:");
+            if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
+            if(confirm("इस आइटम को डिलीट करना चाहते हैं?")) {
                 await deleteDoc(doc(db, "videos", id));
                 await loadVideosFromFirebase();
                 window.openCategoryVideos(categoryName);
@@ -516,8 +406,8 @@
         }
 
         window.deletePhotoLocal = function(id) {
-            const pass = prompt("Admin Password Darj Karein:");
-            if(pass !== "336200") { alert("Galat Password!"); return; }
+            const pass = prompt("एडमिन पासवर्ड दर्ज करें:");
+            if(pass !== "336200") { alert("गलत पासवर्ड!"); return; }
             myPhotos = myPhotos.filter(p => p.id !== id);
             window.openPhotoGallery();
         }
@@ -559,44 +449,36 @@
 
             <!-- Hidden Admin Panel -->
             <div class="admin-box" id="adminPanel">
-                <div style="font-size: 12px; color: #ffeb3b; margin-bottom: 6px; font-weight: bold;">🔒 Admin Access (Password Darj Karein):</div>
+                <div style="font-size: 12px; color: #ffeb3b; margin-bottom: 6px; font-weight: bold;">🔒 एडमिन एक्सेस (पासवर्ड दर्ज करें):</div>
                 <div style="display: flex; gap: 6px; margin-bottom: 10px;">
-                    <input type="password" id="adminPass" class="admin-input" placeholder="Password Likhein" style="margin-bottom:0;">
-                    <button onclick="checkAdminPassword()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 6px 12px; font-size: 11px; margin-bottom:0; width: auto; flex-shrink:0;">Login</button>
+                    <input type="password" id="adminPass" class="admin-input" placeholder="पासवर्ड लिखें" style="margin-bottom:0;">
+                    <button onclick="checkAdminPassword()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 6px 12px; font-size: 11px; margin-bottom:0; width: auto; flex-shrink:0;">लॉगिन</button>
                 </div>
 
                 <div id="protectedAdminControls" style="display:none; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 10px; margin-top: 8px;">
-                    <!-- Auto RSS Toggle Option -->
-                    <div style="background: rgba(0,200,83,0.2); padding: 8px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #00c853; display: flex; align-items: center; justify-content: space-between;">
-                        <span style="font-size: 11px; color: #ffeb3b; font-weight: bold;">🗞️ Amar Ujala Auto RSS News</span>
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 11px; color: #fff;">
-                            <input type="checkbox" id="rssToggleCheckbox" onchange="toggleRSSFeedMode()" style="width: 16px; height: 16px;"> ON / OFF
-                        </label>
-                    </div>
+                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">📝 मुख्य घोषणा लाइन बदलें:</div>
+                    <textarea id="adminMainInput" class="admin-input" style="height: 45px;" placeholder="यहाँ नई मुख्य लाइन लिखें..."></textarea>
 
-                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">📝 Mukhya Ghoshna Line Badlein:</div>
-                    <textarea id="adminMainInput" class="admin-input" style="height: 45px;" placeholder="Yahan nayi mukhya line likhein..."></textarea>
+                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🎵 Desi Vibe लिंक (YouTube या MP3 URL):</div>
+                    <input type="text" id="adminAudioInput" class="admin-input" placeholder="यहाँ YouTube लिंक या MP3 लिंक डालें">
 
-                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🎵 Desi Vibe Link (YouTube ya MP3 URL):</div>
-                    <input type="text" id="adminAudioInput" class="admin-input" placeholder="Yahan YouTube link (youtu.be) ya MP3 link dalein">
-
-                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🔥 Live News Ticker Badlein (Manual):</div>
-                    <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="Yahan nayi live khabar type karein...">
+                    <div style="font-size: 11px; color: #ffeb3b; margin: 2px 0; font-weight: bold;">🔥 लाइव न्यूज़ टिकर बदलें (मैनुअल):</div>
+                    <input type="text" id="adminLiveNewsInput" class="admin-input" placeholder="यहाँ नई लाइव खबर टाइप करें...">
                     
                     <div class="camera-btn-wrapper">
-                        <label for="adminTickerImgFile">🖼️ Ticker Photo Chunein:</label>
+                        <label for="adminTickerImgFile">🖼️ टिकर फोटो चुनें:</label>
                         <input type="file" id="adminTickerImgFile" accept="image/*" onchange="previewTickerFile(event)">
                     </div>
-                    <input type="text" id="adminTickerImgUrl" class="admin-input" placeholder="Ya ticker photo ka direct URL yahan dalein">
+                    <input type="text" id="adminTickerImgUrl" class="admin-input" placeholder="या टिकर फोटो का डायरेक्ट URL यहाँ डालें">
                     
-                    <div style="font-size: 11px; color: #69f0ae; margin: 4px 0 2px 0;">🎥 Video/Media Upload:</div>
-                    <input type="text" id="mediaTitle" class="admin-input" placeholder="Media ka Title (Naam)">
-                    <input type="text" id="mediaCategory" class="admin-input" placeholder="Folder/Category Naam">
-                    <input type="text" id="mediaUrlInput" class="admin-input" placeholder="Video/Photo ka direct URL">
+                    <div style="font-size: 11px; color: #69f0ae; margin: 4px 0 2px 0;">🎥 वीडियो/मीडिया अपलोड:</div>
+                    <input type="text" id="mediaTitle" class="admin-input" placeholder="मीडिया का टाइटल">
+                    <input type="text" id="mediaCategory" class="admin-input" placeholder="फोल्डर/कैटेगरी नाम">
+                    <input type="text" id="mediaUrlInput" class="admin-input" placeholder="वीडियो/फोटो का डायरेक्ट URL">
 
-                    <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 8px; font-size: 12px; margin-bottom: 6px;">🚀 Update / Save Karein</button>
-                    <button onclick="openVisitorMessagesModal()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 6px;">👥 Visitors aur Sandesh Dekhein</button>
-                    <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 0;">❌ Live News Edit/Delete Karein</button>
+                    <button onclick="verifyAdminAndUpload()" class="btn" style="background: linear-gradient(135deg, #00e676, #00b0ff); padding: 8px; font-size: 12px; margin-bottom: 6px;">🚀 अपडेट / सेव करें</button>
+                    <button onclick="openVisitorMessagesModal()" class="btn" style="background: linear-gradient(135deg, #7b1fa2, #ab47bc); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 6px;">👥 विज़िटर्स और संदेश देखें</button>
+                    <button onclick="deleteLiveNews()" class="btn" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 8px; font-size: 12px; margin-bottom: 0;">❌ लाइव न्यूज़ हटाएं</button>
                 </div>
             </div>
 
@@ -626,34 +508,34 @@
             <div id="translatorSection">
                 <div class="translator-header">
                     <h3>🌐 Hindi/Eng Translator</h3>
-                    <button class="close-translator" onclick="toggleTranslatorSection()">Band Karein X</button>
+                    <button class="close-translator" onclick="toggleTranslatorSection()">बंद करें X</button>
                 </div>
                 
                 <div class="camera-btn-wrapper">
-                    <label for="uploadLetterInput">📁 Photo Chunein / Upload Photo:</label>
+                    <label for="uploadLetterInput">📁 फोटो चुनें / Upload Photo:</label>
                     <input type="file" id="uploadLetterInput" accept="image/*" onchange="processImageForTranslation(event)">
                 </div>
 
                 <div id="translatorStatus" style="font-size: 12px; color: #ffeb3b; margin-bottom: 8px; font-weight: bold;"></div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <span style="font-size: 11px; color: #a5d6a7; font-weight: bold;">Bhasha Chunein:</span>
+                    <span style="font-size: 11px; color: #a5d6a7; font-weight: bold;">भाषा चुनें:</span>
                     <select id="langDirection" class="admin-input" style="width: 55%; margin-bottom: 0; padding: 5px; font-size: 11px;">
                         <option value="en|hi">English to Hindi</option>
                         <option value="hi|en">Hindi to English</option>
                     </select>
                 </div>
 
-                <textarea id="extractedText" class="admin-input" style="height: 110px; font-size: 13px; background: #032d22; color: #fff;" placeholder="Yahan type karein ya paste karein..."></textarea>
+                <textarea id="extractedText" class="admin-input" style="height: 110px; font-size: 13px; background: #032d22; color: #fff;" placeholder="यहाँ टाइप करें या पेस्ट करें..."></textarea>
                 
-                <button onclick="translateManualText()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 9px; font-size: 13px; margin-bottom: 10px; font-weight: bold;">🔄 Anuwaad Karein</button>
+                <button onclick="translateManualText()" class="btn" style="background: linear-gradient(135deg, #00c853, #64dd17); color: #00220c; padding: 9px; font-size: 13px; margin-bottom: 10px; font-weight: bold;">🔄 अनुवाद करें</button>
 
-                <div style="font-size: 11px; color: #69f0ae; margin-bottom: 4px; font-weight: bold;">Result:</div>
-                <textarea id="translatedText" class="admin-input" style="height: 120px; font-size: 14px; background: #011611; color: #fff9c4; font-weight: 600;" placeholder="Yahan anuwaad dikhega..."></textarea>
+                <div style="font-size: 11px; color: #69f0ae; margin-bottom: 4px; font-weight: bold;">रिजल्ट:</div>
+                <textarea id="translatedText" class="admin-input" style="height: 120px; font-size: 14px; background: #011611; color: #fff9c4; font-weight: 600;" placeholder="यहाँ अनुवाद दिखेगा..."></textarea>
 
                 <div style="display: flex; gap: 8px; margin-top: 8px;">
-                    <button onclick="printTranslatedText()" class="btn" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">🖨️ Print / PDF</button>
-                    <button onclick="shareTranslatedOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">📤 WhatsApp Bhejein</button>
+                    <button onclick="printTranslatedText()" class="btn" style="background: linear-gradient(135deg, #00b0ff, #0048ff); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">🖨️ प्रिंट / PDF</button>
+                    <button onclick="shareTranslatedOnWhatsApp()" class="btn" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 8px; font-size: 11px; margin-bottom: 0;">📤 व्हाट्सएप भेजें</button>
                 </div>
             </div>
 
@@ -661,10 +543,10 @@
             <div class="visitor-msg-container">
                 <button onclick="toggleVisitorMsgBox()" class="btn" style="background: linear-gradient(135deg, #00796b, #004d40); color: #fff; border: 1px solid #69f0ae; margin-bottom: 0;">💬 फीडबैक / सुझाव भेजें</button>
                 <div id="visitorMsgBox" class="visitor-msg-box">
-                    <h4>💬 Apni baat ya sujhav seedhe yahan bhejein:</h4>
-                    <input type="text" id="visitorName" class="admin-input" placeholder="Aapka Naam (Your Name)" style="margin-bottom: 4px; font-size: 11px; padding: 6px;">
-                    <textarea id="visitorMsgText" class="admin-input" style="height: 45px; margin-bottom: 4px; font-size: 11px; padding: 6px;" placeholder="Yahan apna sandesh likhein..."></textarea>
-                    <button onclick="sendVisitorMessage()" class="btn" style="background: linear-gradient(135deg, #00c853, #00796b); color: #fff; padding: 6px; font-size: 11px; margin-bottom: 0;">📤 Sandesh Bhejein (Send)</button>
+                    <h4>💬 अपनी बात या सुझाव सीधे यहाँ भेजें:</h4>
+                    <input type="text" id="visitorName" class="admin-input" placeholder="आपका नाम (Your Name)" style="margin-bottom: 4px; font-size: 11px; padding: 6px;">
+                    <textarea id="visitorMsgText" class="admin-input" style="height: 45px; margin-bottom: 4px; font-size: 11px; padding: 6px;" placeholder="यहाँ अपना संदेश लिखें..."></textarea>
+                    <button onclick="sendVisitorMessage()" class="btn" style="background: linear-gradient(135deg, #00c853, #00796b); color: #fff; padding: 6px; font-size: 11px; margin-bottom: 0;">📤 संदेश भेजें (Send)</button>
                 </div>
             </div>
 
@@ -784,7 +666,7 @@
             const extractedEl = document.getElementById("extractedText");
             const translatedEl = document.getElementById("translatedText");
 
-            statusEl.innerText = "⏳ Photo scan ho rahi hai...";
+            statusEl.innerText = "⏳ फोटो स्कैन हो रही है...";
             extractedEl.value = "";
             translatedEl.value = "";
 
@@ -795,22 +677,22 @@
                 const { data: { text } } = await Tesseract.recognize(
                     file,
                     ocrLang,
-                    { logger: m => { if(m.status === 'recognizing text') { statusEl.innerText = `⏳ Scanning: ${Math.round(m.progress * 100)}%`; } } }
+                    { logger: m => { if(m.status === 'recognizing text') { statusEl.innerText = `⏳ स्कैनिंग: ${Math.round(m.progress * 100)}%`; } } }
                 );
 
                 const cleanText = text ? text.trim() : "";
                 if(!cleanText) {
-                    statusEl.innerText = "❌ Photo mein koi text nahi mila.";
+                    statusEl.innerText = "❌ फोटो में कोई टेक्स्ट नहीं मिला।";
                     return;
                 }
 
                 extractedEl.value = cleanText;
-                statusEl.innerText = "⏳ Auto-chunk anuwaad ho raha hai...";
+                statusEl.innerText = "⏳ ऑटो-चंक अनुवाद हो रहा है...";
                 await fetchAndApplyTranslation(cleanText, statusEl, translatedEl, langPair);
 
             } catch (err) {
                 console.error(err);
-                statusEl.innerText = "❌ Truti: Photo scan karne mein samasya aayi.";
+                statusEl.innerText = "❌ त्रुटि: फोटो स्कैन करने में समस्या आई।";
             }
         }
 
@@ -820,9 +702,9 @@
             const translatedEl = document.getElementById("translatedText");
             const langPair = document.getElementById("langDirection").value;
 
-            if(!text) { alert("Kripya pehle text likhein ya paste karein!"); return; }
+            if(!text) { alert("कृपया पहले टेक्स्ट लिखें या पेस्ट करें!"); return; }
 
-            statusEl.innerText = "⏳ Anuwaad ho raha hai...";
+            statusEl.innerText = "⏳ अनुवाद हो रहा है...";
             await fetchAndApplyTranslation(text, statusEl, translatedEl, langPair);
         }
 
@@ -836,7 +718,7 @@
 
                 let fullTranslatedText = "";
                 for (let i = 0; i < chunks.length; i++) {
-                    statusElement.innerText = `⏳ Anuwaad ho raha hai (${i + 1}/${chunks.length})...`;
+                    statusElement.innerText = `⏳ अनुवाद हो रहा है (${i + 1}/${chunks.length})...`;
                     const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunks[i])}&langpair=${langPair}`);
                     const resJson = await response.json();
                     
@@ -848,16 +730,16 @@
                 }
 
                 targetElement.value = fullTranslatedText.trim();
-                statusElement.innerText = "✅ Anuwaad Safal!";
+                statusElement.innerText = "✅ अनुवाद सफल!";
             } catch(e) {
                 console.error(e);
-                statusElement.innerText = "❌ Anuwaad Server Truti!";
+                statusElement.innerText = "❌ अनुवाद सर्वर त्रुटि!";
             }
         }
 
         window.printTranslatedText = function() {
             const translatedText = document.getElementById("translatedText").value.trim();
-            if(!translatedText) { alert("Print karne ke liye koi anuwaad uplabdh nahi hai!"); return; }
+            if(!translatedText) { alert("प्रिंट करने के लिए कोई अनुवाद उपलब्ध नहीं है!"); return; }
             const printWindow = window.open('', '', 'height=600,width=800');
             printWindow.document.write('<html><head><title>Translated Letter - MeraGaov</title>');
             printWindow.document.write('<style>body{font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; color: #000;} h2{color: #0c4a37; border-bottom: 2px solid #0c4a37; padding-bottom: 5px;}</style>');
@@ -873,7 +755,7 @@
 
         window.shareTranslatedOnWhatsApp = function() {
             const translatedText = document.getElementById("translatedText").value.trim();
-            if(!translatedText) { alert("WhatsApp par bhejne ke liye koi anuwaad uplabdh nahi hai!"); return; }
+            if(!translatedText) { alert("व्हाट्सएप पर भेजने के लिए कोई अनुवाद उपलब्ध नहीं है!"); return; }
             const shareMessage = "🌐 *MeraGaov Hindi/Eng Translator Output*:\n\n" + translatedText + "\n\n---\n_Shared via dakshyadav.co.in_";
             window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(shareMessage), '_blank');
         }
@@ -910,7 +792,7 @@
             let keys = Object.keys(videoCategories);
 
             if(keys.length === 0) {
-                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:10px;">Koi video nahi mila.</div>`;
+                listContainer.innerHTML = `<div style="text-align:center; color:#b9f6ca; padding:10px;">कोई वीडियो नहीं मिला।</div>`;
             } else {
                 keys.forEach(categoryName => {
                     const folderItem = document.createElement('div');
@@ -938,7 +820,7 @@
             backBtn.style.background = "#1b5e20";
             backBtn.innerHTML = `
                 <div class="file-info" onclick="openVideoCategoriesModal()">
-                    <span>⬅️</span><span><b>Wapas Jayein</b></span>
+                    <span>⬅️</span><span><b>वापस जाएं</b></span>
                 </div>
             `;
             listContainer.appendChild(backBtn);
