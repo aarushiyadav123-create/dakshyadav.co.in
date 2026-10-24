@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MeraGaov - मेरी पहचान</title>
     
+    <!-- OneSignal Web Push SDK Integration -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "9bdacd44-0300-4702-b937-a212fb09af8c",
+        });
+      });
+    </script>
+
     <!-- Google tag (gtag.js) - Google Analytics Integration -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT9C1L4ZMN"></script>
     <script>
